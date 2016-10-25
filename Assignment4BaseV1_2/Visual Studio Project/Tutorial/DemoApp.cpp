@@ -1,11 +1,11 @@
 
 /*
 -----------------------------------------------------------------------------
-CSCI356: Game Engine Essentials - Assignment 3
+CSCI356: Game Engine Essentials - Group Project
 
-Name: Ivana Ozakovic
-Student No.: 4790339
-Email: io447@uow.edu.au
+Name: Ivana Ozakovic, Jarryd Saffery, Nacho Garrido, Benjamin Johnson, Zhen Zhi
+Student No.: 4790339, 4255343, , , 
+Email: io447@uow.edu.au, js073@uowmail.edu.au, , , 
 
 Filename:   DemoApp.cpp
 			This source file is based on Lab files supplied and has been modified and code was added for requirements of this assignment.
