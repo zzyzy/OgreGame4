@@ -139,6 +139,7 @@ publish/
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml
+*.suo
 
 # TODO: Un-comment the next line if you do not want to checkin
 # your web deploy settings because they may include unencrypted
@@ -240,6 +241,7 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+*.suo
 
 # VisualStudioCode
 .vscode/*
