@@ -15,7 +15,6 @@ Filename:   DemoApp.cpp
 #include "DemoApp.h"
 #include <utility>
 
-
 Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
 //-------------------------------------------------------------------------------------
 DemoApp::DemoApp():
@@ -81,6 +80,34 @@ bool DemoApp::processUnbufferedInput(const Ogre::FrameEvent& evt)
 	return true;
 }
 //-------------------------------------------------------------------------------------
+
+// Creates Power Up of type in scene
+PowerUp* DemoApp::createPowerUp(PowerUpType type, Ogre::String name) {
+
+	PowerUp *powerUp = new PowerUp(mSceneMgr, type, name);
+	powerUp->node->setScale(2, 2, 2);
+
+	return powerUp;
+}
+
+void DemoApp::createPowerUps() {
+
+	// Create Powerup
+	PowerUp *firePowerUp = createPowerUp(PowerUpTypeFirePower, "FirePower1");
+	firePowerUp->node->setPosition(-5,0,10);
+
+	PowerUp *healthPowerUp = createPowerUp(PowerUpTypeHealth, "HealthPowerUp1");
+	healthPowerUp->node->setPosition(-0,0,10);
+
+	PowerUp *speedPowerUp = createPowerUp(PowerUpTypeSpeed, "SpeedPowerUp1");
+	speedPowerUp->node->setPosition(5,0,10);
+
+	PowerUp *ratePowerUp = createPowerUp(PowerUpTypeRateOfFire, "RatePowerUp1");
+	ratePowerUp->node->setPosition(10,0,10);
+
+}
+
+
 
 //-------------------------------------------------------------------------------------
 void DemoApp::createScene(void)
@@ -220,6 +247,11 @@ void DemoApp::createScene(void)
 		}
 	}
 
+	//
+	// Create Power Ups
+	//
+	createPowerUps();
+
 	// create the path objects, and clear them to start off
 	/*path1 = mSceneMgr->createManualObject("DijkstraPath");
 	path1->clear();
@@ -228,7 +260,6 @@ void DemoApp::createScene(void)
 	path2 = mSceneMgr->createManualObject("AStarPath");
 	path2->clear();
 	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(path2);
-
 
 	//CREATE ROBOTS AND BILLBOARDS
 	//***Billbords are attached to a robot entity as child nodes

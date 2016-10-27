@@ -81,6 +81,7 @@
     <ClInclude Include="NodeRecord.h" />
     <ClInclude Include="PathFinding.h" />
     <ClInclude Include="PhysicsEngine.h" />
+    <ClInclude Include="PowerUp.h" />
     <ClInclude Include="SelectionBox.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Utilities.h" />
@@ -93,6 +94,7 @@
     <ClCompile Include="NodeRecord.cpp" />
     <ClCompile Include="PathFinding.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
+    <ClCompile Include="PowerUp.cpp" />
     <ClCompile Include="SelectionBox.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

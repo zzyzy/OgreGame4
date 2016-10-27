@@ -20,6 +20,7 @@ Filename:   DemoApp.h
 
 #include "stdafx.h"
 #include <deque>
+#include "PowerUp.h"
 
 class DemoApp : public BaseApplication
 {
@@ -44,6 +45,12 @@ protected:
     virtual bool mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id );
 	virtual bool mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id );
 
+
+	// Convenience function for creating a power up in the scene
+	PowerUp* createPowerUp(PowerUpType type, Ogre::String name);
+
+	// Simple test function that creates one of each power up and adds to scene
+	void createPowerUps();
 
 	Ogre::SceneNode *node;			//scene node
 	Ogre::Entity* entGround;		//ground entity
