@@ -77,7 +77,7 @@ void BaseApplication::performSelection( const Ogre::Vector2& first, const Ogre::
 {
   float left = first.x, right = second.x;
   float top = first.y, bottom = second.y;
-  mVolQuery->setQueryMask(ROBOT_MASK);
+  mVolQuery->setQueryMask(TANK_MASK);
 
   if (left > right)
     swap(left, right);
@@ -147,73 +147,105 @@ void BaseApplication::performSelection( const Ogre::Vector2& first, const Ogre::
 //deselect all objects from scene
 void BaseApplication::deselectObjects()
 {
-  std::list<Ogre::MovableObject*>::iterator it;
- 
-  for (it = mSelected.begin(); it != mSelected.end(); ++it)
-  {
-	  //iterate through scene node in order to get child scene nodes where billboards are attached for object and remove them
-		Ogre::SceneNode::ChildNodeIterator billIt = (*it)->getParentSceneNode()->getChildIterator();
-		Ogre::SceneNode *temp;
-		while(billIt.hasMoreElements())
-		{
-			temp = static_cast<Ogre::SceneNode*>(billIt.getNext());
-			temp->setVisible(false);
-		}
+	std::list<Ogre::MovableObject*>::iterator it;
 
- }
-  //clear all objects from the selected object list
-  mSelected.clear();
+	for (it = mSelected.begin(); it != mSelected.end(); ++it)
+	{
+		std::vector<Tank>::iterator tankIt = tanks.begin();
+
+		while(tankIt != tanks.end())
+		{
+
+			if(((*it) == tankIt->getTankBaseNode()->getAttachedObject(0)) 
+				|| ((*it) == tankIt->getTankBarrelNode()->getAttachedObject(0)) 
+				|| ((*it) == tankIt->getTankTurretNode()->getAttachedObject(0)))
+			{
+				tankIt->setBillboardsVisible(false);
+			}
+
+		tankIt++;
+
+		}
+	}
+
+	//remove all selected objects
+	mSelected.clear();
     
 }
 //deselect a single object passed into the function
 void BaseApplication::deselectObject(Ogre::MovableObject* obj)
 {
-	Ogre::SceneNode::ChildNodeIterator billIt = obj->getParentSceneNode()->getChildIterator();
-	Ogre::SceneNode *temp;
+	std::vector<Tank>::iterator tankIt = tanks.begin();
 
-	while(billIt.hasMoreElements())
+	Ogre::MovableObject* deselected;
+
+	while(tankIt != tanks.end())
 	{
-		temp = static_cast<Ogre::SceneNode*>(billIt.getNext());
-		temp->setVisible(false);
 
+		if((obj == tankIt->getTankBaseNode()->getAttachedObject(0)) 
+			|| (obj == tankIt->getTankBarrelNode()->getAttachedObject(0)) 
+			|| (obj == tankIt->getTankTurretNode()->getAttachedObject(0)))
+		{
+			tankIt->setBillboardsVisible(false);
+			deselected = static_cast<Ogre::MovableObject*>(tankIt->getTankBaseNode()->getAttachedObject(0));
+
+		}
+
+		tankIt++;
 	}
 
 	//remove deselected object from the selected object list
-	mSelected.remove(obj);
+	mSelected.remove(deselected);
 
 }
 
 //select a single object passed into the function
 void BaseApplication::selectObject(Ogre::MovableObject* obj)
 {
+	std::vector<Tank>::iterator tankIt = tanks.begin();
 
-	//iterate through scene node in order to get child scene nodes where billboards are attached for object, and set them visible
-	Ogre::SceneNode::ChildNodeIterator billIt = obj->getParentSceneNode()->getChildIterator();
-	Ogre::SceneNode *temp;
-	while(billIt.hasMoreElements())
+	Ogre::MovableObject* selected;
+
+	while(tankIt != tanks.end())
 	{
-		temp = static_cast<Ogre::SceneNode*>(billIt.getNext());
-		temp->setVisible(true);
+		if((obj == tankIt->getTankBaseNode()->getAttachedObject(0)) 
+			|| (obj == tankIt->getTankBarrelNode()->getAttachedObject(0)) 
+			|| (obj == tankIt->getTankTurretNode()->getAttachedObject(0)))
+		{
+			tankIt->setBillboardsVisible(true);
+			selected = static_cast<Ogre::MovableObject*>(tankIt->getTankBaseNode()->getAttachedObject(0));
 
+		}
+
+		tankIt++;
 	}
 
+
 	//insert object on the selected object list
-	mSelected.push_back(obj);
+	mSelected.push_back(selected);
 		
 }
 
 //if object already selected, return true, otherwise return false
 bool BaseApplication::isObjectSelected(Ogre::MovableObject* obj)
 {
-	std::list<Ogre::MovableObject*>::iterator it;
- 
-	for (it = mSelected.begin(); it != mSelected.end(); ++it)
+
+	std::vector<Tank>::iterator tankIt = tanks.begin();
+
+	while(tankIt != tanks.end())
 	{
-		if(obj == (*it))
-			return true;
+		if((obj == tankIt->getTankBaseNode()->getAttachedObject(0)) 
+			|| (obj == tankIt->getTankBarrelNode()->getAttachedObject(0)) 
+			|| (obj == tankIt->getTankTurretNode()->getAttachedObject(0)))
+		{
+			if(tankIt->isTankSelected())
+				return true;
+		}
+			
+		tankIt++;
 	}
 
-    return false;
+	return false;
 }
 
 //swap elements function

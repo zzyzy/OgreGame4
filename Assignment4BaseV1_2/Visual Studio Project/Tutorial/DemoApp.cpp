@@ -18,7 +18,7 @@ Filename:   DemoApp.cpp
 Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
 //-------------------------------------------------------------------------------------
 DemoApp::DemoApp():
-    mMove(250),
+    mMove(150),
 	mTarget(0),
     mCamNode(0),
 	isOrbiting(false),
@@ -173,6 +173,15 @@ void DemoApp::createScene(void)
 	spawnLeftEntity = mSceneMgr->createEntity("ground");
 	spawnRightEntity = mSceneMgr->createEntity("ground");
 
+	// Set query mask for ground
+	battleGroundEntity->setQueryFlags(GROUND_MASK);
+	topMazeEntity->setQueryFlags(GROUND_MASK);
+	bottomMazeEntity->setQueryFlags(GROUND_MASK);
+	leftMazeEntity->setQueryFlags(GROUND_MASK);
+	rightMazeEntity->setQueryFlags(GROUND_MASK);
+	spawnLeftEntity->setQueryFlags(GROUND_MASK);
+	spawnRightEntity->setQueryFlags(GROUND_MASK);
+
 	// Create ground sceneNodes
 	Ogre::SceneNode* battleGroundNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0, -1, 0));
 	Ogre::SceneNode* topMazeNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0, -1, -125));
@@ -220,11 +229,16 @@ void DemoApp::createScene(void)
 	spawnLeftEntity->setCastShadows(false);
 	spawnRightEntity->setCastShadows(false);
 
+	/***************************	SKY 	*********************************/
+	mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
+
+	/***************************	OBSTACLES 	*********************************/
+
 	for(int nodeNumber=0; nodeNumber<TOTAL_NODES; nodeNumber++)
 	{
 		int contents = pathFindingGraph->getContent(nodeNumber);
 
-		if(contents)
+		if(contents == 1)
 		{
 			// Create unique name
 			std::ostringstream oss;
@@ -261,75 +275,48 @@ void DemoApp::createScene(void)
 	path2->clear();
 	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(path2);
 
-	//CREATE ROBOTS AND BILLBOARDS
-	//***Billbords are attached to a robot entity as child nodes
-	// Create robots
-	int offset = 40;
-	int robotPosition = -40;
-	float initHealth = 0.2;
 
-	for(int i = 0; i < 3; ++i)
+	/************		TANKS		****************/
+	//tanks vector declaration located in BaseApplication.h
+	for(int tankId = 0; tankId < TOTAL_NODES; tankId++)
 	{
-		char name[20];
-		sprintf(name, "Robot%d", i);
+		int contents = pathFindingGraph->getContent(tankId);
 
-		//create entity
-		mRobot[i] = mSceneMgr->createEntity(name, "robot.mesh");
-		mRobot[i]->setCastShadows(true);
-		mRobot[i]->setQueryFlags(ROBOT_MASK);
-		
-		// Attach robots to scene nodes and position them appropriately
-		mRobotNode[i] = mSceneMgr->getRootSceneNode()->createChildSceneNode(name);
-		mRobotNode[i]->attachObject(mRobot[i]);
-		mRobotNode[i]->translate(robotPosition, 0, 0);
-		mRobotNode[i]->scale(0.2, 0.2, 0.2);
+		if(contents == 2)
+		{
+			// Create unique name
+			std::ostringstream oss;
+			oss << tankId;
+			std::string tankName = "Tank" + oss.str();
 
-		// Initialise the robot's health
-		mRobotHealth[i] = initHealth;
+			// Place object at appropriate position
+			Ogre::Vector3 position = pathFindingGraph->getPosition(tankId);
+			position.y = 0.5;
+			//create tank
+			Tank tank(tankName, CHALLENGER, position, mSceneMgr);
 
-		robotPosition += offset;
-		initHealth += 0.3;
+			tanks.push_back(tank);
+		}
+		if(contents == 3)
+		{
+			// Create unique name
+			std::ostringstream oss;
+			oss << tankId;
+			std::string tankName = "Tank" + oss.str();
 
-		// Create a BillboardSet to represent a health bar and set its properties
-		Ogre::BillboardSet* mHealthBar = mSceneMgr->createBillboardSet();
-		mHealthBar->setCastShadows(false);
-		mHealthBar->setDefaultDimensions(15, 1.0);
-		mHealthBar->setMaterialName("myMaterial/HealthBar");
+			// Place object at appropriate position
+			Ogre::Vector3 position = pathFindingGraph->getPosition(tankId);
+			position.y = 0.5;
+			//create tank
+			Tank tank(tankName, LEOPARD, position, mSceneMgr);
 
-		// Create a billboard for the health bar BillboardSet
-		Ogre::Billboard* mHealthBarBB = mHealthBar->createBillboard(Ogre::Vector3(0, 100, 0));
-		// Calculate the health bar adjustments
-		float healthBarAdjuster = (1.0 - mRobotHealth[i])/2;	// This must range from 0.0 to 0.5
-		// Set the health bar to the appropriate level
-		mHealthBarBB->setTexcoordRect(0.0 + healthBarAdjuster, 0.0, 0.5 + healthBarAdjuster, 1.0);
-
-		// Set it to always draw on top of other objects
-		mHealthBar->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
-
-		// Create a BillboardSet for a selection circle and set its properties
-		Ogre::BillboardSet* mSelectionCircle = mSceneMgr->createBillboardSet();
-		mSelectionCircle->setCastShadows(false);
-		mSelectionCircle->setDefaultDimensions(40, 40);
-		mSelectionCircle->setMaterialName("myMaterial/SelectionCircle");
-		mSelectionCircle->setBillboardType(Ogre::BillboardType::BBT_PERPENDICULAR_COMMON);
-		mSelectionCircle->setCommonDirection(Ogre::Vector3(0, 1, 0));
-		mSelectionCircle->setCommonUpVector(Ogre::Vector3(0, 0, -1));
-
-		// Create a billboard for the selection circle BillboardSet
-		Ogre::Billboard* mSelectionCircleBB = mSelectionCircle->createBillboard(Ogre::Vector3(0, 1, 0));
-		mSelectionCircleBB->setTexcoordRect(0.0, 0.0, 1.0, 1.0);
-
-		//attach billboards to robot node
-		Ogre::SceneNode* healthNode = mRobotNode[i]->createChildSceneNode();
-		healthNode->attachObject(mHealthBar);
-		healthNode->setVisible(false);
-		Ogre::SceneNode* selectNode = mRobotNode[i]->createChildSceneNode();
-		selectNode->attachObject(mSelectionCircle);
-		selectNode->setVisible(false);
-
+			tanks.push_back(tank);
+		}
 	}
-	
 
+	//update health bar example
+	//tanks[0].updateHealthBar(0.5);
+	
 	/**********		PATH FINDING	**********/
 	// go through the graph
 	// if a node is blocked, display a cube on that grid location
@@ -380,7 +367,7 @@ bool DemoApp::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	/***********************	WALK	******************************/
 	/*****************************************************************/
 	//*******only moves one object
-	if(mSelected.size() > 0)
+	/*if(mSelected.size() > 0)
 	{
 
 
@@ -460,7 +447,7 @@ bool DemoApp::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	if(shouldAnimate)
 	{
 		mAnimationState->addTime(evt.timeSinceLastFrame);
-	}
+	}*/
 		
 
 	/*******************************************************************************************/
@@ -791,7 +778,7 @@ void DemoApp::clickSelectObject()
 				if(itr != result.end())
 				{
 					//if robot hit
-					if(itr->movable->getQueryFlags() == ROBOT_MASK)
+					if(itr->movable->getQueryFlags() == TANK_MASK)
 					{
 						Ogre::MovableObject *hitObject = static_cast<Ogre::MovableObject*>(itr->movable);
 
@@ -835,7 +822,7 @@ void DemoApp::clickSelectObject()
 					else if(itr->movable->getQueryFlags() == GROUND_MASK)
 					{
 						//if user not selecting with selection box and not editing selection
-						if(!multipleSelection && !editSelection)
+						/*if(!multipleSelection && !editSelection)
 						{
 							//get coordinates where ray intersects the plane
 							std::pair <bool, Ogre::Real> intersection = mouseRay.intersects(plane);
@@ -850,7 +837,7 @@ void DemoApp::clickSelectObject()
 							}
 						}
 						//otherwise, deselect all objects
-						else
+						else*/
 							deselectObjects();
 
 					}

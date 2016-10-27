@@ -21,6 +21,7 @@ Filename:   DemoApp.h
 #include "stdafx.h"
 #include <deque>
 #include "PowerUp.h"
+#include "Tank.h"
 
 class DemoApp : public BaseApplication
 {

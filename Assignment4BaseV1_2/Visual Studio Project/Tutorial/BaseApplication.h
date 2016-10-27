@@ -19,12 +19,13 @@ This source file is part of the
  
 #include "stdafx.h"
 #include "SelectionBox.h"
-
+#include "Tank.h"
+#include <vector>
 
 enum QueryFlags
 	{
 		GROUND_MASK = 1 << 0,
-		ROBOT_MASK = 1 << 1,
+		TANK_MASK = 1 << 1,
 		OBSTACLES_MASK = 1 << 2,
 	};
 
@@ -72,10 +73,10 @@ protected:
 	Ogre::String mPluginsCfg;
 
 
-	Ogre::Entity* mRobot[3];
-	Ogre::SceneNode* mRobotNode[3];
-	float mRobotHealth[3];
-	int mCurrentRobot;
+	/***********		TANKS		*************/
+	//std::vector<Tank> challengerTanks;
+	//std::vector<Tank> leopardTanks;
+	std::vector<Tank> tanks;			// vector containing tanks added on the scene
 
 	bool editSelection;
 	//overlay system
