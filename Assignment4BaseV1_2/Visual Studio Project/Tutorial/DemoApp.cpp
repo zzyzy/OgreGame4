@@ -121,14 +121,14 @@ void DemoApp::createScene(void)
 
 
 	//set ambient light
-	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
+	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
  
     // create the light
-    Ogre::Light *light = mSceneMgr->createLight("Light1");
+    /*Ogre::Light *light = mSceneMgr->createLight("Light1");
     light->setType(Ogre::Light::LT_POINT);
     light->setPosition(Ogre::Vector3(250, 150, 250));
     light->setDiffuseColour(Ogre::ColourValue::White);
-    light->setSpecularColour(Ogre::ColourValue::White);
+    light->setSpecularColour(Ogre::ColourValue::White);*/
  
 	// Use a plane to represent the ground
 	/*Ogre::MeshManager::getSingleton().createPlane("ground", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, plane, 
