@@ -22,6 +22,9 @@
     <Filter Include="Source Files\Pathfinding">
       <UniqueIdentifier>{d5edaa55-76d3-429e-a3d5-545889e5e667}</UniqueIdentifier>
     </Filter>
+    <Filter Include="media">
+      <UniqueIdentifier>{14f3a675-3cd1-4bc6-aa15-82d44d1fa085}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApplication.h">
@@ -106,5 +109,22 @@
     <None Include="resources_d.cfg">
       <Filter>Configuration Files</Filter>
     </None>
+    <None Include="media\PowerUp.mesh">
+      <Filter>media</Filter>
+    </None>
+    <None Include="media\PowerUp.material">
+      <Filter>media</Filter>
+    </None>
+    <None Include="media\myMaterial.material">
+      <Filter>media</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="media\circulo.png">
+      <Filter>media</Filter>
+    </Image>
+    <Image Include="media\healthbar.png">
+      <Filter>media</Filter>
+    </Image>
   </ItemGroup>
 </Project>

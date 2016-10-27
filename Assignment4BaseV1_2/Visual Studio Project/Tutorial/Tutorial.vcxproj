@@ -102,11 +102,18 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="media\myMaterial.material" />
+    <None Include="media\PowerUp.material" />
+    <None Include="media\PowerUp.mesh" />
     <None Include="ogre.cfg" />
     <None Include="plugins.cfg" />
     <None Include="plugins_d.cfg" />
     <None Include="resources.cfg" />
     <None Include="resources_d.cfg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="media\circulo.png" />
+    <Image Include="media\healthbar.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
