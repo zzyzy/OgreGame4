@@ -123,8 +123,16 @@
     <ClInclude Include="QueryMasks.hpp">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
+<<<<<<< Updated upstream
     <ClInclude Include="GameObject.h">
       <Filter>Header Files</Filter>
+=======
+    <ClInclude Include="ITankState.hpp">
+      <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="TankStateMachine.hpp">
+      <Filter>Header Files\Tank</Filter>
+>>>>>>> Stashed changes
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
