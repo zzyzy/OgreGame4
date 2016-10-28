@@ -14,6 +14,8 @@ Filename:   DemoApp.cpp
 
 #include "DemoApp.h"
 #include <utility>
+#include "TankFactory.hpp"
+#include "QueryMasks.hpp"
 
 Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
 //-------------------------------------------------------------------------------------
@@ -177,13 +179,13 @@ void DemoApp::createScene(void)
 	spawnRightEntity = mSceneMgr->createEntity("ground");
 
 	// Set query mask for ground
-	battleGroundEntity->setQueryFlags(GROUND_MASK);
-	topMazeEntity->setQueryFlags(GROUND_MASK);
-	bottomMazeEntity->setQueryFlags(GROUND_MASK);
-	leftMazeEntity->setQueryFlags(GROUND_MASK);
-	rightMazeEntity->setQueryFlags(GROUND_MASK);
-	spawnLeftEntity->setQueryFlags(GROUND_MASK);
-	spawnRightEntity->setQueryFlags(GROUND_MASK);
+	battleGroundEntity->setQueryFlags(static_cast<Ogre::uint32>(QueryTypes::GROUND));
+	topMazeEntity->setQueryFlags(static_cast<Ogre::uint32>(QueryTypes::GROUND));
+	bottomMazeEntity->setQueryFlags(static_cast<Ogre::uint32>(QueryTypes::GROUND));
+	leftMazeEntity->setQueryFlags(static_cast<Ogre::uint32>(QueryTypes::GROUND));
+	rightMazeEntity->setQueryFlags(static_cast<Ogre::uint32>(QueryTypes::GROUND));
+	spawnLeftEntity->setQueryFlags(static_cast<Ogre::uint32>(QueryTypes::GROUND));
+	spawnRightEntity->setQueryFlags(static_cast<Ogre::uint32>(QueryTypes::GROUND));
 
 	// Create ground sceneNodes
 	Ogre::SceneNode* battleGroundNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0, -1, 0));
@@ -281,6 +283,7 @@ void DemoApp::createScene(void)
 
 	/************		TANKS		****************/
 	//tanks vector declaration located in BaseApplication.h
+    TankFactory tankFactory(mSceneMgr, mPhysicsEngine);
 	for(int tankId = 0; tankId < TOTAL_NODES; tankId++)
 	{
 		int contents = pathFindingGraph->getContent(tankId);
@@ -296,7 +299,8 @@ void DemoApp::createScene(void)
 			Ogre::Vector3 position = pathFindingGraph->getPosition(tankId);
 			position.y = 0.5;
 			//create tank
-			Tank tank(tankName, CHALLENGER, position, mSceneMgr);
+            Tank* tank = tankFactory.MakeChallengerTank(position);
+			//Tank tank(tankName, Tank::Type::CHALLENGER, position, mSceneMgr);
 
 			tanks.push_back(tank);
 		}
@@ -311,7 +315,8 @@ void DemoApp::createScene(void)
 			Ogre::Vector3 position = pathFindingGraph->getPosition(tankId);
 			position.y = 0.5;
 			//create tank
-			Tank tank(tankName, LEOPARD, position, mSceneMgr);
+            Tank* tank = tankFactory.MakeLeopardTank(position);
+			//Tank tank(tankName, Tank::Type::LEOPARD, position, mSceneMgr);
 
 			tanks.push_back(tank);
 		}
@@ -370,10 +375,12 @@ bool DemoApp::frameRenderingQueued(const Ogre::FrameEvent& evt)
 		GameObject *currentObject = *it;
 		currentObject->frameRenderingQueued(evt);
 	}
-
-    /* std::cout << *it; ... */
-
-
+    for (Tank* tank : tanks)
+    {
+        tank->FireAt(Ogre::Vector3(0, 0, 0));
+        tank->Update(evt.timeSinceLastFrame);
+    }
+    mPhysicsEngine->update(evt.timeSinceLastFrame);
 	/*****************************************************************/
 	/***********************	WALK	******************************/
 	/*****************************************************************/
@@ -789,7 +796,7 @@ void DemoApp::clickSelectObject()
 				if(itr != result.end())
 				{
 					//if robot hit
-					if(itr->movable->getQueryFlags() == TANK_MASK)
+					if(itr->movable->getQueryFlags() == static_cast<Ogre::uint32>(QueryTypes::TANK))
 					{
 						Ogre::MovableObject *hitObject = static_cast<Ogre::MovableObject*>(itr->movable);
 
@@ -830,7 +837,7 @@ void DemoApp::clickSelectObject()
 						}
 					}
 					//if ground hit
-					else if(itr->movable->getQueryFlags() == GROUND_MASK)
+					else if(itr->movable->getQueryFlags() == static_cast<Ogre::uint32>(QueryTypes::GROUND))
 					{
 						//if user not selecting with selection box and not editing selection
 						/*if(!multipleSelection && !editSelection)
@@ -918,39 +925,39 @@ Ogre::Vector2 DemoApp::worldToScreenPosition(const Ogre::Vector3& position)
 
 
  
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-#define WIN32_LEAN_AND_MEAN
-#include "windows.h"
-#endif
- 
-#ifdef __cplusplus
-extern "C" {
-#endif
- 
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-    INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
-#else
-    int main(int argc, char *argv[])
-#endif
-    {
-        // Create application object
-        DemoApp app;
- 
-        try {
-            app.go();
-        } catch( Ogre::Exception& e ) {
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-            MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
-#else
-            std::cerr << "An exception has occured: " <<
-                e.getFullDescription().c_str() << std::endl;
-#endif
-        }
- 
-        return 0;
-    }
- 
-#ifdef __cplusplus
-}
-#endif
-
+//#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+//#define WIN32_LEAN_AND_MEAN
+//#include "windows.h"
+//#endif
+// 
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
+// 
+//#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+//    INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
+//#else
+//    int main(int argc, char *argv[])
+//#endif
+//    {
+//        // Create application object
+//        DemoApp app;
+// 
+//        try {
+//            app.go();
+//        } catch( Ogre::Exception& e ) {
+//#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+//            MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+//#else
+//            std::cerr << "An exception has occured: " <<
+//                e.getFullDescription().c_str() << std::endl;
+//#endif
+//        }
+// 
+//        return 0;
+//    }
+// 
+//#ifdef __cplusplus
+//}
+//#endif
+//

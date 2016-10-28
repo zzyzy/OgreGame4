@@ -44,7 +44,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>C:\EngineSDK\Ogre\include\OGRE;C:\EngineSDK\Ogre\include\OGRE\Overlay;C:\EngineSDK\Ogre\include\OIS;C:\EngineSDK\Ogre\boost;C:\EngineSDK\Bullet\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <AdditionalOptions>-Zm300 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -52,6 +52,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\EngineSDK\Ogre\lib\$(Configuration);C:\EngineSDK\Ogre\boost\lib;C:\EngineSDK\Bullet\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OgreMain_d.lib;OIS_d.lib;OgreOverlay_d.lib;BulletCollision_debug.lib;BulletDynamics_debug.lib;LinearMath_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -71,24 +72,41 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>C:\EngineSDK\Ogre\lib\$(Configuration);C:\EngineSDK\Ogre\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OgreMain.lib;OIS.lib;OgreOverlay.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="QueryMasks.hpp" />
+    <ClInclude Include="TankFactory.hpp" />
+    <ClInclude Include="Turret.hpp" />
     <ClInclude Include="BaseApplication.h" />
+    <ClInclude Include="CollisionMasks.hpp" />
     <ClInclude Include="Connection.h" />
     <ClInclude Include="DemoApp.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Graph.h" />
+    <ClInclude Include="IDamageableObject.hpp" />
+    <ClInclude Include="IPhysicsObject.hpp" />
+    <ClInclude Include="IPoolObject.hpp" />
+    <ClInclude Include="Math.hpp" />
     <ClInclude Include="NodeRecord.h" />
+    <ClInclude Include="OgreEuler.hpp" />
     <ClInclude Include="PathFinding.h" />
     <ClInclude Include="PhysicsEngine.h" />
+    <ClInclude Include="PoolManager.hpp" />
     <ClInclude Include="PowerUp.h" />
+    <ClInclude Include="Projectile.hpp" />
+    <ClInclude Include="ProjectileMath.hpp" />
     <ClInclude Include="SelectionBox.h" />
+    <ClInclude Include="Shell.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tank.h" />
     <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Program.cpp" />
+    <ClCompile Include="TankFactory.cpp" />
+    <ClCompile Include="Turret.cpp" />
     <ClCompile Include="BaseApplication.cpp" />
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="DemoApp.cpp" />
@@ -97,6 +115,7 @@
     <ClCompile Include="NodeRecord.cpp" />
     <ClCompile Include="PathFinding.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
+    <ClCompile Include="PoolManager.cpp" />
     <ClCompile Include="PowerUp.cpp" />
     <ClCompile Include="SelectionBox.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -104,6 +123,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Tank.cpp" />
+    <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="media\myMaterial.material" />

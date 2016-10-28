@@ -55,6 +55,7 @@
 
 #include <btBulletDynamicsCommon.h>
 #include "GameObject.h"
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
 
 #endif

@@ -1,12 +1,11 @@
-#ifndef __UTILITIES_H_
-#define __UTILITIES_H_
+/*
+ * Utilities from tutorial
+ * LookRotation from Unity3D
+ */
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-#define WIN32_LEAN_AND_MEAN
-#include "windows.h"
-#endif
-
-#include "stdafx.h"
+#pragma once
+#ifndef __UTILITIES_H__
+#define __UTILITIES_H__
 
 inline Ogre::Vector3 convert(const btVector3& vec3)
 {
@@ -18,50 +17,59 @@ inline btVector3 convert(const Ogre::Vector3& vec3)
     return btVector3(vec3.x, vec3.y, vec3.z);
 }
 
-inline btQuaternion convert(const Ogre::Quaternion &Q)
+inline btQuaternion convert(const Ogre::Quaternion& Q)
 {
     return btQuaternion(Q.x, Q.y, Q.z, Q.w);
 }
- 
-inline Ogre::Quaternion convert(const btQuaternion &Q)
+
+inline Ogre::Quaternion convert(const btQuaternion& Q)
 {
     return Ogre::Quaternion(Q.w(), Q.x(), Q.y(), Q.z());
 }
 
-class MyMotionState : public btMotionState {
+Ogre::Quaternion LookRotation(Ogre::Vector3 forward, Ogre::Vector3 up);
+
+class MyMotionState : public btMotionState
+{
 public:
-    MyMotionState(const btTransform &initialpos, Ogre::SceneNode *node) {
+    MyMotionState(const btTransform& initialpos, Ogre::SceneNode* node)
+    {
         mVisibleobj = node;
         mPos1 = initialpos;
     }
- 
-    virtual ~MyMotionState() {
+
+    virtual ~MyMotionState()
+    {
     }
- 
-    void setNode(Ogre::SceneNode *node) {
+
+    void setNode(Ogre::SceneNode* node)
+    {
         mVisibleobj = node;
     }
- 
-    virtual void getWorldTransform(btTransform &worldTrans) const {
+
+    void getWorldTransform(btTransform& worldTrans) const override
+    {
         worldTrans = mPos1;
     }
- 
-    virtual void setWorldTransform(const btTransform &worldTrans) {
-        if(NULL == mVisibleobj)
+
+    void setWorldTransform(const btTransform& worldTrans) override
+    {
+        if (NULL == mVisibleobj)
             return; // silently return before we set a node
         btQuaternion rot = worldTrans.getRotation();
         mVisibleobj->setOrientation(rot.w(), rot.x(), rot.y(), rot.z());
         btVector3 pos = worldTrans.getOrigin();
         mVisibleobj->setPosition(pos.x(), pos.y(), pos.z());
     }
- 
-	Ogre::SceneNode* getNode(){
-		return mVisibleobj;
-	}
+
+    Ogre::SceneNode* getNode() const
+    {
+        return mVisibleobj;
+    }
 
 protected:
-    Ogre::SceneNode *mVisibleobj;
+    Ogre::SceneNode* mVisibleobj;
     btTransform mPos1;
 };
 
-#endif
+#endif // __UTILITIES_H__
