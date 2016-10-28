@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2016 Zhen Zhi Lee
+ * Written by Zhen Zhi Lee (leezhenzhi@gmail.com)
+ */
+
 #include "Utilities.h"
 
 Ogre::Quaternion LookRotation(Ogre::Vector3 forward, Ogre::Vector3 up)

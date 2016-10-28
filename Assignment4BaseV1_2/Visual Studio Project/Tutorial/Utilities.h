@@ -1,12 +1,11 @@
-#ifndef __UTILITIES_H_
-#define __UTILITIES_H_
+/*
+ * Utilities from tutorial
+ * LookRotation from Unity3D
+ */
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-#define WIN32_LEAN_AND_MEAN
-#include "windows.h"
-#endif
-
-#include "stdafx.h"
+#pragma once
+#ifndef __UTILITIES_H__
+#define __UTILITIES_H__
 
 inline Ogre::Vector3 convert(const btVector3& vec3)
 {
@@ -48,12 +47,12 @@ public:
         mVisibleobj = node;
     }
 
-    virtual void getWorldTransform(btTransform& worldTrans) const
+    void getWorldTransform(btTransform& worldTrans) const override
     {
         worldTrans = mPos1;
     }
 
-    virtual void setWorldTransform(const btTransform& worldTrans)
+    void setWorldTransform(const btTransform& worldTrans) override
     {
         if (NULL == mVisibleobj)
             return; // silently return before we set a node
@@ -63,7 +62,7 @@ public:
         mVisibleobj->setPosition(pos.x(), pos.y(), pos.z());
     }
 
-    Ogre::SceneNode* getNode()
+    Ogre::SceneNode* getNode() const
     {
         return mVisibleobj;
     }
@@ -73,4 +72,4 @@ protected:
     btTransform mPos1;
 };
 
-#endif
+#endif // __UTILITIES_H__
