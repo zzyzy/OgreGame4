@@ -46,6 +46,9 @@
     <Filter Include="Source Files\Common">
       <UniqueIdentifier>{a2e85fad-97fe-456d-9509-49266738a466}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Components">
+      <UniqueIdentifier>{174e9717-3dbf-4a44-b539-05767a3790c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApplication.h">
@@ -77,9 +80,6 @@
     </ClInclude>
     <ClInclude Include="PowerUp.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IDamageableObject.hpp">
-      <Filter>Header Files\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="IPhysicsObject.hpp">
       <Filter>Header Files\Interfaces</Filter>
@@ -122,6 +122,27 @@
     </ClInclude>
     <ClInclude Include="QueryMasks.hpp">
       <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.hpp">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.hpp">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Damageable.hpp">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="IDamageable.hpp">
+      <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="PoolObject.hpp">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsObject.hpp">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="IFrameUpdate.hpp">
+      <Filter>Header Files\Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

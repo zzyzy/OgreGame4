@@ -13,6 +13,7 @@
 #define __POOL_MANAGER_HPP__
 
 #include "IPoolObject.hpp"
+#include "PoolObject.hpp"
 
 class PoolManager
 {
@@ -31,9 +32,9 @@ public:
 
     void Update(const float& deltaTime);
 
-    void Add(IPoolObject* object);
+    void Add(PoolObject* object);
 
-    void Remove(IPoolObject* object);
+    void Remove(PoolObject* object);
 
     size_t CurrentSize() const;
 
@@ -41,7 +42,7 @@ public:
 
 private:
     size_t mMaxPoolSize;
-    std::set<IPoolObject*> mPool;
+    std::set<PoolObject*> mPool;
 };
 
 #endif // __POOL_MANAGER_HPP__

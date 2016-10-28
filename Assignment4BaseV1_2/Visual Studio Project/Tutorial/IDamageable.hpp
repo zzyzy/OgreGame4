@@ -12,10 +12,10 @@
 #ifndef __I_DAMAGEABLE_OBJECT_HPP__
 #define __I_DAMAGEABLE_OBJECT_HPP__
 
-class IDamageableObject
+class IDamageable
 {
 public:
-    virtual ~IDamageableObject()
+    virtual ~IDamageable()
     {
     }
 

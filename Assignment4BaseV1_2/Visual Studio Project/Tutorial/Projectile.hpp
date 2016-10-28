@@ -11,38 +11,33 @@
 #ifndef __PROJECTILE_HPP__
 #define __PROJECTILE_HPP__
 
+#include "GameObject.hpp"
 #include "IPhysicsObject.hpp"
+#include "PhysicsObject.hpp"
 #include "PhysicsEngine.h"
 
-class Projectile : public IPhysicsObject
+class Projectile : public GameObject, public IPhysicsObject
 {
 public:
-    explicit Projectile(btRigidBody* body,
-                        PhysicsEngine* physics) :
-        mRBody(body),
-        mPhysics(physics)
+    explicit Projectile(PhysicsEngine* physics,
+                        btRigidBody* body) :
+        mPhysicsComponent(new PhysicsObject(physics, body, this))
     {
-        assert(body != nullptr);
-        assert(physics != nullptr);
-    }
-
-    virtual ~Projectile()
-    {
+        AddComponent(mPhysicsComponent);
     }
 
     void SetLinearVelocity(const btVector3& velocity) override
     {
-        mRBody->setLinearVelocity(velocity);
+        mPhysicsComponent->GetRBody()->setLinearVelocity(velocity);
     }
 
     void SetGravity(const btVector3& acceleration) override
     {
-        mRBody->setGravity(acceleration);
+        mPhysicsComponent->GetRBody()->setGravity(acceleration);
     }
 
 protected:
-    btRigidBody* mRBody;
-    PhysicsEngine* mPhysics;
+    PhysicsObject* mPhysicsComponent;
 };
 
 #endif // __PROJECTILE_HPP__

@@ -17,10 +17,11 @@
 #include "Projectile.hpp"
 #include "IPoolObject.hpp"
 #include "CollisionMasks.hpp"
-#include "IDamageableObject.hpp"
+#include "IDamageable.hpp"
 #include "Tank.h"
+#include "PoolObject.hpp"
 
-class Shell : public Projectile, public IPoolObject
+class Shell : public Projectile, public IPoolObject, public IFrameUpdate
 {
 public:
     Shell(btRigidBody* rbody,
@@ -29,7 +30,7 @@ public:
           const float& blastForce,
           const float& blastRadius,
           const float& blastDuration = 2.0f) :
-        Projectile(rbody, physics),
+        Projectile(physics, rbody),
         mWorld(world),
         mBlastForce(blastForce),
         mBlastRadius(blastRadius),
@@ -38,26 +39,28 @@ public:
         mDisposed(false),
         mBlastCollider(nullptr),
         mParticleSystem(nullptr),
-        mParticleNode(nullptr)
+        mParticleNode(nullptr),
+        mPoolComponent(new PoolObject(this, this))
     {
         assert(rbody != nullptr);
         assert(world != nullptr);
         assert(physics != nullptr);
+        AddComponent(mPoolComponent);
     }
 
     void Update(const float& deltaTime) override
     {
         if (mBlastTimer >= mBlastDuration) return;
 
-        if (mRBody)
+        if (mPhysicsComponent->GetRBody())
         {
-            auto collidedObjects = mPhysics->GetAllCollidedObjects(mRBody);
+            auto collidedObjects = mPhysicsComponent->GetPhyEngine()->GetAllCollidedObjects(mPhysicsComponent->GetRBody());
 
-            if (mRBody->getCenterOfMassPosition().y() < 1.0f || !collidedObjects.empty())
+            if (mPhysicsComponent->GetRBody()->getCenterOfMassPosition().y() < 1.0f || !collidedObjects.empty())
             {
                 assert(mBlastCollider == nullptr);
 
-                btTransform startTrans = mRBody->getCenterOfMassTransform();
+                btTransform startTrans = mPhysicsComponent->GetRBody()->getCenterOfMassTransform();
                 btCollisionShape* shape = new btSphereShape(mBlastRadius);
 
                 // Visualize blast radius
@@ -69,7 +72,7 @@ public:
                 mDummyNode->scale(0.01f * mBlastRadius, 0.01f * mBlastRadius, 0.01f * mBlastRadius);
                 */
 
-                mBlastCollider = mPhysics->CreateGhostObject(startTrans, shape,
+                mBlastCollider = mPhysicsComponent->GetPhyEngine()->CreateGhostObject(startTrans, shape,
                                                              COL_EXPLOSION,
                                                              COL_TANK |
                                                              COL_ENVIRONMENT_OBJECT);
@@ -83,24 +86,24 @@ public:
                 // attach the particle system to a scene node
                 mParticleNode = mWorld->getRootSceneNode()->createChildSceneNode();
                 mParticleNode->attachObject(mParticleSystem);
-                mParticleNode->setPosition(convert(mRBody->getCenterOfMassPosition()));
+                mParticleNode->setPosition(convert(mPhysicsComponent->GetRBody()->getCenterOfMassPosition()));
                 mParticleNode->translate(0, 4, 0);
                 // fast forward to the point where the particle has been emitted
                 mParticleSystem->fastForward(4.6f);
 
                 // Remove the projectile
-                auto node = static_cast<MyMotionState*>(mRBody->getMotionState())->getNode();
+                auto node = static_cast<MyMotionState*>(mPhysicsComponent->GetRBody()->getMotionState())->getNode();
                 auto entity = static_cast<Ogre::Entity*>(node->getAttachedObject(0));
                 node->detachAllObjects();
                 mWorld->destroyEntity(entity);
                 mWorld->destroySceneNode(node);
-                mPhysics->destroyRigidBody(mRBody);
-                mRBody = nullptr;
+                mPhysicsComponent->GetPhyEngine()->destroyRigidBody(mPhysicsComponent->GetRBody());
+                mPhysicsComponent->GetRBody() = nullptr;
             }
         }
         else
         {
-            auto collidedObjects = mPhysics->GetAllCollidedObjects(mBlastCollider);
+            auto collidedObjects = mPhysicsComponent->GetPhyEngine()->GetAllCollidedObjects(mBlastCollider);
 
             for (auto it = collidedObjects.begin(); it != collidedObjects.end(); ++it)
             {
@@ -112,7 +115,7 @@ public:
                 //auto node = static_cast<MyMotionState*>(rbody->getMotionState())->getNode();
                 //// Probably should cast to GameObject instead
                 //auto tank = static_cast<Tank*>(node);
-                //auto damageableObject = static_cast<IDamageableObject*>(tank);
+                //auto damageableObject = static_cast<IDamageable*>(tank);
 
                 //if (damageableObject)
                 //{
@@ -124,7 +127,7 @@ public:
                 impulse.normalize();
                 impulse *= mBlastForce;
 
-                mPhysics->ShootRay(rayFromWorld, rayToWorld, impulse);
+                mPhysicsComponent->GetPhyEngine()->ShootRay(rayFromWorld, rayToWorld, impulse);
             }
 
             mBlastTimer += deltaTime;
@@ -143,7 +146,7 @@ public:
 
     void Dispose() override
     {
-        mPhysics->DestroyGhostObject(mBlastCollider);
+        mPhysicsComponent->GetPhyEngine()->DestroyGhostObject(mBlastCollider);
         mParticleNode->detachAllObjects();
         mWorld->destroyParticleSystem(mParticleSystem);
         mWorld->destroySceneNode(mParticleNode);
@@ -164,6 +167,7 @@ private:
     btPairCachingGhostObject* mBlastCollider;
     Ogre::ParticleSystem* mParticleSystem;
     Ogre::SceneNode* mParticleNode;
+    PoolObject* mPoolComponent;
 };
 
 #endif // __SHELL_HPP__

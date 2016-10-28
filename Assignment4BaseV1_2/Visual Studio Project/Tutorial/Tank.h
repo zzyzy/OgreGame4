@@ -12,10 +12,10 @@
 #define __TANK_H__
 
 #include "Turret.hpp"
-#include "IDamageableObject.hpp"
+#include "IDamageable.hpp"
 
 class Tank : public Ogre::SceneNode,
-             public IDamageableObject
+             public IDamageable
 {
 public:
     friend class TankFactory;
@@ -46,7 +46,7 @@ public:
 
     void FireAt(const Ogre::Vector3& target);
 
-    // IDamageableObject
+    // IDamageable
     void ApplyDamage(const float& damage) override;
 
     float TotalDamageReceived() override;

@@ -18,7 +18,7 @@ PoolManager::~PoolManager()
         if (o->IsDisposable())
         {
             o->Dispose();
-            delete o;
+            delete o->mPoolObject;
         }
     }
 
@@ -67,7 +67,7 @@ void PoolManager::Update(const float& deltaTime)
     {
         if ((*it)->IsDisposed())
         {
-            delete (*it);
+            delete (*it)->mPoolObject;
             it = mPool.erase(it);
         }
         else
@@ -77,13 +77,13 @@ void PoolManager::Update(const float& deltaTime)
     }
 }
 
-void PoolManager::Add(IPoolObject* object)
+void PoolManager::Add(PoolObject* object)
 {
     assert(object != nullptr);
     mPool.insert(object);
 }
 
-void PoolManager::Remove(IPoolObject* object)
+void PoolManager::Remove(PoolObject* object)
 {
     assert(object != nullptr);
     delete object;

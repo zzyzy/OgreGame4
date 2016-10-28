@@ -166,7 +166,9 @@ void Turret::Update(const float& deltaTime)
         auto shell = new Shell(rbody, mWorld, mPhysics, mBlastForce, mBlastRadius);
         shell->SetLinearVelocity(convert(mProjectileVelocity));
         shell->SetGravity(btVector3(0, -mProjectileGravity, 0));
-        mPool.Add(shell);
+
+        auto poolObject = static_cast<PoolObject*>(shell->GetComponent(typeid(PoolObject).name()));
+        mPool.Add(poolObject);
 
         mElapsedDelay = 0.0f;
         mProjectileVelocity = Ogre::Vector3::ZERO;

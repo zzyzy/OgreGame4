@@ -20,9 +20,6 @@ public:
     {
     }
 
-    // Allow the pool manager to update the pool object
-    virtual void Update(const float& deltaTime) = 0;
-
     // Is this object disposable?
     virtual bool IsDisposable() const = 0;
 
