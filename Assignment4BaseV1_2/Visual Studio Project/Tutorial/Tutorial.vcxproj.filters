@@ -102,9 +102,6 @@
     <ClInclude Include="Projectile.hpp">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Barrel.hpp">
-      <Filter>Header Files\Tank</Filter>
-    </ClInclude>
     <ClInclude Include="Shell.hpp">
       <Filter>Header Files\Tank</Filter>
     </ClInclude>
@@ -115,6 +112,15 @@
       <Filter>Header Files\Tank</Filter>
     </ClInclude>
     <ClInclude Include="Utilities.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Turret.hpp">
+      <Filter>Header Files\Tank</Filter>
+    </ClInclude>
+    <ClInclude Include="TankFactory.hpp">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryMasks.hpp">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
   </ItemGroup>
@@ -152,14 +158,20 @@
     <ClCompile Include="PoolManager.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Barrel.cpp">
-      <Filter>Source Files\Tank</Filter>
-    </ClCompile>
     <ClCompile Include="Tank.cpp">
       <Filter>Source Files\Tank</Filter>
     </ClCompile>
     <ClCompile Include="Utilities.cpp">
       <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Turret.cpp">
+      <Filter>Source Files\Tank</Filter>
+    </ClCompile>
+    <ClCompile Include="TankFactory.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Program.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

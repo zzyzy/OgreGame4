@@ -22,14 +22,6 @@ This source file is part of the
 #include "Tank.h"
 #include <vector>
 
-enum QueryFlags
-	{
-		GROUND_MASK = 1 << 0,
-		TANK_MASK = 1 << 1,
-		OBSTACLES_MASK = 1 << 2,
-	};
-
-
 class BaseApplication : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener
 {
 public:
@@ -76,7 +68,7 @@ protected:
 	/***********		TANKS		*************/
 	//std::vector<Tank> challengerTanks;
 	//std::vector<Tank> leopardTanks;
-	std::vector<Tank> tanks;			// vector containing tanks added on the scene
+	std::vector<Tank*> tanks;			// vector containing tanks added on the scene
 
 	bool editSelection;
 	//overlay system

@@ -1,80 +1,140 @@
-#ifndef TANK_H
-#define TANK_H
- 
-#include "stdafx.h"
-#include "Utilities.h"
- 
-enum TankType
-{
-		CHALLENGER,
-		LEOPARD
-};
+/*
+ * Tank class
+ *
+ * Copyright (C) 2016 Ivana Ozakovic, Zhen Zhi Lee
+ * Written by Ivana Ozakovic, Zhen Zhi Lee
+ * 
+ * TODO Add description
+ */
 
+#pragma once
+#ifndef __TANK_H__
+#define __TANK_H__
 
-class Tank 
+#include "Turret.hpp"
+#include "IDamageableObject.hpp"
+
+class Tank : public Ogre::SceneNode,
+             public IDamageableObject
 {
 public:
-	Tank(std::string name, TankType type, Ogre::Vector3 spawnPosition, Ogre::SceneManager* mSceneMgr);
-	~Tank();
-	
-	//tank movements
-	void moveTank(float time);
-	void rotateTank(float degree);
-	void rotateBarrel(float degree);
-	void pitchBarrel(float degree);
-	void rotateTurret(float degree);
+    friend class TankFactory;
 
-	//tank updates
-	void updateHealthBar(float health);
+    enum class Type
+    {
+        CHALLENGER,
+        LEOPARD
+    };
 
-	//helper function in case any of the nodes needed
-	Ogre::SceneNode* getTankHealthNode()  { return healthNode; };
-	Ogre::SceneNode* getTankSelectionNode() { return selectionNode; };
-	Ogre::SceneNode* getTankBaseNode() { return mTankBodyNode; };
-	Ogre::SceneNode* getTankTurretNode() { return mTankTurretNode; };
-	Ogre::SceneNode* getTankBarrelNode() { return mTankBarrelNode; };
+    Tank(const Tank& tank);
 
-	//helper functions to get attributes
-	std::string getTankName() { return idName; };
-	TankType getTankType() { return mType; };
+    Tank(Tank&& tank);
 
-	//helper function for selection
-	bool isTankSelected();
-	void setBillboardsVisible(bool isVisible);
+    Tank& operator=(const Tank& tank);
 
+    Tank& operator=(Tank&& tank);
 
-protected:
-	virtual bool SetupTank(void);		//initalize tank
+    //helper function for selection
+    bool isTankSelected();
+
+    void setBillboardsVisible(bool isVisible);
+
+    //tank updates
+    void UpdateHealthBar() const;
+
+    void Update(const float& deltaTime);
+
+    void FireAt(const Ogre::Vector3& target);
+
+    // IDamageableObject
+    void ApplyDamage(const float& damage) override;
+
+    float TotalDamageReceived() override;
+
+    //Tank(std::string name,
+    //     Type type,
+    //     Ogre::Vector3 spawnPosition,
+    //     Ogre::SceneManager* mSceneMgr);
+
+    //tank movements
+    /*void moveTank(float time);
+    void rotateTank(float degree);
+    void rotateBarrel(float degree);
+    void pitchBarrel(float degree);
+    void rotateTurret(float degree);*/
+
+    //helper function in case any of the nodes needed
+    Ogre::SceneNode* getTankHealthNode() { return mHealthBarNode; };
+    Ogre::SceneNode* getTankSelectionNode() { return mSelectionNode; };
+    Ogre::SceneNode* getTankBaseNode() { return this; };
+    Ogre::SceneNode* getTankTurretNode() { return mTurretNode; };
+    Ogre::SceneNode* getTankBarrelNode() { return mBarrelNode; };
+
+    //helper functions to get attributes
+    /*std::string getTankName() { return idName; };
+    Type getTankType() { return mType; };*/
+
+    //void Setup();
 
 private:
-	Ogre::Vector3 tankSpawnPosition;
-	Ogre::SceneManager* tankSceneManager;
-	// Scene nodes for the different tank parts
-	Ogre::SceneNode* mTankBodyNode;
-	Ogre::SceneNode* mTankTurretNode;
-	Ogre::SceneNode* mTankBarrelNode;
+    //void createBillboards();
 
-	//Billboards
-	void createBillboards();
-	//Billboard nodes
-	Ogre::SceneNode* healthNode;
-	Ogre::SceneNode* selectionNode;
+    // Only allow instantialisation via TankFactory
+    Tank(Ogre::SceneManager* world,
+         PhysicsEngine* physics,
+         Type type);
 
-	// For tank movement and rotation
-	float mMove;
-	float mBodyRotate;
-	float mTurretRotate;
-	float mBarrelRotate;
-	float mBarrelPitch;
+    void setTurret(Ogre::SceneNode* turret);
 
-	//health 
-	float mHealth;
+    void setBarrel(Ogre::SceneNode* barrel);
 
-	//Tank attributes
-	TankType mType;
-	std::string idName;
+    void setNozzle(Ogre::SceneNode* nozzle);
 
+    void setHealthDecal(Ogre::SceneNode* healthDecal);
+
+    void setSelectionDecal(Ogre::SceneNode* selectionDecal);
+
+    void setupTurretController();
+
+    // Scene manager and physics engine reference
+    Ogre::SceneManager* mWorld;
+    PhysicsEngine* mPhysics;
+
+    // Scene nodes for the different tank parts
+    //Ogre::SceneNode* mBodyNode;
+    Ogre::SceneNode* mTurretNode;
+    Ogre::SceneNode* mBarrelNode;
+    Ogre::SceneNode* mNozzleNode;
+
+    // Scene nodes for decal
+    Ogre::SceneNode* mHealthBarNode;
+    Ogre::SceneNode* mSelectionNode;
+
+    // Tank details
+    Type mType;
+    float mMaxHitPoints;
+    float mHitPoints;
+
+    // Controllers
+    Turret mTurret;
+
+    //Ogre::Vector3 tankSpawnPosition;
+
+    //Billboards
+    //Billboard nodes
+
+    // For tank movement and rotation
+    //float mMove;
+    //float mBodyRotate;
+    //float mTurretRotate;
+    //float mBarrelRotate;
+    //float mBarrelPitch;
+
+    //health 
+    //float mHitPoints;
+
+    //Tank attributes
+    //std::string idName;
 };
- 
- 
-#endif /* TANK_H */
+
+#endif // __TANK_H__

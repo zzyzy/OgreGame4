@@ -52,6 +52,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\EngineSDK\Ogre\lib\$(Configuration);C:\EngineSDK\Ogre\boost\lib;C:\EngineSDK\Bullet\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OgreMain_d.lib;OIS_d.lib;OgreOverlay_d.lib;BulletCollision_debug.lib;BulletDynamics_debug.lib;LinearMath_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -71,10 +72,13 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>C:\EngineSDK\Ogre\lib\$(Configuration);C:\EngineSDK\Ogre\boost\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OgreMain.lib;OIS.lib;OgreOverlay.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Barrel.hpp" />
+    <ClInclude Include="QueryMasks.hpp" />
+    <ClInclude Include="TankFactory.hpp" />
+    <ClInclude Include="Turret.hpp" />
     <ClInclude Include="BaseApplication.h" />
     <ClInclude Include="CollisionMasks.hpp" />
     <ClInclude Include="Connection.h" />
@@ -99,7 +103,9 @@
     <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Barrel.cpp" />
+    <ClCompile Include="Program.cpp" />
+    <ClCompile Include="TankFactory.cpp" />
+    <ClCompile Include="Turret.cpp" />
     <ClCompile Include="BaseApplication.cpp" />
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="DemoApp.cpp" />

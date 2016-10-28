@@ -15,7 +15,8 @@ This source file is part of the
 -----------------------------------------------------------------------------
 */
 #include "BaseApplication.h"
- 
+#include "QueryMasks.hpp"
+
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #include <macUtils.h>
 #endif
@@ -77,7 +78,7 @@ void BaseApplication::performSelection( const Ogre::Vector2& first, const Ogre::
 {
   float left = first.x, right = second.x;
   float top = first.y, bottom = second.y;
-  mVolQuery->setQueryMask(TANK_MASK);
+  mVolQuery->setQueryMask(static_cast<Ogre::uint32>(QueryTypes::TANK));
 
   if (left > right)
     swap(left, right);
@@ -151,16 +152,16 @@ void BaseApplication::deselectObjects()
 
 	for (it = mSelected.begin(); it != mSelected.end(); ++it)
 	{
-		std::vector<Tank>::iterator tankIt = tanks.begin();
+		auto tankIt = tanks.begin();
 
 		while(tankIt != tanks.end())
 		{
 
-			if(((*it) == tankIt->getTankBaseNode()->getAttachedObject(0)) 
-				|| ((*it) == tankIt->getTankBarrelNode()->getAttachedObject(0)) 
-				|| ((*it) == tankIt->getTankTurretNode()->getAttachedObject(0)))
+			if(((*it) == (*tankIt)->getTankBaseNode()->getAttachedObject(0)) 
+				|| ((*it) == (*tankIt)->getTankBarrelNode()->getAttachedObject(0))
+				|| ((*it) == (*tankIt)->getTankTurretNode()->getAttachedObject(0)))
 			{
-				tankIt->setBillboardsVisible(false);
+                (*tankIt)->setBillboardsVisible(false);
 			}
 
 		tankIt++;
@@ -175,19 +176,19 @@ void BaseApplication::deselectObjects()
 //deselect a single object passed into the function
 void BaseApplication::deselectObject(Ogre::MovableObject* obj)
 {
-	std::vector<Tank>::iterator tankIt = tanks.begin();
+	auto tankIt = tanks.begin();
 
 	Ogre::MovableObject* deselected;
 
 	while(tankIt != tanks.end())
 	{
 
-		if((obj == tankIt->getTankBaseNode()->getAttachedObject(0)) 
-			|| (obj == tankIt->getTankBarrelNode()->getAttachedObject(0)) 
-			|| (obj == tankIt->getTankTurretNode()->getAttachedObject(0)))
+		if((obj == (*tankIt)->getTankBaseNode()->getAttachedObject(0)) 
+			|| (obj == (*tankIt)->getTankBarrelNode()->getAttachedObject(0)) 
+			|| (obj == (*tankIt)->getTankTurretNode()->getAttachedObject(0)))
 		{
-			tankIt->setBillboardsVisible(false);
-			deselected = static_cast<Ogre::MovableObject*>(tankIt->getTankBaseNode()->getAttachedObject(0));
+			(*tankIt)->setBillboardsVisible(false);
+			deselected = static_cast<Ogre::MovableObject*>((*tankIt)->getTankBaseNode()->getAttachedObject(0));
 
 		}
 
@@ -202,18 +203,18 @@ void BaseApplication::deselectObject(Ogre::MovableObject* obj)
 //select a single object passed into the function
 void BaseApplication::selectObject(Ogre::MovableObject* obj)
 {
-	std::vector<Tank>::iterator tankIt = tanks.begin();
+	auto tankIt = tanks.begin();
 
 	Ogre::MovableObject* selected;
 
 	while(tankIt != tanks.end())
 	{
-		if((obj == tankIt->getTankBaseNode()->getAttachedObject(0)) 
-			|| (obj == tankIt->getTankBarrelNode()->getAttachedObject(0)) 
-			|| (obj == tankIt->getTankTurretNode()->getAttachedObject(0)))
+		if((obj == (*tankIt)->getTankBaseNode()->getAttachedObject(0)) 
+			|| (obj == (*tankIt)->getTankBarrelNode()->getAttachedObject(0)) 
+			|| (obj == (*tankIt)->getTankTurretNode()->getAttachedObject(0)))
 		{
-			tankIt->setBillboardsVisible(true);
-			selected = static_cast<Ogre::MovableObject*>(tankIt->getTankBaseNode()->getAttachedObject(0));
+			(*tankIt)->setBillboardsVisible(true);
+			selected = static_cast<Ogre::MovableObject*>((*tankIt)->getTankBaseNode()->getAttachedObject(0));
 
 		}
 
@@ -230,15 +231,15 @@ void BaseApplication::selectObject(Ogre::MovableObject* obj)
 bool BaseApplication::isObjectSelected(Ogre::MovableObject* obj)
 {
 
-	std::vector<Tank>::iterator tankIt = tanks.begin();
+	auto tankIt = tanks.begin();
 
 	while(tankIt != tanks.end())
 	{
-		if((obj == tankIt->getTankBaseNode()->getAttachedObject(0)) 
-			|| (obj == tankIt->getTankBarrelNode()->getAttachedObject(0)) 
-			|| (obj == tankIt->getTankTurretNode()->getAttachedObject(0)))
+		if((obj == (*tankIt)->getTankBaseNode()->getAttachedObject(0)) 
+			|| (obj == (*tankIt)->getTankBarrelNode()->getAttachedObject(0)) 
+			|| (obj == (*tankIt)->getTankTurretNode()->getAttachedObject(0)))
 		{
-			if(tankIt->isTankSelected())
+			if((*tankIt)->isTankSelected())
 				return true;
 		}
 			
