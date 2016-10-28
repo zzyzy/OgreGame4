@@ -22,7 +22,8 @@ public:
         mRBody(body),
         mPhysics(physics)
     {
-        assert(body != nullptr && physics != nullptr);
+        assert(body != nullptr);
+        assert(physics != nullptr);
     }
 
     virtual ~Projectile()
