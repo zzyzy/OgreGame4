@@ -25,6 +25,32 @@ PoolManager::~PoolManager()
     mPool.clear();
 }
 
+PoolManager::PoolManager(const PoolManager& other) :
+    mMaxPoolSize(other.mMaxPoolSize),
+    mPool(other.mPool)
+{
+}
+
+PoolManager::PoolManager(PoolManager&& other) :
+    mMaxPoolSize(other.mMaxPoolSize),
+    mPool(std::move(other.mPool))
+{
+}
+
+PoolManager& PoolManager::operator=(const PoolManager& other)
+{
+    PoolManager tmp(other);
+    *this = std::move(tmp);
+    return *this;
+}
+
+PoolManager& PoolManager::operator=(PoolManager&& other)
+{
+    mMaxPoolSize = other.mMaxPoolSize;
+    mPool = std::move(other.mPool);
+    return *this;
+}
+
 void PoolManager::Update(const float& deltaTime)
 {
     for (auto o : mPool)

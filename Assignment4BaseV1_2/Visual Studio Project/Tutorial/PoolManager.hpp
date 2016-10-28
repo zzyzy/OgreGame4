@@ -21,6 +21,14 @@ public:
 
     ~PoolManager();
 
+    PoolManager(const PoolManager& other);
+
+    PoolManager(PoolManager&& other);
+
+    PoolManager& operator=(const PoolManager& other);
+
+    PoolManager& operator=(PoolManager&& other);
+
     void Update(const float& deltaTime);
 
     void Add(IPoolObject* object);
