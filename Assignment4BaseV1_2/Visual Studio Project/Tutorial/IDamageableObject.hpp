@@ -20,6 +20,7 @@ public:
     }
 
     virtual void ApplyDamage(const float& damage) = 0;
+
     virtual float TotalDamageReceived() = 0;
 };
 
