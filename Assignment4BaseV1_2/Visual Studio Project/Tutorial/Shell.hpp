@@ -18,6 +18,7 @@
 #include "IPoolObject.hpp"
 #include "CollisionMasks.hpp"
 #include "IDamageableObject.hpp"
+#include "Tank.h"
 
 class Shell : public Projectile, public IPoolObject
 {
@@ -39,36 +40,9 @@ public:
         mParticleSystem(nullptr),
         mParticleNode(nullptr)
     {
-        assert(rbody != nullptr && world != nullptr && physics != nullptr);
-    }
-
-    Shell(const Shell& shell) :
-        Projectile(shell.mRBody, shell.mPhysics),
-        mWorld(shell.mWorld),
-        mBlastForce(shell.mBlastForce),
-        mBlastRadius(shell.mBlastRadius),
-        mBlastDuration(shell.mBlastDuration),
-        mBlastTimer(0.0f),
-        mDisposed(false),
-        mBlastCollider(nullptr),
-        mParticleSystem(nullptr),
-        mParticleNode(nullptr)
-    {
-    }
-
-    void operator=(const Shell& shell)
-    {
-        mRBody = shell.mRBody;
-        mPhysics = shell.mPhysics;
-        mWorld = shell.mWorld;
-        mBlastForce = shell.mBlastForce;
-        mBlastRadius = shell.mBlastRadius;
-        mBlastDuration = shell.mBlastDuration;
-        mBlastTimer = 0.0f;
-        mDisposed = false;
-        mBlastCollider = nullptr;
-        mParticleSystem = nullptr;
-        mParticleNode = nullptr;
+        assert(rbody != nullptr);
+        assert(world != nullptr);
+        assert(physics != nullptr);
     }
 
     void Update(const float& deltaTime) override
@@ -132,17 +106,20 @@ public:
             {
                 auto rbody = static_cast<btRigidBody*>(*it);
                 auto rayFromWorld = mBlastCollider->getWorldTransform().getOrigin();
-                auto rayToWorld = static_cast<btRigidBody*>(*it)->getCenterOfMassPosition();
+                auto rayToWorld = rbody->getCenterOfMassPosition();
                 auto impulse = rayToWorld - rayFromWorld;
-                auto node = static_cast<MyMotionState*>(rbody->getMotionState())->getNode();
-                auto entity = static_cast<Ogre::MovableObject*>(node->getAttachedObject(0));
-                auto damageableObject = dynamic_cast<IDamageableObject*>(entity);
 
-                if (damageableObject)
-                {
-                    auto damage = (rayToWorld - rayFromWorld).length() * 1.0f;
-                    damageableObject->ApplyDamage(damage);
-                }
+                //auto node = static_cast<MyMotionState*>(rbody->getMotionState())->getNode();
+                //// Probably should cast to GameObject instead
+                //auto tank = static_cast<Tank*>(node);
+                //auto damageableObject = static_cast<IDamageableObject*>(tank);
+
+                //if (damageableObject)
+                //{
+                //    auto damage = (rayToWorld - rayFromWorld).length() * 1.0f;
+                //    damageableObject->ApplyDamage(damage);
+                //    assert(damageableObject->TotalDamageReceived() == damage);
+                //}
 
                 impulse.normalize();
                 impulse *= mBlastForce;
