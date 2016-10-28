@@ -54,6 +54,6 @@
 // Bullet Physics header files
 
 #include <btBulletDynamicsCommon.h>
-
+#include "GameObject.h"
 
 #endif

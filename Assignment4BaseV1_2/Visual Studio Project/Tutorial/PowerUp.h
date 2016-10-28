@@ -9,12 +9,15 @@ typedef enum PowerUpType {
 };
 
 
-class PowerUp
+class PowerUp: public GameObject
 {
 public:
 	PowerUpType type;
-	Ogre::SceneNode *node;
 	PowerUp(Ogre::SceneManager *sceneManager, PowerUpType type,  Ogre::String name);
 	~PowerUp(void);
+	void frameRenderingQueued(const Ogre::FrameEvent& evt) override;
+
+private:
+	Ogre::AnimationState *mRotateAnimationState;
 };
 

@@ -58,6 +58,8 @@ protected:
 	
 	// for physics
 	PhysicsEngine*	mPhysicsEngine;
+	std::vector<GameObject*> *objects;
+
 
 	/***********		CAMERA		*************/
 	void setCamera();	

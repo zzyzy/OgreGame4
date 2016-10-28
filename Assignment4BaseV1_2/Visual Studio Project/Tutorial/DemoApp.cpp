@@ -27,7 +27,9 @@ DemoApp::DemoApp():
 	mDirection(Ogre::Vector3::ZERO),
 	mWalkSpeed(10.0f),
 	shouldAnimate(false)
+
 {
+	objects = new std::vector<GameObject*>();
 }
 //-------------------------------------------------------------------------------------
 DemoApp::~DemoApp(void)
@@ -86,6 +88,7 @@ PowerUp* DemoApp::createPowerUp(PowerUpType type, Ogre::String name) {
 
 	PowerUp *powerUp = new PowerUp(mSceneMgr, type, name);
 	powerUp->node->setScale(2, 2, 2);
+	objects->push_back(powerUp);
 
 	return powerUp;
 }
@@ -362,6 +365,14 @@ void DemoApp::createScene(void)
 bool DemoApp::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
 	bool ret = BaseApplication::frameRenderingQueued(evt);
+
+	for(std::vector<GameObject*>::iterator it = objects->begin(); it != objects->end(); ++it) {
+		GameObject *currentObject = *it;
+		currentObject->frameRenderingQueued(evt);
+	}
+
+    /* std::cout << *it; ... */
+
 
 	/*****************************************************************/
 	/***********************	WALK	******************************/
