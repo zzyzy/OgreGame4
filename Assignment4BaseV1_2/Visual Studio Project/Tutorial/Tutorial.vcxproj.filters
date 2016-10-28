@@ -25,6 +25,27 @@
     <Filter Include="media">
       <UniqueIdentifier>{14f3a675-3cd1-4bc6-aa15-82d44d1fa085}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Common">
+      <UniqueIdentifier>{0d570d72-3dc2-4f66-8f9d-1435ca005ca5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Interfaces">
+      <UniqueIdentifier>{3b5b4adc-3e2d-49c4-8082-d1ea67536722}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects">
+      <UniqueIdentifier>{45c2ab59-bd78-4b32-a24b-86f779e14273}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tank">
+      <UniqueIdentifier>{d3c418b7-4f23-4f6f-ab01-567aa3ff659d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tank">
+      <UniqueIdentifier>{73079a93-6314-411e-bab2-25c31857dc51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects">
+      <UniqueIdentifier>{33ef1a9d-c40d-4c1a-b9ff-4acb6a2b7d3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common">
+      <UniqueIdentifier>{a2e85fad-97fe-456d-9509-49266738a466}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApplication.h">
@@ -48,9 +69,6 @@
     <ClInclude Include="NodeRecord.h">
       <Filter>Header Files\Pathfinding</Filter>
     </ClInclude>
-    <ClInclude Include="Utilities.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SelectionBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -60,8 +78,44 @@
     <ClInclude Include="PowerUp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IDamageableObject.hpp">
+      <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IPhysicsObject.hpp">
+      <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IPoolObject.hpp">
+      <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.hpp">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="OgreEuler.hpp">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileMath.hpp">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="PoolManager.hpp">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.hpp">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Barrel.hpp">
+      <Filter>Header Files\Tank</Filter>
+    </ClInclude>
+    <ClInclude Include="Shell.hpp">
+      <Filter>Header Files\Tank</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionMasks.hpp">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
     <ClInclude Include="Tank.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Tank</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities.h">
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -95,8 +149,17 @@
     <ClCompile Include="PowerUp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PoolManager.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Barrel.cpp">
+      <Filter>Source Files\Tank</Filter>
+    </ClCompile>
     <ClCompile Include="Tank.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Tank</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities.cpp">
+      <Filter>Source Files\Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

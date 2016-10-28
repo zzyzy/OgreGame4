@@ -54,6 +54,7 @@
 // Bullet Physics header files
 
 #include <btBulletDynamicsCommon.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
 
 #endif
