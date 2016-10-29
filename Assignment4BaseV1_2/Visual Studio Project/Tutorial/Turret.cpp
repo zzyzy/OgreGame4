@@ -159,10 +159,10 @@ void Turret::Update(const float& deltaTime)
         transform.setOrigin(convert(node->getPosition()));
 
         auto rbody = mPhysics->CreateRigidBody(mShellMass, transform, shape, node,
-                                               COL_PROJECTILE,
-                                               COL_TANK |
-                                               COL_ENVIRONMENT_OBJECT |
-                                               COL_GROUND);
+                                               static_cast<short>(CollisionTypes::PROJECTILE),
+                                               CollisionTypes::TANK |
+                                               CollisionTypes::GROUND |
+                                               CollisionTypes::OBSTACLES);
         auto shell = new Shell(rbody, mWorld, mPhysics, mBlastForce, mBlastRadius);
         shell->SetLinearVelocity(convert(mProjectileVelocity));
         shell->SetGravity(btVector3(0, -mProjectileGravity, 0));

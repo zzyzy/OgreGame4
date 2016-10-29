@@ -70,9 +70,9 @@ public:
                 */
 
                 mBlastCollider = mPhysics->CreateGhostObject(startTrans, shape,
-                                                             COL_EXPLOSION,
-                                                             COL_TANK |
-                                                             COL_ENVIRONMENT_OBJECT);
+                                                             static_cast<short>(CollisionTypes::EXPLOSION),
+                                                             CollisionTypes::TANK |
+                                                             CollisionTypes::OBSTACLES);
                 mBlastCollider->setCollisionFlags(mBlastCollider->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
                 // create a particle system named explosions using the explosionTemplate

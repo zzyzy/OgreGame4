@@ -11,17 +11,25 @@
 #ifndef __COLLISION_MASKS_HPP__
 #define __COLLISION_MASKS_HPP__
 
-#define BIT(x) (1<<(x))
-
-enum CollisionTypes
+enum class CollisionTypes
 {
-    COL_NOTHING = 0, //<Collide with nothing
-    COL_TANK = BIT(0), //<Collide with ships
-    COL_GROUND = BIT(1), //<Collide with walls
-    COL_POWERUP = BIT(2), //<Collide with powerups
-    COL_EXPLOSION = BIT(3),
-    COL_PROJECTILE = BIT(4),
-    COL_ENVIRONMENT_OBJECT = BIT(5)
+    NOTHING     = 0,
+    GROUND      = 1 << 0,
+    TANK        = 1 << 1,
+    OBSTACLES   = 1 << 2,
+    POWERUP     = 1 << 3,
+    EXPLOSION   = 1 << 4,
+    PROJECTILE  = 1 << 5
 };
+
+inline short operator|(const CollisionTypes& left, const CollisionTypes& right)
+{
+    return static_cast<short>(left) | static_cast<short>(right);
+}
+
+inline short operator|(short left, const CollisionTypes& right)
+{
+    return left | static_cast<short>(right);
+}
 
 #endif // __COLLISION_MASKS_HPP__
