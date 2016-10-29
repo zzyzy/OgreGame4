@@ -14,6 +14,9 @@ Tank::Tank(Ogre::SceneManager* world,
     mType(type),
     mMaxHitPoints(100.0f),
     mHitPoints(mMaxHitPoints),
+    mMoveSpeed(1.0f),
+    mDamage(50.0f),
+    mAttackSpeed(1.0f),
     mTurret()
 {
     assert(world != nullptr);
@@ -68,6 +71,9 @@ Tank::Tank(const Tank& tank) :
     mType(tank.mType),
     mMaxHitPoints(tank.mMaxHitPoints),
     mHitPoints(tank.mHitPoints),
+    mMoveSpeed(tank.mMoveSpeed),
+    mDamage(tank.mDamage),
+    mAttackSpeed(tank.mAttackSpeed),
     mTurret(tank.mTurret)
 {
 }
@@ -85,6 +91,9 @@ Tank::Tank(Tank&& tank) :
     mType(tank.mType),
     mMaxHitPoints(tank.mMaxHitPoints),
     mHitPoints(tank.mHitPoints),
+    mMoveSpeed(tank.mMoveSpeed),
+    mDamage(tank.mDamage),
+    mAttackSpeed(tank.mAttackSpeed),
     mTurret(std::move(tank.mTurret))
 {
 }

@@ -76,6 +76,20 @@ public:
 
     //void Setup();
 
+    // Getters for tank details
+    float GetMaxHitPoints() const { return mMaxHitPoints; }
+    float GetHitPoints() const { return mHitPoints; }
+    float GetMoveSpeed() const { return mMoveSpeed; }
+    float GetAttackDamage() const { return mDamage; }
+    float GetAttackSpeed() const { return mAttackSpeed; }
+
+    // Setters for tank details
+    void SetMaxHitPoints(const float& maxHP) { mMaxHitPoints = maxHP; }
+    void SetHitPoints(const float& hp) { mHitPoints = hp; }
+    void SetMoveSpeed(const float& ms) { mMoveSpeed = ms; }
+    void SetAttackDamage(const float& damage) { mDamage = damage; }
+    void SetAttackSpeed(const float& as) { mAttackSpeed = as; }
+
 private:
     //void createBillboards();
 
@@ -84,16 +98,12 @@ private:
          PhysicsEngine* physics,
          Type type);
 
+    // Helper methods for TankFactory
     void setTurret(Ogre::SceneNode* turret);
-
     void setBarrel(Ogre::SceneNode* barrel);
-
     void setNozzle(Ogre::SceneNode* nozzle);
-
     void setHealthDecal(Ogre::SceneNode* healthDecal);
-
     void setSelectionDecal(Ogre::SceneNode* selectionDecal);
-
     void setupTurretController();
 
     // Scene manager and physics engine reference
@@ -112,8 +122,11 @@ private:
 
     // Tank details
     Type mType;
-    float mMaxHitPoints;
-    float mHitPoints;
+    float mMaxHitPoints;    // Max hit points
+    float mHitPoints;       // Hit points (if it reaches 0 it means this tank is dead)
+    float mMoveSpeed;       // Move speed factor (1.0f = normal movespeed, 1.25 = 25% faster?)
+    float mDamage;          // Damage dealt to other tanks (if damage > maxHP) = enemy dies
+    float mAttackSpeed;     // Delay between shots in seconds for the turret
 
     // Controllers
     Turret mTurret;
