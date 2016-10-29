@@ -123,7 +123,7 @@ void DemoApp::createScene(void)
 
 
 	//set ambient light
-	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
+	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.6f, 0.6f, 0.6f));
  
     // create the light
     /*Ogre::Light *light = mSceneMgr->createLight("Light1");
@@ -196,13 +196,13 @@ void DemoApp::createScene(void)
 	Ogre::SceneNode* spawnRightNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(150, -1, 0));
     
 	//change sizes of the ground entities 
-	battleGroundNode->scale(1.3, 0, 1.5);
-	topMazeNode->scale(2.5, 0, 1);
-	bottomMazeNode->scale(2.5, 0, 1);
-	LeftMazeNode->scale(0.6, 0, 1.5);
-	RightMazeNode->scale(0.6, 0, 1.5);
-	spawnLeftNode->scale(0.5, 0, 3.5);
-	spawnRightNode->scale(0.5, 0, 3.5);
+	battleGroundNode->scale(1.3f, 0, 1.5f);
+	topMazeNode->scale(2.5f, 0, 1);
+	bottomMazeNode->scale(2.5f, 0, 1);
+	LeftMazeNode->scale(0.6f, 0, 1.5f);
+	RightMazeNode->scale(0.6f, 0, 1.5f);
+	spawnLeftNode->scale(0.5f, 0, 3.5f);
+	spawnRightNode->scale(0.5f, 0, 3.5f);
 
 	// Attach ground entities
 	battleGroundNode->attachObject(battleGroundEntity);
@@ -276,7 +276,7 @@ void DemoApp::createScene(void)
 			// Attach entity to scene node
 			Ogre::SceneNode* myNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 			myNode->attachObject(cube);
-			myNode->scale(0.1, 0.1, 0.1);
+			myNode->scale(0.1f, 0.1f, 0.1f);
 			
 			// Place object at appropriate position
 			Ogre::Vector3 position = pathFindingGraph.getPosition(nodeNumber);
@@ -593,19 +593,19 @@ bool DemoApp::mouseMoved( const OIS::MouseEvent &arg )
 	/*************************		CAMERA CONTROLS		*******************************/
 	/**********************************************************************************/
 	//CAMERA MOVEMENT X/Y CONTROLS 
-	if(arg.state.X.abs > (mWindow->getWidth() - 20)) 
+	if(arg.state.X.abs > (arg.state.width - 20)) 
 	{ 
 		mDirectionCam.x = mMove; 
 	} 
-	else if(arg.state.X.abs < (mWindow->getWidth() - (mWindow->getWidth() - 20))) 
+	else if(arg.state.X.abs < (arg.state.width - (arg.state.width - 20))) 
 	{ 
 		mDirectionCam.x = -mMove; 
 	}
-	else if(arg.state.Y.abs > (mWindow->getHeight() - 20)) 
+	else if(arg.state.Y.abs > (arg.state.height - 20)) 
 	{ 
 		mDirectionCam.z = mMove; 
 	} 
-	else if(arg.state.Y.abs < (mWindow->getHeight() - (mWindow->getHeight() - 20))) 
+	else if(arg.state.Y.abs < (arg.state.height - (arg.state.height - 20))) 
 	{ 
 		mDirectionCam.z = -mMove; 
 	}

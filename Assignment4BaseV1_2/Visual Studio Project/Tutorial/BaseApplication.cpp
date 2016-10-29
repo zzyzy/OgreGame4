@@ -42,7 +42,7 @@ BaseApplication::BaseApplication(void)
 	mSelecting(false),
     mLMouseDown(false),
     mRMouseDown(false),
-    mRotSpd(0.1),
+    mRotSpd(0.1f),
     mSelectionBox(0),
     mRayScnQuery(0),
     mVolQuery(0),
