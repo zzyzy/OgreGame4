@@ -13,6 +13,7 @@
 
 #include "Turret.hpp"
 #include "IDamageableObject.hpp"
+#include "TankKinematics.hpp"
 
 class Tank : public Ogre::SceneNode,
              public IDamageableObject
@@ -43,6 +44,8 @@ public:
     void UpdateHealthBar() const;
 
     void Update(const float& deltaTime);
+
+    void MoveTo(const Ogre::Vector3& target, Graph* graph, PathFinding& pathFinder);
 
     void FireAt(const Ogre::Vector3& target);
 
@@ -82,6 +85,7 @@ public:
     float GetMoveSpeed() const { return mMoveSpeed; }
     float GetAttackDamage() const { return mDamage; }
     float GetAttackSpeed() const { return mAttackSpeed; }
+    float GetTurnRate() const { return mTurnRate; }
 
     // Setters for tank details
     void SetMaxHitPoints(const float& maxHP) { mMaxHitPoints = maxHP; }
@@ -89,10 +93,9 @@ public:
     void SetMoveSpeed(const float& ms) { mMoveSpeed = ms; }
     void SetAttackDamage(const float& damage) { mDamage = damage; }
     void SetAttackSpeed(const float& as) { mAttackSpeed = as; }
+    void SetTurnRate(const float& rate) { mTurnRate = rate; }
 
 private:
-    //void createBillboards();
-
     // Only allow instantialisation via TankFactory
     Tank(Ogre::SceneManager* world,
          PhysicsEngine* physics,
@@ -105,13 +108,13 @@ private:
     void setHealthDecal(Ogre::SceneNode* healthDecal);
     void setSelectionDecal(Ogre::SceneNode* selectionDecal);
     void setupTurretController();
+    void setupKinematicController(Ogre::ManualObject* pathViz, btPairCachingGhostObject* collider);
 
     // Scene manager and physics engine reference
     Ogre::SceneManager* mWorld;
     PhysicsEngine* mPhysics;
 
     // Scene nodes for the different tank parts
-    //Ogre::SceneNode* mBodyNode;
     Ogre::SceneNode* mTurretNode;
     Ogre::SceneNode* mBarrelNode;
     Ogre::SceneNode* mNozzleNode;
@@ -124,12 +127,14 @@ private:
     Type mType;
     float mMaxHitPoints;    // Max hit points
     float mHitPoints;       // Hit points (if it reaches 0 it means this tank is dead)
-    float mMoveSpeed;       // Move speed factor (1.0f = normal movespeed, 1.25 = 25% faster?)
+    float mMoveSpeed;       // Move speed
     float mDamage;          // Damage dealt to other tanks (if damage > maxHP) = enemy dies
     float mAttackSpeed;     // Delay between shots in seconds for the turret
+    float mTurnRate;
 
     // Controllers
     Turret mTurret;
+    TankKinematics mKinematic;
 
     //Ogre::Vector3 tankSpawnPosition;
 

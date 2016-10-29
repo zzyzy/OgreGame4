@@ -63,7 +63,8 @@ void PhysicsEngine::initPhysics()
 	mSolver = new btSequentialImpulseConstraintSolver;
 
 	// Create a dynamic simulation environment
-	mDynamicsWorld = new btDiscreteDynamicsWorld(mDispatcher, mBroadphase, mSolver, mCollisionConfiguration);
+	mDynamicsWorld = new btDiscreteDynamicsWorld(mDispatcher, mBroadphase, mSolver, mCollisionConfiguration); 
+    mDynamicsWorld->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
 	// Set the gravity for the simulation
 	mDynamicsWorld->setGravity(btVector3(0, -10, 0));

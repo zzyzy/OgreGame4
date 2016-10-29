@@ -79,6 +79,7 @@
     <ClInclude Include="ITankState.hpp" />
     <ClInclude Include="QueryMasks.hpp" />
     <ClInclude Include="TankFactory.hpp" />
+    <ClInclude Include="TankKinematics.hpp" />
     <ClInclude Include="TankStateMachine.hpp" />
     <ClInclude Include="Turret.hpp" />
     <ClInclude Include="BaseApplication.h" />
@@ -108,6 +109,7 @@
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="TankFactory.cpp" />
+    <ClCompile Include="TankKinematics.cpp" />
     <ClCompile Include="Turret.cpp" />
     <ClCompile Include="BaseApplication.cpp" />
     <ClCompile Include="Connection.cpp" />
