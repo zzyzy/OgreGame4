@@ -18,6 +18,7 @@
 
 #include "PhysicsEngine.h"
 #include "PoolManager.hpp"
+#include "CollisionMasks.hpp"
 
 class Turret
 {
@@ -30,6 +31,7 @@ public:
            Ogre::SceneManager* world,
            PhysicsEngine* physics,
            const size_t& maxPoolSize,
+           const CollisionTypes& targetType,
            const float& delayBetweenShots = 1.0f,
            const float& shellSpeed = 250.0f,
            const float& shellMass = 2.0f,
@@ -79,6 +81,7 @@ private:
     Ogre::SceneManager* mWorld;
     PhysicsEngine* mPhysics;
     PoolManager mPool;
+    CollisionTypes mTargetType;
     float mDelayBetweenShots;
     float mElapsedDelay;
     float mShellSpeed;

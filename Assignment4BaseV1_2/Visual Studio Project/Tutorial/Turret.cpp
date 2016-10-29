@@ -14,7 +14,8 @@ Turret::Turret() :
     mNozzle(nullptr),
     mWorld(nullptr),
     mPhysics(nullptr),
-    mPool(1),
+    mPool(1), 
+    mTargetType(),
     mDelayBetweenShots(0.0f),
     mElapsedDelay(0.0f),
     mShellSpeed(0.0f),
@@ -32,6 +33,7 @@ Turret::Turret(Ogre::SceneNode* turret,
                Ogre::SceneManager* world,
                PhysicsEngine* physics,
                const size_t& maxPoolSize,
+               const CollisionTypes& targetType,
                const float& delayBetweenShots,
                const float& shellSpeed,
                const float& shellMass,
@@ -42,7 +44,8 @@ Turret::Turret(Ogre::SceneNode* turret,
     mNozzle(nozzle),
     mWorld(world),
     mPhysics(physics),
-    mPool(maxPoolSize),
+    mPool(maxPoolSize), 
+    mTargetType(targetType),
     mDelayBetweenShots(delayBetweenShots),
     mElapsedDelay(delayBetweenShots),
     mShellSpeed(shellSpeed),
@@ -67,6 +70,7 @@ Turret::Turret(const Turret& turret) :
     mWorld(turret.mWorld),
     mPhysics(turret.mPhysics),
     mPool(turret.mPool),
+    mTargetType(turret.mTargetType),
     mDelayBetweenShots(turret.mDelayBetweenShots),
     mElapsedDelay(turret.mElapsedDelay),
     mShellSpeed(turret.mShellSpeed),
@@ -85,6 +89,7 @@ Turret::Turret(Turret&& turret) :
     mWorld(turret.mWorld),
     mPhysics(turret.mPhysics),
     mPool(std::move(turret.mPool)),
+    mTargetType(turret.mTargetType),
     mDelayBetweenShots(turret.mDelayBetweenShots),
     mElapsedDelay(turret.mElapsedDelay),
     mShellSpeed(turret.mShellSpeed),
@@ -111,6 +116,7 @@ Turret& Turret::operator=(Turret&& turret)
     mWorld = turret.mWorld;
     mPhysics = turret.mPhysics;
     mPool = std::move(turret.mPool);
+    mTargetType = turret.mTargetType;
     mDelayBetweenShots = turret.mDelayBetweenShots;
     mElapsedDelay = turret.mElapsedDelay;
     mShellSpeed = turret.mShellSpeed;
@@ -160,9 +166,8 @@ void Turret::Update(const float& deltaTime)
 
         auto rbody = mPhysics->CreateRigidBody(mShellMass, transform, shape, node,
                                                static_cast<short>(CollisionTypes::PROJECTILE),
-                                               CollisionTypes::TANK |
-                                               CollisionTypes::GROUND |
-                                               CollisionTypes::OBSTACLES);
+                                               CollisionTypes::OBSTACLES |
+                                               mTargetType);
         auto shell = new Shell(rbody, mWorld, mPhysics, mBlastForce, mBlastRadius);
         shell->SetLinearVelocity(convert(mProjectileVelocity));
         shell->SetGravity(btVector3(0, -mProjectileGravity, 0));

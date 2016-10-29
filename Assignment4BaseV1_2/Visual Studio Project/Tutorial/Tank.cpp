@@ -55,9 +55,9 @@ void Tank::setSelectionDecal(Ogre::SceneNode* selectionDecal)
     assert(mSelectionNode != nullptr);
 }
 
-void Tank::setupTurretController()
+void Tank::setupTurretController(const CollisionTypes& targetType)
 {
-    mTurret = Turret(mTurretNode, mBarrelNode, mNozzleNode, mWorld, mPhysics, 5,
+    mTurret = Turret(mTurretNode, mBarrelNode, mNozzleNode, mWorld, mPhysics, 5, targetType,
                      1, 250, 2, 0.5, 10);
 }
 

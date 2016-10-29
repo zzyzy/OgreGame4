@@ -107,7 +107,7 @@ private:
     void setNozzle(Ogre::SceneNode* nozzle);
     void setHealthDecal(Ogre::SceneNode* healthDecal);
     void setSelectionDecal(Ogre::SceneNode* selectionDecal);
-    void setupTurretController();
+    void setupTurretController(const CollisionTypes& targetType);
     void setupKinematicController(Ogre::ManualObject* pathViz, btPairCachingGhostObject* collider);
 
     // Scene manager and physics engine reference

@@ -15,11 +15,13 @@ enum class CollisionTypes
 {
     NOTHING     = 0,
     GROUND      = 1 << 0,
-    TANK        = 1 << 1,
-    OBSTACLES   = 1 << 2,
-    POWERUP     = 1 << 3,
-    EXPLOSION   = 1 << 4,
-    PROJECTILE  = 1 << 5
+    OBSTACLES   = 1 << 1,
+    POWERUP     = 1 << 2,
+    EXPLOSION   = 1 << 3,
+    PROJECTILE  = 1 << 4,
+    LP_TANK     = 1 << 5,
+    CH_TANK     = 1 << 6,
+    TANK        = LP_TANK | CH_TANK,
 };
 
 inline short operator|(const CollisionTypes& left, const CollisionTypes& right)

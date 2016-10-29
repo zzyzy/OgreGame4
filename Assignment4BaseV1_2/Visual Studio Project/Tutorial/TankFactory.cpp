@@ -108,20 +108,19 @@ Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position) const
     startTrans.setIdentity();
     startTrans.setRotation(convert(tank->getOrientation()));
     startTrans.setOrigin(convert(tank->getPosition()));
-    auto group = static_cast<short>(CollisionTypes::TANK);
+    auto group = static_cast<short>(CollisionTypes::CH_TANK);
     auto mask = CollisionTypes::TANK |
         CollisionTypes::GROUND |
-        CollisionTypes::EXPLOSION |
-        CollisionTypes::PROJECTILE |
         CollisionTypes::OBSTACLES |
-        CollisionTypes::POWERUP;
+        CollisionTypes::POWERUP |
+        CollisionTypes::EXPLOSION |
+        CollisionTypes::PROJECTILE;
     auto shape = new btBoxShape(btVector3(0.1f * 50, 0.1f * 50, 0.1f * 50));
     auto collider = mPhysics->CreateGhostObject(startTrans,
                                                 shape,
                                                 group,
                                                 mask);
     collider->setCollisionFlags(collider->getCollisionFlags() |
-        btCollisionObject::CF_NO_CONTACT_RESPONSE |
         btCollisionObject::CF_KINEMATIC_OBJECT);
 
     // Prepare path visualizer
@@ -138,7 +137,7 @@ Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position) const
     tank->setNozzle(nozzleNode);
     tank->setHealthDecal(healthBarNode);
     tank->setSelectionDecal(selectionNode);
-    tank->setupTurretController();
+    tank->setupTurretController(CollisionTypes::LP_TANK);
     tank->setupKinematicController(pathViz, collider);
 
     return tank;
@@ -245,20 +244,19 @@ Tank* TankFactory::MakeLeopardTank(const Ogre::Vector3& position) const
     startTrans.setIdentity();
     startTrans.setRotation(convert(tank->getOrientation()));
     startTrans.setOrigin(convert(tank->getPosition()));
-    auto group = static_cast<short>(CollisionTypes::TANK);
+    auto group = static_cast<short>(CollisionTypes::LP_TANK);
     auto mask = CollisionTypes::TANK |
         CollisionTypes::GROUND |
-        CollisionTypes::EXPLOSION |
-        CollisionTypes::PROJECTILE |
         CollisionTypes::OBSTACLES |
-        CollisionTypes::POWERUP;
+        CollisionTypes::POWERUP |
+        CollisionTypes::EXPLOSION |
+        CollisionTypes::PROJECTILE;
     auto shape = new btBoxShape(btVector3(0.1f * 50, 0.1f * 50, 0.1f * 50));
     auto collider = mPhysics->CreateGhostObject(startTrans,
                                                 shape,
                                                 group,
                                                 mask);
     collider->setCollisionFlags(collider->getCollisionFlags() |
-        btCollisionObject::CF_NO_CONTACT_RESPONSE |
         btCollisionObject::CF_KINEMATIC_OBJECT);
 
     // Prepare path visualizer
@@ -275,7 +273,7 @@ Tank* TankFactory::MakeLeopardTank(const Ogre::Vector3& position) const
     tank->setNozzle(nozzleNode);
     tank->setHealthDecal(healthBarNode);
     tank->setSelectionDecal(selectionNode);
-    tank->setupTurretController();
+    tank->setupTurretController(CollisionTypes::CH_TANK);
     tank->setupKinematicController(pathViz, collider);
 
     return tank;
