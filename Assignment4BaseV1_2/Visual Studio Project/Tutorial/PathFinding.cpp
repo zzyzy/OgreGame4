@@ -26,7 +26,7 @@ void PathFinding::clearConnections()
 	}
 }
 
-bool PathFinding::Dijkstra(int startNode, int goalNode, Graph& pathFindingGraph, std::vector<int>& path)
+bool PathFinding::Dijkstra(int startNode, int goalNode, Graph& pathFindingGraph, std::deque<int>& path)
 {
 	reset();
 	path.clear();
@@ -136,7 +136,7 @@ bool PathFinding::Dijkstra(int startNode, int goalNode, Graph& pathFindingGraph,
 	return true;
 }
 
-bool PathFinding::AStar(int startNode, int goalNode, Graph& pathFindingGraph, std::vector<int> &path)
+bool PathFinding::AStar(int startNode, int goalNode, Graph& pathFindingGraph, std::deque<int> &path)
 {
 	reset();
 	path.clear();
