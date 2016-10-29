@@ -126,6 +126,15 @@
     <ClInclude Include="GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ITankState.hpp">
+      <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="TankStateMachine.hpp">
+      <Filter>Header Files\Tank</Filter>
+    </ClInclude>
+    <ClInclude Include="TankKinematics.hpp">
+      <Filter>Header Files\Tank</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApplication.cpp">
@@ -178,6 +187,9 @@
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TankKinematics.cpp">
+      <Filter>Source Files\Tank</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

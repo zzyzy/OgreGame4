@@ -98,7 +98,7 @@ private:
 	int startNode;
 	int goalNode;
 
-	Graph* pathFindingGraph;
+	Graph pathFindingGraph;
 	PathFinding mPathFinder;
 	Ogre::ManualObject* path1;
 	Ogre::ManualObject* path2;
@@ -112,6 +112,7 @@ private:
 	// Converts a 3D world position to a 2D relative screen coordinate (i.e. between 0 and 1 for x and y respectively)
 	//Ogre::Vector2 worldToScreenPosition(const Ogre::Vector3& position);
 
+    Ogre::SceneNode* mWorldGridNode;
 };
  
 #endif // #ifndef __DemoApp_h_

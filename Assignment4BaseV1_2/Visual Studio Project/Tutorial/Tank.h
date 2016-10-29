@@ -13,6 +13,7 @@
 
 #include "Turret.hpp"
 #include "IDamageableObject.hpp"
+#include "TankKinematics.hpp"
 
 class Tank : public Ogre::SceneNode,
              public IDamageableObject
@@ -43,6 +44,8 @@ public:
     void UpdateHealthBar() const;
 
     void Update(const float& deltaTime);
+
+    void MoveTo(const Ogre::Vector3& target, Graph* graph, PathFinding& pathFinder);
 
     void FireAt(const Ogre::Vector3& target);
 
@@ -76,32 +79,42 @@ public:
 
     //void Setup();
 
-private:
-    //void createBillboards();
+    // Getters for tank details
+    float GetMaxHitPoints() const { return mMaxHitPoints; }
+    float GetHitPoints() const { return mHitPoints; }
+    float GetMoveSpeed() const { return mMoveSpeed; }
+    float GetAttackDamage() const { return mDamage; }
+    float GetAttackSpeed() const { return mAttackSpeed; }
+    float GetTurnRate() const { return mTurnRate; }
 
+    // Setters for tank details
+    void SetMaxHitPoints(const float& maxHP) { mMaxHitPoints = maxHP; }
+    void SetHitPoints(const float& hp) { mHitPoints = hp; }
+    void SetMoveSpeed(const float& ms) { mMoveSpeed = ms; }
+    void SetAttackDamage(const float& damage) { mDamage = damage; }
+    void SetAttackSpeed(const float& as) { mAttackSpeed = as; }
+    void SetTurnRate(const float& rate) { mTurnRate = rate; }
+
+private:
     // Only allow instantialisation via TankFactory
     Tank(Ogre::SceneManager* world,
          PhysicsEngine* physics,
          Type type);
 
+    // Helper methods for TankFactory
     void setTurret(Ogre::SceneNode* turret);
-
     void setBarrel(Ogre::SceneNode* barrel);
-
     void setNozzle(Ogre::SceneNode* nozzle);
-
     void setHealthDecal(Ogre::SceneNode* healthDecal);
-
     void setSelectionDecal(Ogre::SceneNode* selectionDecal);
-
     void setupTurretController();
+    void setupKinematicController(Ogre::ManualObject* pathViz, btPairCachingGhostObject* collider);
 
     // Scene manager and physics engine reference
     Ogre::SceneManager* mWorld;
     PhysicsEngine* mPhysics;
 
     // Scene nodes for the different tank parts
-    //Ogre::SceneNode* mBodyNode;
     Ogre::SceneNode* mTurretNode;
     Ogre::SceneNode* mBarrelNode;
     Ogre::SceneNode* mNozzleNode;
@@ -112,11 +125,16 @@ private:
 
     // Tank details
     Type mType;
-    float mMaxHitPoints;
-    float mHitPoints;
+    float mMaxHitPoints;    // Max hit points
+    float mHitPoints;       // Hit points (if it reaches 0 it means this tank is dead)
+    float mMoveSpeed;       // Move speed
+    float mDamage;          // Damage dealt to other tanks (if damage > maxHP) = enemy dies
+    float mAttackSpeed;     // Delay between shots in seconds for the turret
+    float mTurnRate;
 
     // Controllers
     Turret mTurret;
+    TankKinematics mKinematic;
 
     //Ogre::Vector3 tankSpawnPosition;
 

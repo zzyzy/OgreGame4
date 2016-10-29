@@ -14,7 +14,12 @@ Tank::Tank(Ogre::SceneManager* world,
     mType(type),
     mMaxHitPoints(100.0f),
     mHitPoints(mMaxHitPoints),
-    mTurret()
+    mMoveSpeed(25.0f),
+    mDamage(50.0f),
+    mAttackSpeed(1.0f),
+    mTurnRate(5.0f),
+    mTurret(),
+    mKinematic()
 {
     assert(world != nullptr);
     assert(physics != nullptr);
@@ -52,14 +57,19 @@ void Tank::setSelectionDecal(Ogre::SceneNode* selectionDecal)
 
 void Tank::setupTurretController()
 {
-    mTurret = Turret(mTurretNode, mBarrelNode, mNozzleNode, mWorld, mPhysics, 5);
+    mTurret = Turret(mTurretNode, mBarrelNode, mNozzleNode, mWorld, mPhysics, 5,
+                     1, 250, 2, 0.5, 10);
+}
+
+void Tank::setupKinematicController(Ogre::ManualObject* pathViz, btPairCachingGhostObject* collider)
+{
+    mKinematic = TankKinematics(this, pathViz, collider);
 }
 
 Tank::Tank(const Tank& tank) :
     SceneNode(tank.mWorld),
     mWorld(tank.mWorld),
     mPhysics(tank.mPhysics),
-    //mBodyNode(tank.mBodyNode),
     mTurretNode(tank.mTurretNode),
     mBarrelNode(tank.mBarrelNode),
     mNozzleNode(tank.mNozzleNode),
@@ -68,7 +78,12 @@ Tank::Tank(const Tank& tank) :
     mType(tank.mType),
     mMaxHitPoints(tank.mMaxHitPoints),
     mHitPoints(tank.mHitPoints),
-    mTurret(tank.mTurret)
+    mMoveSpeed(tank.mMoveSpeed),
+    mDamage(tank.mDamage),
+    mAttackSpeed(tank.mAttackSpeed),
+    mTurnRate(tank.mTurnRate),
+    mTurret(tank.mTurret),
+    mKinematic(tank.mKinematic)
 {
 }
 
@@ -76,7 +91,6 @@ Tank::Tank(Tank&& tank) :
     SceneNode(tank.mWorld),
     mWorld(tank.mWorld),
     mPhysics(tank.mPhysics),
-    //mBodyNode(tank.mBodyNode),
     mTurretNode(tank.mTurretNode),
     mBarrelNode(tank.mBarrelNode),
     mNozzleNode(tank.mNozzleNode),
@@ -85,7 +99,12 @@ Tank::Tank(Tank&& tank) :
     mType(tank.mType),
     mMaxHitPoints(tank.mMaxHitPoints),
     mHitPoints(tank.mHitPoints),
-    mTurret(std::move(tank.mTurret))
+    mMoveSpeed(tank.mMoveSpeed),
+    mDamage(tank.mDamage),
+    mAttackSpeed(tank.mAttackSpeed),
+    mTurnRate(tank.mTurnRate),
+    mTurret(std::move(tank.mTurret)),
+    mKinematic(std::move(tank.mKinematic))
 {
 }
 
@@ -100,7 +119,6 @@ Tank& Tank::operator=(Tank&& tank)
 {
     mWorld = tank.mWorld;
     mPhysics = tank.mPhysics;
-    //mBodyNode = tank.mBodyNode;
     mTurretNode = tank.mTurretNode;
     mBarrelNode = tank.mBarrelNode;
     mNozzleNode = tank.mNozzleNode;
@@ -109,198 +127,14 @@ Tank& Tank::operator=(Tank&& tank)
     mType = tank.mType;
     mMaxHitPoints = tank.mMaxHitPoints;
     mHitPoints = tank.mHitPoints;
+    mMoveSpeed = tank.mMoveSpeed;
+    mDamage = tank.mDamage;
+    mAttackSpeed = tank.mAttackSpeed;
+    mTurnRate = tank.mTurnRate;
     mTurret = std::move(tank.mTurret);
+    mKinematic = std::move(tank.mKinematic);
     return *this;
 }
-
-//Tank::Tank(std::string name,
-//           Type type,
-//           Ogre::Vector3 spawnPosition,
-//           Ogre::SceneManager* mSceneMgr) :
-//    mTurret(nullptr),
-//    mNozzleNode(nullptr)
-//{
-//    idName = name;
-//    mType = type;
-//    tankSpawnPosition = spawnPosition;
-//    mWorld = mSceneMgr;
-//
-//    mHitPoints = 1.0;
-//    mMove = 0;
-//
-//    mTurretRotate = 0;
-//    mBarrelRotate = 0;
-//    mBarrelPitch = 0;
-//
-//    switch (type)
-//    {
-//    case Type::CHALLENGER:
-//        mBodyRotate = 180;
-//        break;
-//    case Type::LEOPARD:
-//        mBodyRotate = 0;
-//        break;
-//    default:
-//        break;
-//    }
-//
-//    Setup();
-//
-//    mTurret = new Turret(mTurretNode,
-//                         mBarrelNode,
-//                         mNozzleNode,
-//                         mWorld,
-//                         mPhysics,
-//                         5);
-//}
-
-//void Tank::Setup()
-//{
-//    switch (mType)
-//    {
-//    case Type::CHALLENGER:
-//        {
-//            idName += "Ch";
-//
-//            std::string bodyName = idName + "Body";
-//
-//            // Create tank body entity
-//            Ogre::Entity* tankBody = mWorld->createEntity(bodyName, "chbody.mesh");
-//            tankBody->setCastShadows(true);
-//            tankBody->setMaterialName("ch_tank_material");
-//            tankBody->setQueryFlags(COL_TANK);
-//
-//            std::string turretName = idName + "Turret";
-//            // Create tank turret entity
-//            Ogre::Entity* tankTurret = mWorld->createEntity(turretName, "chturret.mesh");
-//            tankTurret->setCastShadows(true);
-//            tankTurret->setMaterialName("ch_tank_material");
-//            tankTurret->setQueryFlags(COL_TANK);
-//
-//            std::string barrelName = idName + "Barrel";
-//            // Create tank barrel entity
-//            Ogre::Entity* tankBarrel = mWorld->createEntity(barrelName, "chbarrel.mesh");
-//            tankBarrel->setCastShadows(true);
-//            tankBarrel->setMaterialName("ch_tank_material");
-//            tankBarrel->setQueryFlags(COL_TANK);
-//
-//            // Create a child scene node and attach tank body to it
-//            mBodyNode = mWorld->getRootSceneNode()->createChildSceneNode();
-//            mBodyNode->attachObject(tankBody);
-//            // Move it above the ground
-//            mBodyNode->translate(tankSpawnPosition);
-//            mBodyNode->scale(0.05, 0.05, 0.05);
-//            //rotate
-//            mBodyNode->yaw(Ogre::Degree(mBodyRotate));
-//
-//            // Create a child scene node from tank body's scene node and attach the tank turret to it
-//            mTurretNode = mBodyNode->createChildSceneNode();
-//            mTurretNode->attachObject(tankTurret);
-//            // Move it above tank body
-//            mTurretNode->translate(0, 3, 0);
-//
-//            // Create a child scene node from tank turret's scene node and attach the tank barrel to it
-//            mBarrelNode = mTurretNode->createChildSceneNode();
-//            mBarrelNode->attachObject(tankBarrel);
-//            // Move it to the appropriate position on the turret
-//            mBarrelNode->translate(-30, 10, 0);
-//
-//            createBillboards();
-//        }
-//        break;
-//    case Type::LEOPARD:
-//        {
-//            idName += "Lp";
-//
-//            std::string bodyName = idName + "Body";
-//            // Create tank body entity
-//            Ogre::Entity* tankBody = mWorld->createEntity(bodyName, "lpbody.mesh");
-//            tankBody->setCastShadows(true);
-//            tankBody->setMaterialName("lp_tank_material");
-//            tankBody->setQueryFlags(COL_TANK);
-//
-//            std::string turretName = idName + "Turret";
-//            // Create tank turret entity
-//            Ogre::Entity* tankTurret = mWorld->createEntity(turretName, "lpturret.mesh");
-//            tankTurret->setCastShadows(true);
-//            tankTurret->setMaterialName("lp_tank_material");
-//            tankTurret->setQueryFlags(COL_TANK);
-//
-//            std::string barrelName = idName + "Barrel";
-//            // Create tank barrel entity
-//            Ogre::Entity* tankBarrel = mWorld->createEntity(barrelName, "lpbarrel.mesh");
-//            tankBarrel->setCastShadows(true);
-//            tankBarrel->setMaterialName("lp_tank_material");
-//            tankBarrel->setQueryFlags(COL_TANK);
-//
-//            // Create a child scene node and attach tank body to it
-//            mBodyNode = mWorld->getRootSceneNode()->createChildSceneNode();
-//            mBodyNode->attachObject(tankBody);
-//            // Move it above the ground
-//            mBodyNode->translate(tankSpawnPosition);
-//            mBodyNode->scale(0.05, 0.05, 0.05);
-//
-//            // Create a child scene node from tank body's scene node and attach the tank turret to it
-//            mTurretNode = mBodyNode->createChildSceneNode();
-//            mTurretNode->attachObject(tankTurret);
-//            // Move it above tank body
-//            mTurretNode->translate(0, 3, 0);
-//
-//            // Create a child scene node from tank turret's scene node and attach the tank barrel to it
-//            mBarrelNode = mTurretNode->createChildSceneNode();
-//            mBarrelNode->attachObject(tankBarrel);
-//            // Move it to the appropriate position on the turret
-//            mBarrelNode->translate(-30, 10, 0);
-//
-//            createBillboards();
-//        }
-//        break;
-//    default:
-//        break;
-//    }
-//};
-
-//void Tank::createBillboards()
-//{
-//    // Create a BillboardSet to represent a health bar and set its properties
-//    Ogre::BillboardSet* mHealthBar = mWorld->createBillboardSet();
-//    mHealthBar->setCastShadows(false);
-//    mHealthBar->setDefaultDimensions(50, 2.0);
-//    mHealthBar->setMaterialName("myMaterial/HealthBar");
-//
-//    // Create a billboard for the health bar BillboardSet
-//    Ogre::Billboard* mHealthBarBB = mHealthBar->createBillboard(Ogre::Vector3(0, 70, 0));
-//    // Calculate the health bar adjustments
-//    float healthBarAdjuster = (1.0 - mHitPoints) / 2; // This must range from 0.0 to 0.5
-//    // Set the health bar to the appropriate level
-//    mHealthBarBB->setTexcoordRect(0.0 + healthBarAdjuster, 0.0, 0.5 + healthBarAdjuster, 1.0);
-//
-//    // Set it to always draw on top of other objects
-//    mHealthBar->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY);
-//
-//    // Create a BillboardSet for a selection circle and set its properties
-//    Ogre::BillboardSet* mSelectionCircle = mWorld->createBillboardSet();
-//    mSelectionCircle->setCastShadows(false);
-//    mSelectionCircle->setDefaultDimensions(200, 200);
-//    mSelectionCircle->setMaterialName("myMaterial/SelectionCircle");
-//    mSelectionCircle->setBillboardType(Ogre::BillboardType::BBT_PERPENDICULAR_COMMON);
-//    mSelectionCircle->setCommonDirection(Ogre::Vector3(0, 1, 0));
-//    mSelectionCircle->setCommonUpVector(Ogre::Vector3(0, 0, -1));
-//
-//    // Create a billboard for the selection circle BillboardSet
-//    Ogre::Billboard* mSelectionCircleBB = mSelectionCircle->createBillboard(Ogre::Vector3(0, -19, 0));
-//    mSelectionCircleBB->setTexcoordRect(0.0, 0.0, 1.0, 1.0);
-//
-//    std::string healthName = idName + "health";
-//    std::string circleName = idName + "circle";
-//    //attach billboards to the tank node
-//    mHealthBarNode = mTurretNode->createChildSceneNode(healthName);
-//    mHealthBarNode->attachObject(mHealthBar);
-//    mHealthBarNode->setVisible(false);
-//    mSelectionNode = mTurretNode->createChildSceneNode(circleName);
-//    mSelectionNode->attachObject(mSelectionCircle);
-//    mSelectionNode->setVisible(false);
-//}
 
 //void Tank::moveTank(float time)
 //{
@@ -342,7 +176,6 @@ Tank& Tank::operator=(Tank&& tank)
 //    mTurretNode->yaw(Ogre::Degree(mTurretRotate));
 //}
 
-
 bool Tank::isTankSelected()
 {
     if (mSelectionNode->getAttachedObject(0)->isVisible())
@@ -371,6 +204,12 @@ void Tank::UpdateHealthBar() const
 void Tank::Update(const float& deltaTime)
 {
     mTurret.Update(deltaTime);
+    mKinematic.Update(2.0f, deltaTime);
+}
+
+void Tank::MoveTo(const Ogre::Vector3& target, Graph* graph, PathFinding& pathFinder)
+{
+    mKinematic.MoveTo(target, graph, pathFinder);
 }
 
 void Tank::FireAt(const Ogre::Vector3& target)

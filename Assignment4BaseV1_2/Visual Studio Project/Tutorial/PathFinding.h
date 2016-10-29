@@ -27,8 +27,8 @@ public:
 	void reset();
 	void clearConnections();
 
-	bool Dijkstra(int startNode, int goalNode, Graph& pathFindingGraph, std::vector<int> &path);
-	bool AStar(int startNode, int goalNode, Graph& pathFindingGraph, std::vector<int> &path);
+	bool Dijkstra(int startNode, int goalNode, Graph& pathFindingGraph, std::deque<int> &path);
+	bool AStar(int startNode, int goalNode, Graph& pathFindingGraph, std::deque<int> &path);
 };
 
 #endif

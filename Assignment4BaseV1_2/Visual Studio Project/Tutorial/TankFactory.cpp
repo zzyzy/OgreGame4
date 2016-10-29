@@ -5,6 +5,7 @@
 
 #include "TankFactory.hpp"
 #include "QueryMasks.hpp"
+#include "CollisionMasks.hpp"
 
 Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position) const
 {
@@ -13,12 +14,10 @@ Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position) const
     auto barrelEntity = mWorld->createEntity("chbarrel.mesh");
     auto nozzleEntity = mWorld->createEntity("sphere.mesh");
 
-    Tank* tank = OGRE_NEW Tank(mWorld,
-                               mPhysics,
-                               Tank::Type::CHALLENGER);
+    auto tank = OGRE_NEW Tank(mWorld,
+                              mPhysics,
+                              Tank::Type::CHALLENGER);
     mWorld->getRootSceneNode()->addChild(tank);
-    //auto bodyNode = OGRE_NEW Ogre::SceneNode(mWorld);
-    //auto bodyNode = mWorld->getRootSceneNode()->createChildSceneNode();
     auto turretNode = tank->createChildSceneNode();
     auto barrelNode = turretNode->createChildSceneNode();
     auto nozzleNode = barrelNode->createChildSceneNode();
@@ -28,26 +27,30 @@ Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position) const
     auto barrelChild = barrelNode->createChildSceneNode();
     auto nozzleChild = nozzleNode->createChildSceneNode();
 
+    // Body settings
     bodyEntity->setCastShadows(true);
     bodyEntity->setMaterialName("ch_tank_material");
     bodyEntity->setQueryFlags(static_cast<Ogre::uint32>(QueryTypes::TANK));
     bodyChild->attachObject(bodyEntity);
     bodyChild->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
 
+    // Turret settings
     turretEntity->setCastShadows(true);
     turretEntity->setMaterialName("ch_tank_material");
-    //turretEntity->setQueryFlags(COL_TANK);
+    turretEntity->setQueryFlags(0);
     turretChild->attachObject(turretEntity);
     turretChild->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
     turretNode->translate(0, 3, 0);
 
+    // Barrel settings
     barrelEntity->setCastShadows(true);
     barrelEntity->setMaterialName("ch_tank_material");
-    //barrelEntity->setQueryFlags(COL_TANK);
+    barrelEntity->setQueryFlags(0);
     barrelChild->attachObject(barrelEntity);
     barrelChild->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
     barrelNode->translate(0, 12, 36);
 
+    // Nozzle settings
     nozzleEntity->setCastShadows(true);
     nozzleEntity->setQueryFlags(0);
     nozzleChild->attachObject(nozzleEntity);
@@ -61,6 +64,7 @@ Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position) const
     // Create a BillboardSet to represent a health bar and set its properties
     auto healthBar = mWorld->createBillboardSet();
     healthBar->setCastShadows(false);
+    healthBar->setQueryFlags(0);
     healthBar->setDefaultDimensions(50, 2.0f);
     healthBar->setMaterialName("myMaterial/HealthBar");
 
@@ -77,6 +81,7 @@ Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position) const
     // Create a BillboardSet for a selection circle and set its properties
     auto selectionCircle = mWorld->createBillboardSet();
     selectionCircle->setCastShadows(false);
+    selectionCircle->setQueryFlags(0);
     selectionCircle->setDefaultDimensions(200, 200);
     selectionCircle->setMaterialName("myMaterial/SelectionCircle");
     selectionCircle->setBillboardType(Ogre::BillboardType::BBT_PERPENDICULAR_COMMON);
@@ -94,6 +99,39 @@ Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position) const
     selectionNode->attachObject(selectionCircle);
     selectionNode->setVisible(false);
 
+    // Scale the tank again (from now it should be same as leopard tank)
+    tank->scale(0.25f, 0.25f, 0.25f);
+    tank->setPosition(position);
+
+    // Prepare ghost object (collider)
+    btTransform startTrans;
+    startTrans.setIdentity();
+    startTrans.setRotation(convert(tank->getOrientation()));
+    startTrans.setOrigin(convert(tank->getPosition()));
+    auto group = static_cast<short>(CollisionTypes::TANK);
+    auto mask = CollisionTypes::TANK |
+        CollisionTypes::GROUND |
+        CollisionTypes::EXPLOSION |
+        CollisionTypes::PROJECTILE |
+        CollisionTypes::OBSTACLES |
+        CollisionTypes::POWERUP;
+    auto shape = new btBoxShape(btVector3(0.1f * 50, 0.1f * 50, 0.1f * 50));
+    auto collider = mPhysics->CreateGhostObject(startTrans,
+                                                shape,
+                                                group,
+                                                mask);
+    collider->setCollisionFlags(collider->getCollisionFlags() |
+        btCollisionObject::CF_NO_CONTACT_RESPONSE |
+        btCollisionObject::CF_KINEMATIC_OBJECT);
+
+    // Prepare path visualizer
+    auto pathViz = mWorld->createManualObject();
+    pathViz->clear();
+    pathViz->setDynamic(true);
+    pathViz->setQueryFlags(0);
+    mWorld->getRootSceneNode()->createChildSceneNode()->attachObject(pathViz);
+    pathViz->getParentSceneNode()->setVisible(true);
+
     // Set tank settings
     tank->setTurret(turretNode);
     tank->setBarrel(barrelNode);
@@ -101,8 +139,7 @@ Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position) const
     tank->setHealthDecal(healthBarNode);
     tank->setSelectionDecal(selectionNode);
     tank->setupTurretController();
-    tank->scale(0.25f, 0.25f, 0.25f);
-    tank->setPosition(position);
+    tank->setupKinematicController(pathViz, collider);
 
     return tank;
 }
@@ -114,12 +151,10 @@ Tank* TankFactory::MakeLeopardTank(const Ogre::Vector3& position) const
     auto barrelEntity = mWorld->createEntity("lpbarrel.mesh");
     auto nozzleEntity = mWorld->createEntity("sphere.mesh");
 
-    Tank* tank = OGRE_NEW Tank(mWorld,
-                               mPhysics,
-                               Tank::Type::LEOPARD);
+    auto tank = OGRE_NEW Tank(mWorld,
+                              mPhysics,
+                              Tank::Type::LEOPARD);
     mWorld->getRootSceneNode()->addChild(tank);
-    //auto bodyNode = OGRE_NEW Ogre::SceneNode(mWorld);
-    //auto bodyNode = mWorld->getRootSceneNode()->createChildSceneNode();
     auto turretNode = tank->createChildSceneNode();
     auto barrelNode = turretNode->createChildSceneNode();
     auto nozzleNode = barrelNode->createChildSceneNode();
@@ -129,26 +164,30 @@ Tank* TankFactory::MakeLeopardTank(const Ogre::Vector3& position) const
     auto barrelChild = barrelNode->createChildSceneNode();
     auto nozzleChild = nozzleNode->createChildSceneNode();
 
+    // Body settings
     bodyEntity->setCastShadows(true);
     bodyEntity->setMaterialName("lp_tank_material");
     bodyEntity->setQueryFlags(static_cast<Ogre::uint32>(QueryTypes::TANK));
     bodyChild->attachObject(bodyEntity);
     bodyChild->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
 
+    // Turret settings
     turretEntity->setCastShadows(true);
     turretEntity->setMaterialName("lp_tank_material");
-    //turretEntity->setQueryFlags(COL_TANK);
+    turretEntity->setQueryFlags(0);
     turretChild->attachObject(turretEntity);
     turretChild->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
     turretNode->translate(0, 1, 0);
 
+    // Barrel settings
     barrelEntity->setCastShadows(true);
     barrelEntity->setMaterialName("lp_tank_material");
-    //barrelEntity->setQueryFlags(COL_TANK);
+    barrelEntity->setQueryFlags(0);
     barrelChild->attachObject(barrelEntity);
     barrelChild->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
     barrelNode->translate(-1.25f, 12, 30);
 
+    // Nozzle settings
     nozzleEntity->setCastShadows(true);
     nozzleEntity->setQueryFlags(0);
     nozzleChild->attachObject(nozzleEntity);
@@ -162,6 +201,7 @@ Tank* TankFactory::MakeLeopardTank(const Ogre::Vector3& position) const
     // Create a BillboardSet to represent a health bar and set its properties
     auto healthBar = mWorld->createBillboardSet();
     healthBar->setCastShadows(false);
+    healthBar->setQueryFlags(0);
     healthBar->setDefaultDimensions(50, 2.0f);
     healthBar->setMaterialName("myMaterial/HealthBar");
 
@@ -178,6 +218,7 @@ Tank* TankFactory::MakeLeopardTank(const Ogre::Vector3& position) const
     // Create a BillboardSet for a selection circle and set its properties
     auto selectionCircle = mWorld->createBillboardSet();
     selectionCircle->setCastShadows(false);
+    selectionCircle->setQueryFlags(0);
     selectionCircle->setDefaultDimensions(200, 200);
     selectionCircle->setMaterialName("myMaterial/SelectionCircle");
     selectionCircle->setBillboardType(Ogre::BillboardType::BBT_PERPENDICULAR_COMMON);
@@ -195,6 +236,39 @@ Tank* TankFactory::MakeLeopardTank(const Ogre::Vector3& position) const
     selectionNode->attachObject(selectionCircle);
     selectionNode->setVisible(false);
 
+    // Scale the tank again
+    tank->scale(0.25f, 0.25f, 0.25f);
+    tank->setPosition(position);
+
+    // Prepare collider
+    btTransform startTrans;
+    startTrans.setIdentity();
+    startTrans.setRotation(convert(tank->getOrientation()));
+    startTrans.setOrigin(convert(tank->getPosition()));
+    auto group = static_cast<short>(CollisionTypes::TANK);
+    auto mask = CollisionTypes::TANK |
+        CollisionTypes::GROUND |
+        CollisionTypes::EXPLOSION |
+        CollisionTypes::PROJECTILE |
+        CollisionTypes::OBSTACLES |
+        CollisionTypes::POWERUP;
+    auto shape = new btBoxShape(btVector3(0.1f * 50, 0.1f * 50, 0.1f * 50));
+    auto collider = mPhysics->CreateGhostObject(startTrans,
+                                                shape,
+                                                group,
+                                                mask);
+    collider->setCollisionFlags(collider->getCollisionFlags() |
+        btCollisionObject::CF_NO_CONTACT_RESPONSE |
+        btCollisionObject::CF_KINEMATIC_OBJECT);
+
+    // Prepare path visualizer
+    auto pathViz = mWorld->createManualObject();
+    pathViz->clear();
+    pathViz->setDynamic(true);
+    pathViz->setQueryFlags(0);
+    mWorld->getRootSceneNode()->createChildSceneNode()->attachObject(pathViz);
+    pathViz->getParentSceneNode()->setVisible(true);
+
     // Set tank settings
     tank->setTurret(turretNode);
     tank->setBarrel(barrelNode);
@@ -202,8 +276,7 @@ Tank* TankFactory::MakeLeopardTank(const Ogre::Vector3& position) const
     tank->setHealthDecal(healthBarNode);
     tank->setSelectionDecal(selectionNode);
     tank->setupTurretController();
-    tank->scale(0.25f, 0.25f, 0.25f);
-    tank->setPosition(position);
+    tank->setupKinematicController(pathViz, collider);
 
     return tank;
 }

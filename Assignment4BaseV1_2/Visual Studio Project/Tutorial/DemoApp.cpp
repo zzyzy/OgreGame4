@@ -16,6 +16,8 @@ Filename:   DemoApp.cpp
 #include <utility>
 #include "TankFactory.hpp"
 #include "QueryMasks.hpp"
+#include "CollisionMasks.hpp"
+#include "OgreEuler.hpp"
 
 Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
 //-------------------------------------------------------------------------------------
@@ -36,10 +38,6 @@ DemoApp::DemoApp():
 //-------------------------------------------------------------------------------------
 DemoApp::~DemoApp(void)
 {
-	//path finding
-	if(pathFindingGraph)
-		delete pathFindingGraph;
-
 	// If the physics system exists, delete it
 	if(mPhysicsEngine)
 		delete mPhysicsEngine;
@@ -56,7 +54,6 @@ bool DemoApp::setup(void)
 
 	mTrayMgr->showCursor();
 
-	pathFindingGraph = new Graph;
 	mCurrentState = 0;
 
 	//set camera
@@ -126,7 +123,7 @@ void DemoApp::createScene(void)
 
 
 	//set ambient light
-	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
+	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.6f, 0.6f, 0.6f));
  
     // create the light
     /*Ogre::Light *light = mSceneMgr->createLight("Light1");
@@ -147,6 +144,8 @@ void DemoApp::createScene(void)
 
 
 	// MAP AND PATH FINDING A* ALGORITHM SETUP
+
+
 
 	Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
 	Ogre::MeshManager::getSingleton().createPlane(
@@ -195,15 +194,15 @@ void DemoApp::createScene(void)
 	Ogre::SceneNode* RightMazeNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(95, -1, 0));
 	Ogre::SceneNode* spawnLeftNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(-150, -1, 0));
 	Ogre::SceneNode* spawnRightNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(150, -1, 0));
-
+    
 	//change sizes of the ground entities 
-	battleGroundNode->scale(1.3, 0, 1.5);
-	topMazeNode->scale(2.5, 0, 1);
-	bottomMazeNode->scale(2.5, 0, 1);
-	LeftMazeNode->scale(0.6, 0, 1.5);
-	RightMazeNode->scale(0.6, 0, 1.5);
-	spawnLeftNode->scale(0.5, 0, 3.5);
-	spawnRightNode->scale(0.5, 0, 3.5);
+	battleGroundNode->scale(1.3f, 0, 1.5f);
+	topMazeNode->scale(2.5f, 0, 1);
+	bottomMazeNode->scale(2.5f, 0, 1);
+	LeftMazeNode->scale(0.6f, 0, 1.5f);
+	RightMazeNode->scale(0.6f, 0, 1.5f);
+	spawnLeftNode->scale(0.5f, 0, 3.5f);
+	spawnRightNode->scale(0.5f, 0, 3.5f);
 
 	// Attach ground entities
 	battleGroundNode->attachObject(battleGroundEntity);
@@ -213,8 +212,6 @@ void DemoApp::createScene(void)
 	RightMazeNode->attachObject(rightMazeEntity);
 	spawnLeftNode->attachObject(spawnLeftEntity);
 	spawnRightNode->attachObject(spawnRightEntity);
-
-	
 
 	// Set Materials
 	battleGroundEntity->setMaterialName("Examples/GrassFloor");
@@ -234,6 +231,27 @@ void DemoApp::createScene(void)
 	spawnLeftEntity->setCastShadows(false);
 	spawnRightEntity->setCastShadows(false);
 
+    // Add ground rigidbody
+    Ogre::SceneNode* collisionPlaneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    collisionPlaneNode->translate(0, -5, 0);
+    collisionPlaneNode->setVisible(false);
+
+    btTransform startTrans;
+    btCollisionShape* shape = new btBoxShape(btVector3(
+        (GRID_DIMENSION * SQUARE_SIZE) / 2.0f,
+        5,
+        (GRID_DIMENSION * SQUARE_SIZE) / 2.0f));
+    startTrans.setIdentity();
+    startTrans.setOrigin(convert(collisionPlaneNode->getPosition()));
+    mPhysicsEngine->CreateRigidBody(0.0f,
+        startTrans,
+        shape,
+        collisionPlaneNode,
+        static_cast<short>(CollisionTypes::GROUND),
+        CollisionTypes::OBSTACLES |
+        CollisionTypes::POWERUP |
+        CollisionTypes::TANK);
+
 	/***************************	SKY 	*********************************/
 	mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
 
@@ -241,7 +259,7 @@ void DemoApp::createScene(void)
 
 	for(int nodeNumber=0; nodeNumber<TOTAL_NODES; nodeNumber++)
 	{
-		int contents = pathFindingGraph->getContent(nodeNumber);
+		int contents = pathFindingGraph.getContent(nodeNumber);
 
 		if(contents == 1)
 		{
@@ -252,15 +270,16 @@ void DemoApp::createScene(void)
 
 			// Create entity
 			Ogre::Entity* cube = mSceneMgr->createEntity(entityName, "cube.mesh");
+            cube->setQueryFlags(0);
 			cube->setMaterialName("Examples/BumpyMetal");
 
 			// Attach entity to scene node
 			Ogre::SceneNode* myNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 			myNode->attachObject(cube);
-			myNode->scale(0.1, 0.1, 0.1);
+			myNode->scale(0.1f, 0.1f, 0.1f);
 			
 			// Place object at appropriate position
-			Ogre::Vector3 position = pathFindingGraph->getPosition(nodeNumber);
+			Ogre::Vector3 position = pathFindingGraph.getPosition(nodeNumber);
 			position.y = 0.5;
 			myNode->translate(position);
 		}
@@ -286,7 +305,7 @@ void DemoApp::createScene(void)
     TankFactory tankFactory(mSceneMgr, mPhysicsEngine);
 	for(int tankId = 0; tankId < TOTAL_NODES; tankId++)
 	{
-		int contents = pathFindingGraph->getContent(tankId);
+		int contents = pathFindingGraph.getContent(tankId);
 
 		if(contents == 2)
 		{
@@ -296,7 +315,7 @@ void DemoApp::createScene(void)
 			std::string tankName = "Tank" + oss.str();
 
 			// Place object at appropriate position
-			Ogre::Vector3 position = pathFindingGraph->getPosition(tankId);
+			Ogre::Vector3 position = pathFindingGraph.getPosition(tankId);
 			position.y = 0.5;
 			//create tank
             Tank* tank = tankFactory.MakeChallengerTank(position);
@@ -312,7 +331,7 @@ void DemoApp::createScene(void)
 			std::string tankName = "Tank" + oss.str();
 
 			// Place object at appropriate position
-			Ogre::Vector3 position = pathFindingGraph->getPosition(tankId);
+			Ogre::Vector3 position = pathFindingGraph.getPosition(tankId);
 			position.y = 0.5;
 			//create tank
             Tank* tank = tankFactory.MakeLeopardTank(position);
@@ -321,6 +340,9 @@ void DemoApp::createScene(void)
 			tanks.push_back(tank);
 		}
 	}
+
+    tanks[0]->MoveTo(Ogre::Vector3(50, 0, 50), &pathFindingGraph, mPathFinder);
+    tanks[1]->MoveTo(Ogre::Vector3(-50, 0, -50), &pathFindingGraph, mPathFinder);
 
 	//update health bar example
 	//tanks[0].updateHealthBar(0.5);
@@ -365,6 +387,35 @@ void DemoApp::createScene(void)
 	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(path2);
 	*/
 
+
+    // Build world grid
+    auto worldGridColour = Ogre::ColourValue(51 / 255.0f, 255 / 255.0f, 247 / 255.0f);
+    auto worldGrid = mSceneMgr->createManualObject();
+    worldGrid->clear();
+    worldGrid->setQueryFlags(0);
+    for (auto i = 0; i < TOTAL_NODES; ++i)
+    {
+        worldGrid->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_LINE_STRIP);
+        auto position = pathFindingGraph.getPosition(i);
+        position.x -= SQUARE_SIZE / 2.0f;
+        position.z -= SQUARE_SIZE / 2.0f;
+        position.y = 1;
+        worldGrid->position(position);
+        worldGrid->colour(worldGridColour);
+        position.x += SQUARE_SIZE;
+        worldGrid->position(position);
+        worldGrid->colour(worldGridColour);
+        position.z += SQUARE_SIZE;
+        worldGrid->position(position);
+        worldGrid->colour(worldGridColour);
+        position.x -= SQUARE_SIZE;
+        worldGrid->position(position);
+        worldGrid->colour(worldGridColour);
+        worldGrid->end();
+    }
+    mWorldGridNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    mWorldGridNode->attachObject(worldGrid);
+    mWorldGridNode->setVisible(false);
 }
 
 bool DemoApp::frameRenderingQueued(const Ogre::FrameEvent& evt)
@@ -377,10 +428,14 @@ bool DemoApp::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	}
     for (Tank* tank : tanks)
     {
-        tank->FireAt(Ogre::Vector3(0, 0, 0));
+        //tank->FireAt(Ogre::Vector3(0, 0, 0));
         tank->Update(evt.timeSinceLastFrame);
     }
+
+    tanks[0]->FireAt(tanks[1]->getPosition());
+
     mPhysicsEngine->update(evt.timeSinceLastFrame);
+
 	/*****************************************************************/
 	/***********************	WALK	******************************/
 	/*****************************************************************/
@@ -538,19 +593,19 @@ bool DemoApp::mouseMoved( const OIS::MouseEvent &arg )
 	/*************************		CAMERA CONTROLS		*******************************/
 	/**********************************************************************************/
 	//CAMERA MOVEMENT X/Y CONTROLS 
-	if(arg.state.X.abs > (mWindow->getWidth() - 20)) 
+	if(arg.state.X.abs > (arg.state.width - 20)) 
 	{ 
 		mDirectionCam.x = mMove; 
 	} 
-	else if(arg.state.X.abs < (mWindow->getWidth() - (mWindow->getWidth() - 20))) 
+	else if(arg.state.X.abs < (arg.state.width - (arg.state.width - 20))) 
 	{ 
 		mDirectionCam.x = -mMove; 
 	}
-	else if(arg.state.Y.abs > (mWindow->getHeight() - 20)) 
+	else if(arg.state.Y.abs > (arg.state.height - 20)) 
 	{ 
 		mDirectionCam.z = mMove; 
 	} 
-	else if(arg.state.Y.abs < (mWindow->getHeight() - (mWindow->getHeight() - 20))) 
+	else if(arg.state.Y.abs < (arg.state.height - (arg.state.height - 20))) 
 	{ 
 		mDirectionCam.z = -mMove; 
 	}
@@ -766,7 +821,7 @@ void DemoApp::createPath(Ogre::ManualObject* line, float height, std::vector<int
 
 	for(std::vector<int>::iterator it=path.begin(); it!=path.end(); it++)
 	{
-		position = pathFindingGraph->getPosition(*it);
+		position = pathFindingGraph.getPosition(*it);
 		line->position(Ogre::Vector3(position.x, height, position.z));
 		line->colour(colour);
 	}

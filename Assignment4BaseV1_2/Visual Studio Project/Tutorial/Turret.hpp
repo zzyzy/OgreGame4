@@ -58,6 +58,20 @@ public:
 
     bool FireAt(const Ogre::Vector3& target);
 
+    // Getters
+    float GetDelayBetweenShots() const { return mDelayBetweenShots; }
+    float GetShellSpeed() const { return mShellSpeed; }
+    float GetShellMass() const { return mShellMass; }
+    float GetBlastForce() const { return mBlastForce; }
+    float GetBlastRadius() const { return mBlastRadius; }
+
+    // Setters
+    void SetDelayBetweenShots(const float& delay) { mDelayBetweenShots = delay; }
+    void SetShellSpeed(const float& speed) { mShellSpeed = speed; }
+    void SetShellMass(const float& mass) { mShellMass = mass; }
+    void SetBlastForce(const float& force) { mBlastForce = force; }
+    void SetBlastRadius(const float& radius) { mBlastRadius = radius; }
+
 private:
     Ogre::SceneNode* mTurret;
     Ogre::SceneNode* mBarrel;
