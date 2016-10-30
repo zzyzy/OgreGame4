@@ -21,7 +21,8 @@ enum class CollisionTypes
     PROJECTILE  = 1 << 4,
     LP_TANK     = 1 << 5,
     CH_TANK     = 1 << 6,
-    TANK        = LP_TANK | CH_TANK,
+    TROPHY      = 1 << 7,
+    TANK        = LP_TANK | CH_TANK
 };
 
 inline short operator|(const CollisionTypes& left, const CollisionTypes& right)
