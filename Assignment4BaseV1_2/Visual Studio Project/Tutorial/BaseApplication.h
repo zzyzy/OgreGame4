@@ -21,6 +21,9 @@ This source file is part of the
 #include "SelectionBox.h"
 #include "Tank.h"
 #include <vector>
+#include <irrKlang.h>
+
+using namespace irrklang;
 
 class BaseApplication : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener
 {
@@ -28,7 +31,7 @@ public:
 	BaseApplication(void);
 	virtual ~BaseApplication(void);
 
-	virtual void go(void);
+	virtual void go(ISoundEngine* irrklang);
  
 	
 protected:
@@ -112,6 +115,8 @@ protected:
  
 	// Added for Mac compatibility
 	Ogre::String                 m_ResourcePath;
+
+    ISoundEngine* engine;
  
 #ifdef OGRE_STATIC_LIB
 	Ogre::StaticPluginLoader m_StaticPluginLoader;

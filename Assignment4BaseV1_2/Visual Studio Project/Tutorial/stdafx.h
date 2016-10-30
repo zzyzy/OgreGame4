@@ -57,5 +57,7 @@
 #include "GameObject.h"
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
+// irrKlang header file
+#include <irrKlang.h>
 
 #endif
