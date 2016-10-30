@@ -1,11 +1,14 @@
 #include "Tank.h"
+#include "SpawnState.hpp"
 
 Tank::Tank(Ogre::SceneManager* world,
            PhysicsEngine* physics,
            Type type) :
     SceneNode(world),
     mWorld(world),
-    mPhysics(physics),
+    mPhysics(physics), 
+    mGraph(nullptr), 
+    mPathFinder(nullptr),
     mTurretNode(nullptr),
     mBarrelNode(nullptr),
     mNozzleNode(nullptr),
@@ -55,6 +58,14 @@ void Tank::setSelectionDecal(Ogre::SceneNode* selectionDecal)
     assert(mSelectionNode != nullptr);
 }
 
+void Tank::setPathFinding(Graph* graph, PathFinding* pathFinder)
+{
+    assert(graph != nullptr);
+    assert(pathFinder != nullptr);
+    mGraph = graph;
+    mPathFinder = pathFinder;
+}
+
 void Tank::setupTurretController(const CollisionTypes& targetType)
 {
     mTurret = Turret(mTurretNode, mBarrelNode, mNozzleNode, mWorld, mPhysics, 5, targetType,
@@ -63,13 +74,22 @@ void Tank::setupTurretController(const CollisionTypes& targetType)
 
 void Tank::setupKinematicController(Ogre::ManualObject* pathViz, btPairCachingGhostObject* collider)
 {
+    assert(mGraph != nullptr);
+    assert(mPathFinder != nullptr);
     mKinematic = TankKinematics(this, pathViz, collider);
+}
+
+void Tank::setupStateMachine()
+{
+    mState = TankStateMachine(new SpawnState(), this);
 }
 
 Tank::Tank(const Tank& tank) :
     SceneNode(tank.mWorld),
     mWorld(tank.mWorld),
-    mPhysics(tank.mPhysics),
+    mPhysics(tank.mPhysics), 
+    mGraph(tank.mGraph),
+    mPathFinder(tank.mPathFinder),
     mTurretNode(tank.mTurretNode),
     mBarrelNode(tank.mBarrelNode),
     mNozzleNode(tank.mNozzleNode),
@@ -91,6 +111,8 @@ Tank::Tank(Tank&& tank) :
     SceneNode(tank.mWorld),
     mWorld(tank.mWorld),
     mPhysics(tank.mPhysics),
+    mGraph(tank.mGraph),
+    mPathFinder(tank.mPathFinder),
     mTurretNode(tank.mTurretNode),
     mBarrelNode(tank.mBarrelNode),
     mNozzleNode(tank.mNozzleNode),
@@ -119,6 +141,8 @@ Tank& Tank::operator=(Tank&& tank)
 {
     mWorld = tank.mWorld;
     mPhysics = tank.mPhysics;
+    mGraph = tank.mGraph;
+    mPathFinder = tank.mPathFinder;
     mTurretNode = tank.mTurretNode;
     mBarrelNode = tank.mBarrelNode;
     mNozzleNode = tank.mNozzleNode;
@@ -205,11 +229,12 @@ void Tank::Update(const float& deltaTime)
 {
     mTurret.Update(deltaTime);
     mKinematic.Update(2.0f, deltaTime);
+    mState.Update(deltaTime);
 }
 
-void Tank::MoveTo(const Ogre::Vector3& target, Graph* graph, PathFinding& pathFinder)
+void Tank::MoveTo(const Ogre::Vector3& target)
 {
-    mKinematic.MoveTo(target, graph, pathFinder);
+    mKinematic.MoveTo(target, mGraph, *mPathFinder);
 }
 
 void Tank::FireAt(const Ogre::Vector3& target)

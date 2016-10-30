@@ -46,6 +46,9 @@
     <Filter Include="Source Files\Common">
       <UniqueIdentifier>{a2e85fad-97fe-456d-9509-49266738a466}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Tank\States">
+      <UniqueIdentifier>{3b58fdb3-06fd-4ce0-8ebe-b61f16942f1a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApplication.h">
@@ -126,14 +129,20 @@
     <ClInclude Include="GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ITankState.hpp">
-      <Filter>Header Files\Interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="TankStateMachine.hpp">
       <Filter>Header Files\Tank</Filter>
     </ClInclude>
     <ClInclude Include="TankKinematics.hpp">
       <Filter>Header Files\Tank</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnState.hpp">
+      <Filter>Header Files\Tank\States</Filter>
+    </ClInclude>
+    <ClInclude Include="TankState.hpp">
+      <Filter>Header Files\Tank\States</Filter>
+    </ClInclude>
+    <ClInclude Include="WanderState.hpp">
+      <Filter>Header Files\Tank\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

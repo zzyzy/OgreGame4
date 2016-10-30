@@ -76,8 +76,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ITankState.hpp" />
+    <ClInclude Include="TankState.hpp" />
     <ClInclude Include="QueryMasks.hpp" />
+    <ClInclude Include="SpawnState.hpp" />
     <ClInclude Include="TankFactory.hpp" />
     <ClInclude Include="TankKinematics.hpp" />
     <ClInclude Include="TankStateMachine.hpp" />
@@ -105,6 +106,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tank.h" />
     <ClInclude Include="Utilities.h" />
+    <ClInclude Include="WanderState.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Program.cpp" />

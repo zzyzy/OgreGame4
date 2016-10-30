@@ -14,6 +14,7 @@
 #include "Turret.hpp"
 #include "IDamageableObject.hpp"
 #include "TankKinematics.hpp"
+#include "TankStateMachine.hpp"
 
 class Tank : public Ogre::SceneNode,
              public IDamageableObject
@@ -45,7 +46,7 @@ public:
 
     void Update(const float& deltaTime);
 
-    void MoveTo(const Ogre::Vector3& target, Graph* graph, PathFinding& pathFinder);
+    void MoveTo(const Ogre::Vector3& target);
 
     void FireAt(const Ogre::Vector3& target);
 
@@ -107,12 +108,16 @@ private:
     void setNozzle(Ogre::SceneNode* nozzle);
     void setHealthDecal(Ogre::SceneNode* healthDecal);
     void setSelectionDecal(Ogre::SceneNode* selectionDecal);
+    void setPathFinding(Graph* graph, PathFinding* pathFinder);
     void setupTurretController(const CollisionTypes& targetType);
     void setupKinematicController(Ogre::ManualObject* pathViz, btPairCachingGhostObject* collider);
+    void setupStateMachine();
 
     // Scene manager and physics engine reference
     Ogre::SceneManager* mWorld;
     PhysicsEngine* mPhysics;
+    Graph* mGraph;
+    PathFinding* mPathFinder;
 
     // Scene nodes for the different tank parts
     Ogre::SceneNode* mTurretNode;
@@ -135,6 +140,7 @@ private:
     // Controllers
     Turret mTurret;
     TankKinematics mKinematic;
+    TankStateMachine mState;
 
     //Ogre::Vector3 tankSpawnPosition;
 
