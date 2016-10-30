@@ -1,13 +1,14 @@
 #include "Tank.h"
 #include "SpawnState.hpp"
+#include "QueryMasks.hpp"
 
 Tank::Tank(Ogre::SceneManager* world,
            PhysicsEngine* physics,
            Type type) :
     SceneNode(world),
     mWorld(world),
-    mPhysics(physics), 
-    mGraph(nullptr), 
+    mPhysics(physics),
+    mGraph(nullptr),
     mPathFinder(nullptr),
     mTurretNode(nullptr),
     mBarrelNode(nullptr),
@@ -21,6 +22,7 @@ Tank::Tank(Ogre::SceneManager* world,
     mDamage(50.0f),
     mAttackSpeed(1.0f),
     mTurnRate(5.0f),
+    mScanRange(1.0f),
     mTurret(),
     mKinematic()
 {
@@ -87,7 +89,7 @@ void Tank::setupStateMachine()
 Tank::Tank(const Tank& tank) :
     SceneNode(tank.mWorld),
     mWorld(tank.mWorld),
-    mPhysics(tank.mPhysics), 
+    mPhysics(tank.mPhysics),
     mGraph(tank.mGraph),
     mPathFinder(tank.mPathFinder),
     mTurretNode(tank.mTurretNode),
@@ -102,6 +104,7 @@ Tank::Tank(const Tank& tank) :
     mDamage(tank.mDamage),
     mAttackSpeed(tank.mAttackSpeed),
     mTurnRate(tank.mTurnRate),
+    mScanRange(tank.mScanRange),
     mTurret(tank.mTurret),
     mKinematic(tank.mKinematic)
 {
@@ -125,6 +128,7 @@ Tank::Tank(Tank&& tank) :
     mDamage(tank.mDamage),
     mAttackSpeed(tank.mAttackSpeed),
     mTurnRate(tank.mTurnRate),
+    mScanRange(tank.mScanRange),
     mTurret(std::move(tank.mTurret)),
     mKinematic(std::move(tank.mKinematic))
 {
@@ -155,6 +159,7 @@ Tank& Tank::operator=(Tank&& tank)
     mDamage = tank.mDamage;
     mAttackSpeed = tank.mAttackSpeed;
     mTurnRate = tank.mTurnRate;
+    mScanRange = tank.mScanRange;
     mTurret = std::move(tank.mTurret);
     mKinematic = std::move(tank.mKinematic);
     return *this;
@@ -250,4 +255,36 @@ void Tank::ApplyDamage(const float& damage)
 float Tank::TotalDamageReceived()
 {
     return mMaxHitPoints - mHitPoints;
+}
+
+Ogre::SceneNode* Tank::GetNearestObject() const
+{
+    auto sphere = Ogre::Sphere(getPosition(), Ogre::Real(mScanRange));
+    auto sphereQuery = mWorld->createSphereQuery(sphere);
+    sphereQuery->setQueryMask(QueryTypes::TANK |
+        QueryTypes::POWERUP |
+        QueryTypes::TROPHY);
+
+    auto result = sphereQuery->execute();
+    auto it = result.movables.begin();
+    Ogre::Real shortestDistance = INT_MAX;
+    Ogre::SceneNode* closestObject = nullptr;
+
+    for (it; it != result.movables.end(); ++it)
+    {
+        auto node = (*it)->getParentSceneNode()->getParentSceneNode();
+        if (node && node != this)
+        {
+            auto distance = (getPosition() - node->getPosition()).length();
+            if (distance < shortestDistance)
+            {
+                shortestDistance = distance;
+                closestObject = node;
+            }
+        }
+    }
+
+    mWorld->destroyQuery(sphereQuery);
+
+    return closestObject;
 }

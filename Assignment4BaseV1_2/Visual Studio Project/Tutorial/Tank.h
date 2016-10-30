@@ -55,6 +55,8 @@ public:
 
     float TotalDamageReceived() override;
 
+    Ogre::SceneNode* GetNearestObject() const;
+
     //Tank(std::string name,
     //     Type type,
     //     Ogre::Vector3 spawnPosition,
@@ -79,6 +81,7 @@ public:
     Type getTankType() { return mType; };*/
 
     //void Setup();
+    Type GetType() const { return mType; }
 
     // Getters for tank details
     float GetMaxHitPoints() const { return mMaxHitPoints; }
@@ -87,6 +90,7 @@ public:
     float GetAttackDamage() const { return mDamage; }
     float GetAttackSpeed() const { return mAttackSpeed; }
     float GetTurnRate() const { return mTurnRate; }
+    float GetScanRange() const { return mScanRange; }
 
     // Setters for tank details
     void SetMaxHitPoints(const float& maxHP) { mMaxHitPoints = maxHP; }
@@ -95,6 +99,7 @@ public:
     void SetAttackDamage(const float& damage) { mDamage = damage; }
     void SetAttackSpeed(const float& as) { mAttackSpeed = as; }
     void SetTurnRate(const float& rate) { mTurnRate = rate; }
+    void SetScanRange(const float& range) { mScanRange = range; }
 
 private:
     // Only allow instantialisation via TankFactory
@@ -136,6 +141,7 @@ private:
     float mDamage;          // Damage dealt to other tanks (if damage > maxHP) = enemy dies
     float mAttackSpeed;     // Delay between shots in seconds for the turret
     float mTurnRate;
+    float mScanRange;
 
     // Controllers
     Turret mTurret;
