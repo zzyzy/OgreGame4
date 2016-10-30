@@ -104,27 +104,35 @@ public:
 
             for (auto it = collidedObjects.begin(); it != collidedObjects.end(); ++it)
             {
-                auto rbody = static_cast<btRigidBody*>(*it);
-                auto rayFromWorld = mBlastCollider->getWorldTransform().getOrigin();
-                auto rayToWorld = rbody->getCenterOfMassPosition();
-                auto impulse = rayToWorld - rayFromWorld;
+                auto rbody = dynamic_cast<btRigidBody*>(*it);
+                auto ghostObj = dynamic_cast<btPairCachingGhostObject*>(*it);
 
-                //auto node = static_cast<MyMotionState*>(rbody->getMotionState())->getNode();
-                //// Probably should cast to GameObject instead
-                //auto tank = static_cast<Tank*>(node);
-                //auto damageableObject = static_cast<IDamageableObject*>(tank);
+                if (rbody)
+                {
+                    auto rayFromWorld = mBlastCollider->getWorldTransform().getOrigin();
+                    auto rayToWorld = rbody->getCenterOfMassPosition();
+                    auto impulse = rayToWorld - rayFromWorld;
 
-                //if (damageableObject)
-                //{
-                //    auto damage = (rayToWorld - rayFromWorld).length() * 1.0f;
-                //    damageableObject->ApplyDamage(damage);
-                //    assert(damageableObject->TotalDamageReceived() == damage);
-                //}
+                    impulse.normalize();
+                    impulse *= mBlastForce;
 
-                impulse.normalize();
-                impulse *= mBlastForce;
+                    mPhysics->ShootRay(rayFromWorld, rayToWorld, impulse);
+                }
 
-                mPhysics->ShootRay(rayFromWorld, rayToWorld, impulse);
+                if (ghostObj)
+                {
+                    //auto node = static_cast<MyMotionState*>(rbody->getMotionState())->getNode();
+                    //// Probably should cast to GameObject instead
+                    //auto tank = static_cast<Tank*>(node);
+                    //auto damageableObject = static_cast<IDamageableObject*>(tank);
+
+                    //if (damageableObject)
+                    //{
+                    //    auto damage = (rayToWorld - rayFromWorld).length() * 1.0f;
+                    //    damageableObject->ApplyDamage(damage);
+                    //    assert(damageableObject->TotalDamageReceived() == damage);
+                    //}
+                }
             }
 
             mBlastTimer += deltaTime;
