@@ -16,7 +16,9 @@ enum class QueryTypes
     NOTHING     = 0,
     GROUND      = 1 << 0,
     TANK        = 1 << 1,
-    OBSTACLES   = 1 << 2
+    OBSTACLES   = 1 << 2,
+    POWERUP     = 1 << 3,
+    TROPHY      = 1 << 4
 };
 
 inline Ogre::uint32 operator|(QueryTypes left, QueryTypes right)
