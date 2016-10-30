@@ -150,6 +150,9 @@
     <ClInclude Include="AttackState.hpp">
       <Filter>Header Files\Tank\States</Filter>
     </ClInclude>
+    <ClInclude Include="DestroyedState.hpp">
+      <Filter>Header Files\Tank\States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApplication.cpp">
@@ -213,6 +216,9 @@
       <Filter>Source Files\Tank\States</Filter>
     </ClCompile>
     <ClCompile Include="SpawnState.cpp">
+      <Filter>Source Files\Tank\States</Filter>
+    </ClCompile>
+    <ClCompile Include="DestroyedState.cpp">
       <Filter>Source Files\Tank\States</Filter>
     </ClCompile>
   </ItemGroup>
