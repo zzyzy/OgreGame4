@@ -425,11 +425,8 @@ bool DemoApp::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	}
     for (Tank* tank : tanks)
     {
-        //tank->FireAt(Ogre::Vector3(0, 0, 0));
         tank->Update(evt.timeSinceLastFrame);
     }
-
-    tanks[0]->FireAt(tanks[1]->getPosition());
 
     mPhysicsEngine->update(evt.timeSinceLastFrame);
 
