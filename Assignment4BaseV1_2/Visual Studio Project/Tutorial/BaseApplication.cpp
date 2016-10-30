@@ -46,7 +46,8 @@ BaseApplication::BaseApplication(void)
     mSelectionBox(0),
     mRayScnQuery(0),
     mVolQuery(0),
-	editSelection(false)
+	editSelection(false),
+	mRNG(std::random_device()())
 {
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
     m_ResourcePath = Ogre::macBundlePath() + "/Contents/Resources/";
@@ -447,6 +448,7 @@ bool BaseApplication::setup(void)
 {
 
 	mRoot = new Ogre::Root(mPluginsCfg);
+
  
 	setupResources();
  

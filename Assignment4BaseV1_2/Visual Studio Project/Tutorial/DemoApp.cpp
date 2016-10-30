@@ -115,6 +115,25 @@ bool DemoApp::processUnbufferedInput(const Ogre::FrameEvent& evt)
 
 
 
+void DemoApp::createPowerUps() {
+
+	// Create Powerup
+	PowerUp *firePowerUp = createPowerUp(PowerUpTypeFirePower, "FirePower1");
+	firePowerUp->node->setPosition(randomSpawnLocation());
+
+	PowerUp *healthPowerUp = createPowerUp(PowerUpTypeHealth, "HealthPowerUp1");
+	healthPowerUp->node->setPosition(randomSpawnLocation());
+
+	PowerUp *speedPowerUp = createPowerUp(PowerUpTypeSpeed, "SpeedPowerUp1");
+	speedPowerUp->node->setPosition(randomSpawnLocation());
+
+	PowerUp *ratePowerUp = createPowerUp(PowerUpTypeRateOfFire, "RatePowerUp1");
+	ratePowerUp->node->setPosition(randomSpawnLocation());
+
+}
+
+
+
 //-------------------------------------------------------------------------------------
 void DemoApp::createScene(void)
 {
@@ -425,6 +444,12 @@ void DemoApp::createScene(void)
     mWorldGridNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
     mWorldGridNode->attachObject(worldGrid);
     mWorldGridNode->setVisible(false);
+}
+
+Ogre::Vector3 DemoApp::randomSpawnLocation() {
+	    std::uniform_real_distribution<float> xDis(-60, 60);
+        std::uniform_real_distribution<float> zDis(-70, 70);
+        return Ogre::Vector3(xDis(mRNG), 0, zDis(mRNG));
 }
 
 bool DemoApp::frameRenderingQueued(const Ogre::FrameEvent& evt)
