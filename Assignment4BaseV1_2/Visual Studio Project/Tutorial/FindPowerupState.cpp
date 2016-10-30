@@ -1,6 +1,6 @@
 #include "FindPowerupState.hpp"
 
-TankState* Update(TankStateMachine& tankState, const float& deltaTime)
+TankState* FindPowerupState::Update(TankStateMachine& tankState, const float& deltaTime)
 {
     return nullptr;
 }

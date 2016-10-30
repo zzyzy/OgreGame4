@@ -23,6 +23,6 @@ public:
     {
         return Type::POWERUP;
     }
-}
+};
 
 #endif // __FIND_POWERUP_STATE_HPP__
