@@ -162,6 +162,12 @@
     <ClInclude Include="TankCollider.hpp">
       <Filter>Header Files\Tank</Filter>
     </ClInclude>
+    <ClInclude Include="Trophy.hpp">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectFactory.hpp">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
     <ClInclude Include="AudioEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -241,6 +247,9 @@
     </ClCompile>
     <ClCompile Include="AudioEngine.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectFactory.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

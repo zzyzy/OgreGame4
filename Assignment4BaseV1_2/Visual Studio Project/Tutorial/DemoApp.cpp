@@ -18,23 +18,25 @@ Filename:   DemoApp.cpp
 #include "QueryMasks.hpp"
 #include "CollisionMasks.hpp"
 #include "OgreEuler.hpp"
+#include "ObjectFactory.hpp"
 
 Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
 //-------------------------------------------------------------------------------------
 DemoApp::DemoApp():
     mMove(150),
-	mTarget(0),
+    mTarget(0),
     mCamNode(0),
-	isOrbiting(false),
-	multipleSelection(false),
+    isOrbiting(false),
+    multipleSelection(false), mLPTeamScore(0), mCHTeamScore(0),
     mDirectionCam(Ogre::Vector3::ZERO),
-	mDirection(Ogre::Vector3::ZERO),
-	mWalkSpeed(10.0f),
-	shouldAnimate(false)
+    mDirection(Ogre::Vector3::ZERO),
+    mWalkSpeed(10.0f),
+    shouldAnimate(false)
 
 {
-	objects = new std::vector<GameObject*>();
+    objects = new std::vector<GameObject*>();
 }
+
 //-------------------------------------------------------------------------------------
 DemoApp::~DemoApp(void)
 {
@@ -252,7 +254,8 @@ void DemoApp::createScene(void)
         static_cast<short>(CollisionTypes::GROUND),
         CollisionTypes::OBSTACLES |
         CollisionTypes::POWERUP |
-        CollisionTypes::TANK);
+        CollisionTypes::TANK |
+        CollisionTypes::TROPHY);
 
 	/***************************	SKY 	*********************************/
 	mSceneMgr->setSkyBox(true, "Examples/SpaceSkyBox");
@@ -342,6 +345,10 @@ void DemoApp::createScene(void)
 			tanks.push_back(tank);
 		}
 	}
+
+    ObjectFactory objectFactory(mSceneMgr, mPhysicsEngine);
+    Trophy* trophy = objectFactory.MakeTrophy(Ogre::Vector3(4, 2, 4), &mLPTeamScore, &mCHTeamScore);
+    mTrophyPool.Add(trophy);
 
 	//update health bar example
 	//tanks[0].updateHealthBar(0.5);
@@ -436,7 +443,11 @@ bool DemoApp::frameRenderingQueued(const Ogre::FrameEvent& evt)
         tank->Update(evt.timeSinceLastFrame);
     }
 
+    mTrophyPool.Update(evt.timeSinceLastFrame);
     mPhysicsEngine->update(evt.timeSinceLastFrame);
+
+    std::cout << "CH Score: " << mCHTeamScore << std::endl;
+    std::cout << "LP Score: " << mLPTeamScore << std::endl;
 
 	/*****************************************************************/
 	/***********************	WALK	******************************/

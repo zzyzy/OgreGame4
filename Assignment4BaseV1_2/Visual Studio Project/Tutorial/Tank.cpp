@@ -22,7 +22,8 @@ Tank::Tank(Ogre::SceneManager* world,
     mDamage(50.0f),
     mAttackSpeed(1.0f),
     mTurnRate(5.0f),
-    mScanRange(1.0f),
+    mScanRange(1.0f), 
+    mScore(0),
     mTurret(),
     mKinematic()
 {
@@ -104,7 +105,8 @@ Tank::Tank(const Tank& tank) :
     mDamage(tank.mDamage),
     mAttackSpeed(tank.mAttackSpeed),
     mTurnRate(tank.mTurnRate),
-    mScanRange(tank.mScanRange),
+    mScanRange(tank.mScanRange), 
+    mScore(tank.mScore),
     mTurret(tank.mTurret),
     mKinematic(tank.mKinematic)
 {
@@ -129,6 +131,7 @@ Tank::Tank(Tank&& tank) :
     mAttackSpeed(tank.mAttackSpeed),
     mTurnRate(tank.mTurnRate),
     mScanRange(tank.mScanRange),
+    mScore(tank.mScore),
     mTurret(std::move(tank.mTurret)),
     mKinematic(std::move(tank.mKinematic))
 {
@@ -160,6 +163,7 @@ Tank& Tank::operator=(Tank&& tank)
     mAttackSpeed = tank.mAttackSpeed;
     mTurnRate = tank.mTurnRate;
     mScanRange = tank.mScanRange;
+    mScore = tank.mScore;
     mTurret = std::move(tank.mTurret);
     mKinematic = std::move(tank.mKinematic);
     return *this;

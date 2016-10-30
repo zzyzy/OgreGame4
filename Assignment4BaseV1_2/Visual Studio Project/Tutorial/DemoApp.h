@@ -22,6 +22,7 @@ Filename:   DemoApp.h
 #include <deque>
 #include "PowerUp.h"
 #include "Tank.h"
+#include "Trophy.hpp"
 
 class DemoApp : public BaseApplication
 {
@@ -114,6 +115,11 @@ private:
 	//Ogre::Vector2 worldToScreenPosition(const Ogre::Vector3& position);
 
     Ogre::SceneNode* mWorldGridNode;
+
+    PoolManager mTrophyPool;
+
+    float mLPTeamScore;
+    float mCHTeamScore;
 };
  
 #endif // #ifndef __DemoApp_h_

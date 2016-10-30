@@ -91,6 +91,7 @@ public:
     float GetAttackSpeed() const { return mAttackSpeed; }
     float GetTurnRate() const { return mTurnRate; }
     float GetScanRange() const { return mScanRange; }
+    float GetScore() const { return mScore; }
 
     // Setters for tank details
     void SetMaxHitPoints(const float& maxHP) { mMaxHitPoints = maxHP; }
@@ -100,6 +101,7 @@ public:
     void SetAttackSpeed(const float& as) { mAttackSpeed = as; }
     void SetTurnRate(const float& rate) { mTurnRate = rate; }
     void SetScanRange(const float& range) { mScanRange = range; }
+    void AddScore(const float& score) { mScore += score; }
 
 private:
     // Only allow instantialisation via TankFactory
@@ -142,6 +144,7 @@ private:
     float mAttackSpeed;     // Delay between shots in seconds for the turret
     float mTurnRate;
     float mScanRange;
+    float mScore;
 
     // Controllers
     Turret mTurret;
