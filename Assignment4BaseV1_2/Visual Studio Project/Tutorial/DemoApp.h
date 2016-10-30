@@ -49,10 +49,10 @@ protected:
 
 
 	// Convenience function for creating a power up in the scene
-	PowerUp* createPowerUp(PowerUpType type, Ogre::String name);
+	//PowerUp* createPowerUp(PowerUpType type, Ogre::String name);
 
 	// Simple test function that creates one of each power up and adds to scene
-	void createPowerUps();
+	//void createPowerUps();
 
 	Ogre::SceneNode *node;			//scene node
 	Ogre::Entity* entGround;		//ground entity
@@ -116,6 +116,7 @@ private:
     Ogre::SceneNode* mWorldGridNode;
 
     PoolManager mTrophyPool;
+    PoolManager mPowerUpPool;
 
     float mLPTeamScore;
     float mCHTeamScore;

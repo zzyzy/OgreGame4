@@ -3,6 +3,8 @@
 #include "AttackState.hpp"
 #include "Trophy.hpp"
 #include "FindTrophyState.hpp"
+#include "PowerUp.h"
+#include "FindPowerupState.hpp"
 
 TankState* WanderState::Update(TankStateMachine& tankState, const float& deltaTime)
 {
@@ -26,6 +28,7 @@ TankState* WanderState::Update(TankStateMachine& tankState, const float& deltaTi
     auto object = tank->GetNearestObject();
     auto trophy = dynamic_cast<Trophy*>(object);
     auto enemyTank = dynamic_cast<Tank*>(object);
+    auto powerup = dynamic_cast<PowerUp*>(object);
 
     if (trophy)
     {
@@ -35,6 +38,11 @@ TankState* WanderState::Update(TankStateMachine& tankState, const float& deltaTi
     if (enemyTank && enemyTank->GetType() != tank->GetType())
     {
         return new AttackState();
+    }
+
+    if (powerup)
+    {
+        return new FindPowerupState(powerup);
     }
 
     return nullptr;

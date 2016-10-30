@@ -17,7 +17,6 @@ Turret::Turret() :
     mPhysics(nullptr),
     mPool(1), 
     mTargetType(),
-    mDelayBetweenShots(0.0f),
     mElapsedDelay(0.0f),
     mShellSpeed(0.0f),
     mShellMass(0.0f),
@@ -36,7 +35,6 @@ Turret::Turret(Tank* tank,
                PhysicsEngine* physics,
                const size_t& maxPoolSize,
                const CollisionTypes& targetType,
-               const float& delayBetweenShots,
                const float& shellSpeed,
                const float& shellMass,
                const float& blastForce,
@@ -49,8 +47,7 @@ Turret::Turret(Tank* tank,
     mPhysics(physics),
     mPool(maxPoolSize), 
     mTargetType(targetType),
-    mDelayBetweenShots(delayBetweenShots),
-    mElapsedDelay(delayBetweenShots),
+    mElapsedDelay(mTank->GetAttackSpeed()),
     mShellSpeed(shellSpeed),
     mShellMass(shellMass),
     mBlastForce(blastForce),
@@ -76,7 +73,6 @@ Turret::Turret(const Turret& turret) :
     mPhysics(turret.mPhysics),
     mPool(turret.mPool),
     mTargetType(turret.mTargetType),
-    mDelayBetweenShots(turret.mDelayBetweenShots),
     mElapsedDelay(turret.mElapsedDelay),
     mShellSpeed(turret.mShellSpeed),
     mShellMass(turret.mShellMass),
@@ -96,7 +92,6 @@ Turret::Turret(Turret&& turret) :
     mPhysics(turret.mPhysics),
     mPool(std::move(turret.mPool)),
     mTargetType(turret.mTargetType),
-    mDelayBetweenShots(turret.mDelayBetweenShots),
     mElapsedDelay(turret.mElapsedDelay),
     mShellSpeed(turret.mShellSpeed),
     mShellMass(turret.mShellMass),
@@ -124,7 +119,6 @@ Turret& Turret::operator=(Turret&& turret)
     mPhysics = turret.mPhysics;
     mPool = std::move(turret.mPool);
     mTargetType = turret.mTargetType;
-    mDelayBetweenShots = turret.mDelayBetweenShots;
     mElapsedDelay = turret.mElapsedDelay;
     mShellSpeed = turret.mShellSpeed;
     mShellMass = turret.mShellMass;
@@ -137,7 +131,7 @@ Turret& Turret::operator=(Turret&& turret)
 
 void Turret::Update(const float& deltaTime)
 {
-    if (mElapsedDelay < mDelayBetweenShots)
+    if (mElapsedDelay < mTank->GetAttackSpeed())
     {
         mElapsedDelay += deltaTime;
     }
@@ -188,7 +182,7 @@ void Turret::Update(const float& deltaTime)
 
 bool Turret::IsReady() const
 {
-    return mElapsedDelay >= mDelayBetweenShots;
+    return mElapsedDelay >= mTank->GetAttackSpeed();
 }
 
 void Turret::GetLookAtRotations(const Ogre::Vector3& target,

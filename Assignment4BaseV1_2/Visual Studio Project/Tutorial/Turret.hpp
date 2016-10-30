@@ -35,7 +35,6 @@ public:
            PhysicsEngine* physics,
            const size_t& maxPoolSize,
            const CollisionTypes& targetType,
-           const float& delayBetweenShots = 1.0f,
            const float& shellSpeed = 250.0f,
            const float& shellMass = 2.0f,
            const float& blastForce = 0.5f,
@@ -64,14 +63,12 @@ public:
     bool FireAt(const Ogre::Vector3& target);
 
     // Getters
-    float GetDelayBetweenShots() const { return mDelayBetweenShots; }
     float GetShellSpeed() const { return mShellSpeed; }
     float GetShellMass() const { return mShellMass; }
     float GetBlastForce() const { return mBlastForce; }
     float GetBlastRadius() const { return mBlastRadius; }
 
     // Setters
-    void SetDelayBetweenShots(const float& delay) { mDelayBetweenShots = delay; }
     void SetShellSpeed(const float& speed) { mShellSpeed = speed; }
     void SetShellMass(const float& mass) { mShellMass = mass; }
     void SetBlastForce(const float& force) { mBlastForce = force; }
@@ -86,7 +83,6 @@ private:
     PhysicsEngine* mPhysics;
     PoolManager mPool;
     CollisionTypes mTargetType;
-    float mDelayBetweenShots;
     float mElapsedDelay;
     float mShellSpeed;
     float mShellMass;

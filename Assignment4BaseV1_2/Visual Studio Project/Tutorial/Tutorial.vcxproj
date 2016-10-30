@@ -82,6 +82,7 @@
     <ClInclude Include="FindPowerupState.hpp" />
     <ClInclude Include="FindTrophyState.hpp" />
     <ClInclude Include="ObjectFactory.hpp" />
+    <ClInclude Include="PowerUpEffect.hpp" />
     <ClInclude Include="TankCollider.hpp" />
     <ClInclude Include="TankState.hpp" />
     <ClInclude Include="QueryMasks.hpp" />
@@ -137,7 +138,6 @@
     <ClCompile Include="PathFinding.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="PoolManager.cpp" />
-    <ClCompile Include="PowerUp.cpp" />
     <ClCompile Include="SelectionBox.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

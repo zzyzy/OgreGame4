@@ -4,6 +4,7 @@
 
 #include "PhysicsEngine.h"
 #include "Trophy.hpp"
+#include "PowerUp.h"
 
 class ObjectFactory
 {
@@ -18,6 +19,7 @@ public:
     }
 
     Trophy* MakeTrophy(const Ogre::Vector3& position, float* lpScore, float* chScore) const;
+    PowerUp* MakePowerUp(const Ogre::Vector3& position, PowerUp::Type type) const;
 
 private:
     Ogre::SceneManager* mWorld;

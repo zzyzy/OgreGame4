@@ -87,31 +87,31 @@ bool DemoApp::processUnbufferedInput(const Ogre::FrameEvent& evt)
 //-------------------------------------------------------------------------------------
 
 // Creates Power Up of type in scene
-PowerUp* DemoApp::createPowerUp(PowerUpType type, Ogre::String name) {
-
-	PowerUp *powerUp = new PowerUp(mSceneMgr, type, name);
-	powerUp->node->setScale(2, 2, 2);
-	objects->push_back(powerUp);
-
-	return powerUp;
-}
-
-void DemoApp::createPowerUps() {
-
-	// Create Powerup
-	PowerUp *firePowerUp = createPowerUp(PowerUpTypeFirePower, "FirePower1");
-	firePowerUp->node->setPosition(-5,0,10);
-
-	PowerUp *healthPowerUp = createPowerUp(PowerUpTypeHealth, "HealthPowerUp1");
-	healthPowerUp->node->setPosition(-0,0,10);
-
-	PowerUp *speedPowerUp = createPowerUp(PowerUpTypeSpeed, "SpeedPowerUp1");
-	speedPowerUp->node->setPosition(5,0,10);
-
-	PowerUp *ratePowerUp = createPowerUp(PowerUpTypeRateOfFire, "RatePowerUp1");
-	ratePowerUp->node->setPosition(10,0,10);
-
-}
+//PowerUp* DemoApp::createPowerUp(PowerUpType type, Ogre::String name) {
+//
+//	PowerUp *powerUp = new PowerUp(mSceneMgr, type, name);
+//	powerUp->node->setScale(2, 2, 2);
+//	objects->push_back(powerUp);
+//
+//	return powerUp;
+//}
+//
+//void DemoApp::createPowerUps() {
+//
+//	// Create Powerup
+//	PowerUp *firePowerUp = createPowerUp(PowerUpTypeFirePower, "FirePower1");
+//	firePowerUp->node->setPosition(-5,0,10);
+//
+//	PowerUp *healthPowerUp = createPowerUp(PowerUpTypeHealth, "HealthPowerUp1");
+//	healthPowerUp->node->setPosition(-0,0,10);
+//
+//	PowerUp *speedPowerUp = createPowerUp(PowerUpTypeSpeed, "SpeedPowerUp1");
+//	speedPowerUp->node->setPosition(5,0,10);
+//
+//	PowerUp *ratePowerUp = createPowerUp(PowerUpTypeRateOfFire, "RatePowerUp1");
+//	ratePowerUp->node->setPosition(10,0,10);
+//
+//}
 
 
 
@@ -293,7 +293,11 @@ void DemoApp::createScene(void)
 	//
 	// Create Power Ups
 	//
-	createPowerUps();
+    ObjectFactory objectFactory(mSceneMgr, mPhysicsEngine);
+    auto powerup = objectFactory.MakePowerUp(Ogre::Vector3(-4, 2, -4), PowerUp::Type::SpeedBoost);
+    mTrophyPool.Add(powerup);
+	//createPowerUps();
+
 
 	// create the path objects, and clear them to start off
 	/*path1 = mSceneMgr->createManualObject("DijkstraPath");
@@ -346,7 +350,6 @@ void DemoApp::createScene(void)
 		}
 	}
 
-    ObjectFactory objectFactory(mSceneMgr, mPhysicsEngine);
     Trophy* trophy = objectFactory.MakeTrophy(Ogre::Vector3(4, 2, 4), &mLPTeamScore, &mCHTeamScore);
     mTrophyPool.Add(trophy);
 
@@ -438,6 +441,7 @@ bool DemoApp::frameRenderingQueued(const Ogre::FrameEvent& evt)
     }
 
     mTrophyPool.Update(evt.timeSinceLastFrame);
+    mPowerUpPool.Update(evt.timeSinceLastFrame);
     mPhysicsEngine->update(evt.timeSinceLastFrame);
 
     std::cout << "CH Score: " << mCHTeamScore << std::endl;

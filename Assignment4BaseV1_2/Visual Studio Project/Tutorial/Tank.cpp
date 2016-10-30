@@ -25,7 +25,8 @@ Tank::Tank(Ogre::SceneManager* world,
     mScanRange(1.0f), 
     mScore(0),
     mTurret(),
-    mKinematic()
+    mKinematic(),
+    mPowerUpPool(5)
 {
     assert(world != nullptr);
     assert(physics != nullptr);
@@ -72,7 +73,7 @@ void Tank::setPathFinding(Graph* graph, PathFinding* pathFinder)
 void Tank::setupTurretController(const CollisionTypes& targetType)
 {
     mTurret = Turret(this, mTurretNode, mBarrelNode, mNozzleNode, mWorld, mPhysics, 5, targetType,
-                     1, 250, 2, 0.5, 10);
+                     250, 2, 0.5, 10);
 }
 
 void Tank::setupKinematicController(Ogre::ManualObject* pathViz, btPairCachingGhostObject* collider)
@@ -108,7 +109,8 @@ Tank::Tank(const Tank& tank) :
     mScanRange(tank.mScanRange), 
     mScore(tank.mScore),
     mTurret(tank.mTurret),
-    mKinematic(tank.mKinematic)
+    mKinematic(tank.mKinematic),
+    mPowerUpPool(tank.mPowerUpPool)
 {
 }
 
@@ -133,7 +135,8 @@ Tank::Tank(Tank&& tank) :
     mScanRange(tank.mScanRange),
     mScore(tank.mScore),
     mTurret(std::move(tank.mTurret)),
-    mKinematic(std::move(tank.mKinematic))
+    mKinematic(std::move(tank.mKinematic)),
+    mPowerUpPool(std::move(tank.mPowerUpPool))
 {
 }
 
@@ -166,6 +169,7 @@ Tank& Tank::operator=(Tank&& tank)
     mScore = tank.mScore;
     mTurret = std::move(tank.mTurret);
     mKinematic = std::move(tank.mKinematic);
+    mPowerUpPool = std::move(tank.mPowerUpPool);
     return *this;
 }
 
@@ -236,9 +240,11 @@ void Tank::UpdateHealthBar() const
 
 void Tank::Update(const float& deltaTime)
 {
+    UpdateHealthBar();
     mTurret.Update(deltaTime);
     mKinematic.Update(2.0f, deltaTime);
     mState.Update(deltaTime);
+    mPowerUpPool.Update(deltaTime);
 }
 
 void Tank::MoveTo(const Ogre::Vector3& target)
@@ -249,7 +255,7 @@ void Tank::MoveTo(const Ogre::Vector3& target)
 void Tank::FireAt(const Ogre::Vector3& target)
 {
 
-	AudioEngine::sharedInstance()->play2D("./media/audio/firing.wav");
+	//AudioEngine::sharedInstance()->play2D("./media/audio/firing.wav");
 	//	engine->play2D("./media/audio/explosion.wav");
     mTurret.FireAt(target);
 }
@@ -259,7 +265,6 @@ void Tank::ApplyDamage(const float& damage)
     if (mHitPoints <= mMaxHitPoints && mHitPoints > 0) 
     {
         mHitPoints -= damage;
-        UpdateHealthBar();
 	} 
 	
 	if(mHitPoints <= 0) {

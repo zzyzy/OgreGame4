@@ -15,6 +15,7 @@
 #include "IDamageableObject.hpp"
 #include "TankKinematics.hpp"
 #include "TankStateMachine.hpp"
+#include "PowerUpEffect.hpp"
 
 class Tank : public Ogre::SceneNode,
              public IDamageableObject
@@ -103,6 +104,14 @@ public:
     void SetScanRange(const float& range) { mScanRange = range; }
     void AddScore(const float& score) { mScore += score; }
 
+    void AddPowerUpEffect(PowerUpEffect* effect) { mPowerUpPool.Add(effect); }
+
+    float* GetMaxHPPtr() { return &mMaxHitPoints; }
+    float* GetHPPtr() { return &mHitPoints; }
+    float* GetMSPtr() { return &mMoveSpeed; }
+    float* GetDamagePtr() { return &mDamage; }
+    float* GetASPtr() { return &mAttackSpeed; }
+
 private:
     // Only allow instantialisation via TankFactory
     Tank(Ogre::SceneManager* world,
@@ -150,6 +159,9 @@ private:
     Turret mTurret;
     TankKinematics mKinematic;
     TankStateMachine mState;
+
+    // Powerups
+    PoolManager mPowerUpPool;
 
     //Ogre::Vector3 tankSpawnPosition;
 
