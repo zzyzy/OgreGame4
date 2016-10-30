@@ -412,7 +412,7 @@ void BaseApplication::loadResources(void)
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 //-------------------------------------------------------------------------------------
-void BaseApplication::go(ISoundEngine* irrklang)
+void BaseApplication::go()
 {
 #ifdef _DEBUG
 	#ifndef OGRE_STATIC_LIB	
@@ -432,7 +432,7 @@ void BaseApplication::go(ISoundEngine* irrklang)
 	#endif
 #endif
 
-    engine = irrklang;
+  //  engine = irrklang;
  
 	if (!setup())
 		return;

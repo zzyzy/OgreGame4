@@ -59,5 +59,6 @@
 
 // irrKlang header file
 #include <irrKlang.h>
+#include "AudioEngine.h"
 
 #endif

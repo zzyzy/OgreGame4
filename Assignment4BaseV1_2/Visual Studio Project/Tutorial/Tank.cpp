@@ -244,6 +244,9 @@ void Tank::MoveTo(const Ogre::Vector3& target)
 
 void Tank::FireAt(const Ogre::Vector3& target)
 {
+
+	AudioEngine::sharedInstance()->play2D("./media/audio/explosion.wav");
+	//	engine->play2D("./media/audio/explosion.wav");
     mTurret.FireAt(target);
 }
 
