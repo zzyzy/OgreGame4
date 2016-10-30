@@ -1,3 +1,13 @@
+/*
+ * Destroyed state
+ * 
+ * Copyright (C) 2016 Zhen Zhi Lee
+ * Written by Zhen Zhi Lee (leezhenzhi@gmail.com)
+ * 
+ * State when the tank is destroyed. Just a simple
+ * countdown before the tank is respawned.
+ */
+
 #pragma once
 #ifndef __DESTROYED_STATE_HPP__
 #define __DESTROYED_STATE_HPP__

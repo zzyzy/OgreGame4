@@ -78,6 +78,8 @@
   <ItemGroup>
     <ClInclude Include="AttackState.hpp" />
     <ClInclude Include="DestroyedState.hpp" />
+    <ClInclude Include="FindPowerupState.hpp" />
+    <ClInclude Include="FindTrophyState.hpp" />
     <ClInclude Include="TankState.hpp" />
     <ClInclude Include="QueryMasks.hpp" />
     <ClInclude Include="SpawnState.hpp" />
@@ -113,6 +115,8 @@
   <ItemGroup>
     <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="DestroyedState.cpp" />
+    <ClCompile Include="FindPowerupState.cpp" />
+    <ClCompile Include="FindTrophyState.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="SpawnState.cpp" />
     <ClCompile Include="TankFactory.cpp" />
