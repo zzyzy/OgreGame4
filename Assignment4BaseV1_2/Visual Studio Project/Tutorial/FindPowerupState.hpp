@@ -21,7 +21,7 @@ public:
 
     Type GetType() const override
     {
-        return Type::TROPHY;
+        return Type::POWERUP;
     }
 }
 
