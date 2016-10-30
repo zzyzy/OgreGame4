@@ -14,16 +14,27 @@
 #define __FIND_TROPHY_STATE_HPP__
 
 #include "TankState.hpp"
+#include "Trophy.hpp"
 
 class FindTrophyState : public TankState
 {
 public:
+    explicit FindTrophyState(Trophy* trophy) :
+        mTrophy(trophy),
+        mMoveLocation(Ogre::Vector3::ZERO)
+    {
+    }
+
     TankState* Update(TankStateMachine& tankState, const float& deltaTime) override;
 
     Type GetType() const override
     {
         return Type::TROPHY;
     }
+
+private:
+    Trophy* mTrophy;
+    Ogre::Vector3 mMoveLocation;
 };
 
 #endif // __FIND_TROPHY_STATE_HPP__

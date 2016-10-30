@@ -17,7 +17,7 @@ public:
         assert(physics != nullptr);
     }
 
-    Trophy* MakeTrophy(const Ogre::Vector3& position) const;
+    Trophy* MakeTrophy(const Ogre::Vector3& position, float* lpScore, float* chScore) const;
 
 private:
     Ogre::SceneManager* mWorld;

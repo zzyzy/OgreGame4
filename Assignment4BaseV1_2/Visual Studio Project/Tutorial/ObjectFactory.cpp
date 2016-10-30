@@ -2,16 +2,17 @@
 #include "QueryMasks.hpp"
 #include "CollisionMasks.hpp"
 
-Trophy* ObjectFactory::MakeTrophy(const Ogre::Vector3& position) const
+Trophy* ObjectFactory::MakeTrophy(const Ogre::Vector3& position, float* lpScore, float* chScore) const
 {
     auto entity = mWorld->createEntity("cube.mesh");
-    auto trophy = OGRE_NEW Trophy(mWorld);
+    auto trophy = OGRE_NEW Trophy(mWorld, mPhysics, lpScore, chScore);
     auto scale = Ogre::Vector3(0.02f, 0.02f, 0.02f);
     mWorld->getRootSceneNode()->addChild(trophy);
+    auto child = trophy->createChildSceneNode();
     entity->setCastShadows(true);
     entity->setQueryFlags(static_cast<Ogre::uint32>(QueryTypes::TROPHY));
-    trophy->attachObject(entity);
-    trophy->scale(scale);
+    child->attachObject(entity);
+    child->scale(scale);
     trophy->setPosition(position);
 
     btTransform startTransform;
