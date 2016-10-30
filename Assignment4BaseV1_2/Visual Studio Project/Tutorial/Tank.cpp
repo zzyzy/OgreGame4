@@ -245,7 +245,7 @@ void Tank::MoveTo(const Ogre::Vector3& target)
 void Tank::FireAt(const Ogre::Vector3& target)
 {
 
-	AudioEngine::sharedInstance()->play2D("./media/audio/explosion.wav");
+	AudioEngine::sharedInstance()->play2D("./media/audio/firing.wav");
 	//	engine->play2D("./media/audio/explosion.wav");
     mTurret.FireAt(target);
 }
@@ -256,7 +256,12 @@ void Tank::ApplyDamage(const float& damage)
     {
         mHitPoints -= damage;
         UpdateHealthBar();
-    }
+	} 
+	
+	if(mHitPoints <= 0) {
+		// Die/ Destroy
+			AudioEngine::sharedInstance()->play2D("./media/audio/explosion.wav");
+	}
 }
 
 float Tank::TotalDamageReceived()

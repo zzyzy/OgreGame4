@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <Media Include="media\audio\explosion.wav" />
+    <Media Include="media\audio\firing.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -281,5 +281,8 @@
     <Media Include="media\audio\explosion.wav">
       <Filter>media</Filter>
     </Media>
+    <Media Include="media\audio\firing.wav">
+      <Filter>media</Filter>
+    </Media>
   </ItemGroup>
 </Project>
