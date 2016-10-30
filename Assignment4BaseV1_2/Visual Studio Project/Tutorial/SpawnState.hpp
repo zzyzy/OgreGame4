@@ -15,10 +15,7 @@
 #define __SPAWN_STATE_HPP__
 
 #include "TankState.hpp"
-#include "TankStateMachine.hpp"
-#include "Tank.h"
 #include <random>
-#include "WanderState.hpp"
 
 class SpawnState : public TankState
 {
@@ -29,27 +26,7 @@ public:
     {
     }
 
-    TankState* Update(TankStateMachine& tankState, const float& deltaTime) override
-    {
-        Tank* tank = tankState.GetTank();
-
-        if (mMoveLocation == Ogre::Vector3::ZERO)
-        {
-            std::uniform_real_distribution<float> xDis(-60, 60);
-            std::uniform_real_distribution<float> zDis(-70, 70);
-            mMoveLocation = Ogre::Vector3(xDis(mRNG), 0, zDis(mRNG));
-
-            // Move to location
-            tank->MoveTo(mMoveLocation);
-        }
-        
-        if (tank->getPosition().positionEquals(mMoveLocation, 10.0f))
-        {
-            return new WanderState();
-        }
-
-        return nullptr;
-    }
+    TankState* Update(TankStateMachine& tankState, const float& deltaTime) override;
 
     Type GetType() const override
     {

@@ -76,6 +76,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AttackState.hpp" />
     <ClInclude Include="TankState.hpp" />
     <ClInclude Include="QueryMasks.hpp" />
     <ClInclude Include="SpawnState.hpp" />
@@ -109,7 +110,9 @@
     <ClInclude Include="WanderState.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="Program.cpp" />
+    <ClCompile Include="SpawnState.cpp" />
     <ClCompile Include="TankFactory.cpp" />
     <ClCompile Include="TankKinematics.cpp" />
     <ClCompile Include="Turret.cpp" />
@@ -130,6 +133,7 @@
     </ClCompile>
     <ClCompile Include="Tank.cpp" />
     <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="WanderState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="media\myMaterial.material" />
