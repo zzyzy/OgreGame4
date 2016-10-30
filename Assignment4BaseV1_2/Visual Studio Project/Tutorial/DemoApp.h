@@ -52,6 +52,7 @@ protected:
 
 	// Simple test function that creates one of each power up and adds to scene
 	void createPowerUps();
+	   
 
 	Ogre::SceneNode *node;			//scene node
 	Ogre::Entity* entGround;		//ground entity
@@ -104,7 +105,7 @@ private:
 	Ogre::ManualObject* path2;
 
 	void createPath(Ogre::ManualObject* line, float height, std::vector<int>& path, Ogre::ColourValue& colour);
-
+	Ogre::Vector3 randomSpawnLocation();
 	//SELECTION
 	void clickSelectObject();		//single click handling
 	bool multipleSelection;

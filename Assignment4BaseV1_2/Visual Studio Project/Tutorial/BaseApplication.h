@@ -22,6 +22,7 @@ This source file is part of the
 #include "Tank.h"
 #include <vector>
 #include <irrKlang.h>
+#include <random>
 
 using namespace irrklang;
 
@@ -66,7 +67,7 @@ protected:
 	Ogre::RenderWindow* mWindow;
 	Ogre::String mResourcesCfg;
 	Ogre::String mPluginsCfg;
-
+	 
 
 	/***********		TANKS		*************/
 	//std::vector<Tank> challengerTanks;
@@ -84,7 +85,8 @@ protected:
 	OgreBites::ParamsPanel* mDetailsPanel;   	// sample details panel
 	bool mCursorWasVisible;						// was cursor visible before dialog appeared
 	bool mShutDown;
- 
+	 std::mt19937 mRNG;
+
 	//OIS Input devices
 	OIS::InputManager* mInputManager;
 	OIS::Mouse*    mMouse;
