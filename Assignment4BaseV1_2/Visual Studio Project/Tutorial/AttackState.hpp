@@ -11,7 +11,7 @@ public:
 
     Type GetType() const override
     {
-        return Type::WANDER;
+        return Type::ATTACK;
     }
 };
 
