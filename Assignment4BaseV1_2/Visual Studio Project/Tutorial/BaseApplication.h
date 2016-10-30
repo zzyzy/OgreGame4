@@ -31,7 +31,7 @@ public:
 	BaseApplication(void);
 	virtual ~BaseApplication(void);
 
-	virtual void go(ISoundEngine* irrklang);
+	virtual void go();
  
 	
 protected:
@@ -116,7 +116,6 @@ protected:
 	// Added for Mac compatibility
 	Ogre::String                 m_ResourcePath;
 
-    ISoundEngine* engine;
  
 #ifdef OGRE_STATIC_LIB
 	Ogre::StaticPluginLoader m_StaticPluginLoader;

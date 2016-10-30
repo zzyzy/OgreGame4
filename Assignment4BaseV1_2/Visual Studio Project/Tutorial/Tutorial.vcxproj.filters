@@ -168,6 +168,9 @@
     <ClInclude Include="ObjectFactory.hpp">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="AudioEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApplication.cpp">
@@ -242,6 +245,9 @@
     <ClCompile Include="FindPowerupState.cpp">
       <Filter>Source Files\Tank\States</Filter>
     </ClCompile>
+    <ClCompile Include="AudioEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="ObjectFactory.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
@@ -279,5 +285,13 @@
     <Image Include="media\healthbar.png">
       <Filter>media</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="media\audio\explosion.wav">
+      <Filter>media</Filter>
+    </Media>
+    <Media Include="media\audio\firing.wav">
+      <Filter>media</Filter>
+    </Media>
   </ItemGroup>
 </Project>

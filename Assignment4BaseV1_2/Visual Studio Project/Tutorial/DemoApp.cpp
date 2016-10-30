@@ -61,6 +61,8 @@ bool DemoApp::setup(void)
 	//set camera
 	setCamera();
 
+
+
 	return true;
 };
 
@@ -671,6 +673,7 @@ bool DemoApp::mouseMoved( const OIS::MouseEvent &arg )
 bool DemoApp::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
 	if (mTrayMgr->injectMouseDown(arg, id)) return true;
+
 
 
 	switch (id)

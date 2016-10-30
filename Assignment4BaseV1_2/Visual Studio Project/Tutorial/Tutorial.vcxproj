@@ -77,6 +77,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AttackState.hpp" />
+    <ClInclude Include="AudioEngine.h" />
     <ClInclude Include="DestroyedState.hpp" />
     <ClInclude Include="FindPowerupState.hpp" />
     <ClInclude Include="FindTrophyState.hpp" />
@@ -117,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AttackState.cpp" />
+    <ClCompile Include="AudioEngine.cpp" />
     <ClCompile Include="DestroyedState.cpp" />
     <ClCompile Include="FindPowerupState.cpp" />
     <ClCompile Include="FindTrophyState.cpp" />
@@ -158,6 +160,10 @@
   <ItemGroup>
     <Image Include="media\circulo.png" />
     <Image Include="media\healthbar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="media\audio\explosion.wav" />
+    <Media Include="media\audio\firing.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
