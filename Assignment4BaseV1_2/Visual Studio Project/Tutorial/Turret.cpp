@@ -9,6 +9,7 @@
 #include "Shell.hpp"
 
 Turret::Turret() :
+    mTank(nullptr),
     mTurret(nullptr),
     mBarrel(nullptr),
     mNozzle(nullptr),
@@ -27,7 +28,8 @@ Turret::Turret() :
 {
 }
 
-Turret::Turret(Ogre::SceneNode* turret,
+Turret::Turret(Tank* tank,
+               Ogre::SceneNode* turret,
                Ogre::SceneNode* barrel,
                Ogre::SceneNode* nozzle,
                Ogre::SceneManager* world,
@@ -39,6 +41,7 @@ Turret::Turret(Ogre::SceneNode* turret,
                const float& shellMass,
                const float& blastForce,
                const float& blastRadius) :
+    mTank(tank),
     mTurret(turret),
     mBarrel(barrel),
     mNozzle(nozzle),
@@ -55,6 +58,7 @@ Turret::Turret(Ogre::SceneNode* turret,
     mProjectileVelocity(Ogre::Vector3::ZERO),
     mProjectileGravity(0.0f)
 {
+    assert(tank != nullptr);
     assert(turret != nullptr);
     assert(barrel != nullptr);
     assert(nozzle != nullptr);
@@ -64,6 +68,7 @@ Turret::Turret(Ogre::SceneNode* turret,
 }
 
 Turret::Turret(const Turret& turret) :
+    mTank(turret.mTank),
     mTurret(turret.mTurret),
     mBarrel(turret.mBarrel),
     mNozzle(turret.mNozzle),
@@ -83,6 +88,7 @@ Turret::Turret(const Turret& turret) :
 }
 
 Turret::Turret(Turret&& turret) :
+    mTank(turret.mTank),
     mTurret(turret.mTurret),
     mBarrel(turret.mBarrel),
     mNozzle(turret.mNozzle),
@@ -110,6 +116,7 @@ Turret& Turret::operator=(const Turret& turret)
 
 Turret& Turret::operator=(Turret&& turret)
 {
+    mTank = turret.mTank;
     mTurret = turret.mTurret;
     mBarrel = turret.mBarrel;
     mNozzle = turret.mNozzle;
@@ -168,7 +175,7 @@ void Turret::Update(const float& deltaTime)
                                                static_cast<short>(CollisionTypes::PROJECTILE),
                                                CollisionTypes::OBSTACLES |
                                                mTargetType);
-        auto shell = new Shell(rbody, mWorld, mPhysics, mBlastForce, mBlastRadius);
+        auto shell = new Shell(rbody, mWorld, mPhysics, mTank, mBlastForce, mBlastRadius);
         shell->SetLinearVelocity(convert(mProjectileVelocity));
         shell->SetGravity(btVector3(0, -mProjectileGravity, 0));
         mPool.Add(shell);

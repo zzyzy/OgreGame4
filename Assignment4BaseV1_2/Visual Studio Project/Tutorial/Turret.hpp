@@ -20,12 +20,15 @@
 #include "PoolManager.hpp"
 #include "CollisionMasks.hpp"
 
+class Tank;
+
 class Turret
 {
 public:
     Turret();
 
-    Turret(Ogre::SceneNode* turret,
+    Turret(Tank* tank,
+           Ogre::SceneNode* turret,
            Ogre::SceneNode* barrel,
            Ogre::SceneNode* nozzle,
            Ogre::SceneManager* world,
@@ -75,6 +78,7 @@ public:
     void SetBlastRadius(const float& radius) { mBlastRadius = radius; }
 
 private:
+    Tank* mTank;
     Ogre::SceneNode* mTurret;
     Ogre::SceneNode* mBarrel;
     Ogre::SceneNode* mNozzle;

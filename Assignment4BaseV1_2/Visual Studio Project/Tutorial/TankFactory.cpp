@@ -98,10 +98,10 @@ Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position,
 
     auto healthBarNode = turretNode->createChildSceneNode();
     healthBarNode->attachObject(healthBar);
-    healthBarNode->setVisible(false);
+    healthBarNode->setVisible(true);
     auto selectionNode = turretNode->createChildSceneNode();
     selectionNode->attachObject(selectionCircle);
-    selectionNode->setVisible(false);
+    selectionNode->setVisible(true);
 
     // Scale the tank again (from now it should be same as leopard tank)
     tank->scale(0.25f, 0.25f, 0.25f);
@@ -240,10 +240,10 @@ Tank* TankFactory::MakeLeopardTank(const Ogre::Vector3& position,
 
     auto healthBarNode = turretNode->createChildSceneNode();
     healthBarNode->attachObject(healthBar);
-    healthBarNode->setVisible(false);
+    healthBarNode->setVisible(true);
     auto selectionNode = turretNode->createChildSceneNode();
     selectionNode->attachObject(selectionCircle);
-    selectionNode->setVisible(false);
+    selectionNode->setVisible(true);
 
     // Scale the tank again
     tank->scale(0.25f, 0.25f, 0.25f);

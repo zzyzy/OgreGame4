@@ -70,7 +70,7 @@ void Tank::setPathFinding(Graph* graph, PathFinding* pathFinder)
 
 void Tank::setupTurretController(const CollisionTypes& targetType)
 {
-    mTurret = Turret(mTurretNode, mBarrelNode, mNozzleNode, mWorld, mPhysics, 5, targetType,
+    mTurret = Turret(this, mTurretNode, mBarrelNode, mNozzleNode, mWorld, mPhysics, 5, targetType,
                      1, 250, 2, 0.5, 10);
 }
 

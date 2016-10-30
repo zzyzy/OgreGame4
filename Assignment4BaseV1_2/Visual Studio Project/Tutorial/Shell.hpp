@@ -17,7 +17,6 @@
 #include "Projectile.hpp"
 #include "IPoolObject.hpp"
 #include "CollisionMasks.hpp"
-#include "IDamageableObject.hpp"
 #include "Tank.h"
 #include "TankCollider.hpp"
 
@@ -27,6 +26,7 @@ public:
     Shell(btRigidBody* rbody,
           Ogre::SceneManager* world,
           PhysicsEngine* physics,
+          Tank* attacker,
           const float& blastForce,
           const float& blastRadius,
           const float& blastDuration = 2.0f) :
@@ -39,11 +39,13 @@ public:
         mDisposed(false),
         mBlastCollider(nullptr),
         mParticleSystem(nullptr),
-        mParticleNode(nullptr)
+        mParticleNode(nullptr), 
+        mAttacker(attacker)
     {
         assert(rbody != nullptr);
         assert(world != nullptr);
         assert(physics != nullptr);
+        assert(attacker != nullptr);
     }
 
     void Update(const float& deltaTime) override
@@ -128,7 +130,7 @@ public:
                     {
                         auto rayFromWorld = mBlastCollider->getWorldTransform().getOrigin();
                         auto rayToWorld = tankCol->getWorldTransform().getOrigin();
-                        auto damage = (rayToWorld - rayFromWorld).length() * 0.1f;
+                        auto damage = ((rayToWorld - rayFromWorld).length() * 0.01f) * mAttacker->GetAttackDamage() * deltaTime;
                         tank->ApplyDamage(damage);
                     }
                 }
@@ -171,6 +173,7 @@ private:
     btPairCachingGhostObject* mBlastCollider;
     Ogre::ParticleSystem* mParticleSystem;
     Ogre::SceneNode* mParticleNode;
+    Tank* mAttacker;
 };
 
 #endif // __SHELL_HPP__
