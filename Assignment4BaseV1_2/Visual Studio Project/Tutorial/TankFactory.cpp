@@ -118,7 +118,8 @@ Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position,
         CollisionTypes::OBSTACLES |
         CollisionTypes::POWERUP |
         CollisionTypes::EXPLOSION |
-        CollisionTypes::PROJECTILE;
+        CollisionTypes::PROJECTILE |
+        CollisionTypes::TROPHY;
     auto shape = new btBoxShape(btVector3(0.1f * 50, 0.1f * 50, 0.1f * 50));
     auto collider = new TankCollider(tank);
     mPhysics->AddGhostObject(collider,
@@ -260,7 +261,8 @@ Tank* TankFactory::MakeLeopardTank(const Ogre::Vector3& position,
         CollisionTypes::OBSTACLES |
         CollisionTypes::POWERUP |
         CollisionTypes::EXPLOSION |
-        CollisionTypes::PROJECTILE;
+        CollisionTypes::PROJECTILE |
+        CollisionTypes::TROPHY;
     auto shape = new btBoxShape(btVector3(0.1f * 50, 0.1f * 50, 0.1f * 50));
     auto collider = new TankCollider(tank);
     mPhysics->AddGhostObject(collider,

@@ -80,6 +80,7 @@
     <ClInclude Include="DestroyedState.hpp" />
     <ClInclude Include="FindPowerupState.hpp" />
     <ClInclude Include="FindTrophyState.hpp" />
+    <ClInclude Include="ObjectFactory.hpp" />
     <ClInclude Include="TankCollider.hpp" />
     <ClInclude Include="TankState.hpp" />
     <ClInclude Include="QueryMasks.hpp" />
@@ -87,6 +88,7 @@
     <ClInclude Include="TankFactory.hpp" />
     <ClInclude Include="TankKinematics.hpp" />
     <ClInclude Include="TankStateMachine.hpp" />
+    <ClInclude Include="Trophy.hpp" />
     <ClInclude Include="Turret.hpp" />
     <ClInclude Include="BaseApplication.h" />
     <ClInclude Include="CollisionMasks.hpp" />
@@ -118,6 +120,7 @@
     <ClCompile Include="DestroyedState.cpp" />
     <ClCompile Include="FindPowerupState.cpp" />
     <ClCompile Include="FindTrophyState.cpp" />
+    <ClCompile Include="ObjectFactory.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="SpawnState.cpp" />
     <ClCompile Include="TankFactory.cpp" />
