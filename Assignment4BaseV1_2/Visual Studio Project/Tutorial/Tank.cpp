@@ -267,7 +267,7 @@ Ogre::SceneNode* Tank::GetNearestObject() const
 
     auto result = sphereQuery->execute();
     auto it = result.movables.begin();
-    Ogre::Real shortestDistance = INT_MAX;
+    Ogre::Real shortestDistance = Ogre::Real(INT_MAX);
     Ogre::SceneNode* closestObject = nullptr;
 
     for (it; it != result.movables.end(); ++it)
