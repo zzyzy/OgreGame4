@@ -2,7 +2,7 @@
 #ifndef __TANK_COLLIDER_HPP__
 #define __TANK_COLLIDER_HPP__
 
-class Tank;
+#include "Tank.h"
 
 class TankCollider : public btPairCachingGhostObject
 {

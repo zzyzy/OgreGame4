@@ -249,8 +249,11 @@ void Tank::FireAt(const Ogre::Vector3& target)
 
 void Tank::ApplyDamage(const float& damage)
 {
-    if (mHitPoints <= mMaxHitPoints && mHitPoints > 0)
+    if (mHitPoints <= mMaxHitPoints && mHitPoints > 0) 
+    {
         mHitPoints -= damage;
+        UpdateHealthBar();
+    }
 }
 
 float Tank::TotalDamageReceived()
