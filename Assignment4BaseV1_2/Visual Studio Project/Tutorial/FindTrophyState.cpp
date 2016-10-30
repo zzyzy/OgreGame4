@@ -7,6 +7,11 @@ TankState* FindTrophyState::Update(TankStateMachine& tankState, const float& del
 {
     Tank* tank = tankState.GetTank();
 
+    if (!mTrophy)
+    {
+        return new WanderState();
+    }
+
     if (mMoveLocation == Ogre::Vector3::ZERO)
     {
         mMoveLocation = mTrophy->getPosition();

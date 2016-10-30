@@ -5,6 +5,11 @@ TankState* FindPowerupState::Update(TankStateMachine& tankState, const float& de
 {
     Tank* tank = tankState.GetTank();
 
+    if (!mPowerUp)
+    {
+        return new WanderState();
+    }
+
     if (mMoveLocation == Ogre::Vector3::ZERO)
     {
         mMoveLocation = mPowerUp->getPosition();
