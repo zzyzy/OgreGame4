@@ -42,8 +42,8 @@ public:
             // Move to location
             tank->MoveTo(mMoveLocation);
         }
-
-        if (tank->getPosition().positionEquals(mMoveLocation))
+        
+        if (tank->getPosition().positionEquals(mMoveLocation, 5.0f))
         {
             return new WanderState();
         }
