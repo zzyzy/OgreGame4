@@ -6,25 +6,27 @@ Trophy* ObjectFactory::MakeTrophy(const Ogre::Vector3& position, float* lpScore,
 {
     auto entity = mWorld->createEntity("cube.mesh");
     auto trophy = OGRE_NEW Trophy(mWorld, mPhysics, lpScore, chScore);
-    auto scale = Ogre::Vector3(0.02f, 0.02f, 0.02f);
+    auto scale = Ogre::Vector3(0.05f, 0.05f, 0.05f);
     mWorld->getRootSceneNode()->addChild(trophy);
     auto child = trophy->createChildSceneNode();
     entity->setCastShadows(true);
     entity->setQueryFlags(static_cast<Ogre::uint32>(QueryTypes::TROPHY));
     child->attachObject(entity);
     child->scale(scale);
-    trophy->setPosition(position);
+    auto origin = position;
+    origin.y = 1 + scale.y;
+    trophy->setPosition(origin);
 
     btTransform startTransform;
     auto shape = new btBoxShape(btVector3(scale.x * 50, scale.y * 50, scale.z * 50));
     short group = static_cast<short>(CollisionTypes::TROPHY);
-    short mask = CollisionTypes::TANK |
-        CollisionTypes::GROUND;
+    short mask = CollisionTypes::CH_TANK | CollisionTypes::LP_TANK;
     startTransform.setIdentity();
     startTransform.setOrigin(convert(trophy->getPosition()));
-    auto rbody = mPhysics->CreateRigidBody(1.0f, startTransform, shape, trophy, group, mask);
+    auto collider = mPhysics->CreateGhostObject(startTransform, shape, group, mask);
+    collider->setCollisionFlags(collider->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
-    trophy->SetRBody(rbody);
+    trophy->SetCollider(collider);
 
     return trophy;
 }
@@ -59,18 +61,20 @@ PowerUp* ObjectFactory::MakePowerUp(const Ogre::Vector3& position, PowerUp::Type
 
     child->attachObject(entity);
     child->scale(scale);
-    powerup->setPosition(position);
+    auto origin = position;
+    origin.y = 1 + scale.y;
+    powerup->setPosition(origin);
 
     btTransform startTransform;
     auto shape = new btBoxShape(btVector3(scale.x, scale.y, scale.z));
     short group = static_cast<short>(CollisionTypes::POWERUP);
-    short mask = CollisionTypes::TANK |
-        CollisionTypes::GROUND;
+    short mask = CollisionTypes::CH_TANK | CollisionTypes::LP_TANK;
     startTransform.setIdentity();
     startTransform.setOrigin(convert(powerup->getPosition()));
-    auto rbody = mPhysics->CreateRigidBody(1.0f, startTransform, shape, powerup, group, mask);
+    auto collider = mPhysics->CreateGhostObject(startTransform, shape, group, mask);
+    collider->setCollisionFlags(collider->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
-    powerup->SetRBody(rbody);
+    powerup->SetCollider(collider);
 
     return powerup;
 }

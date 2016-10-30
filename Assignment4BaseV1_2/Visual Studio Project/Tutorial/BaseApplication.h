@@ -72,7 +72,6 @@ protected:
 	/***********		TANKS		*************/
 	//std::vector<Tank> challengerTanks;
 	//std::vector<Tank> leopardTanks;
-	std::vector<Tank*> tanks;			// vector containing tanks added on the scene
 
 	bool editSelection;
 	//overlay system
@@ -96,11 +95,11 @@ protected:
 	// Tutorial SELECTION BOX //
 	//from http://www.ogre3d.org/tikiwiki/Intermediate+Tutorial+4
 	///////////////////////////
-	void performSelection(const Ogre::Vector2& first, const Ogre::Vector2& second);
-	void deselectObjects();																//deselect all objects
-	void deselectObject(Ogre::MovableObject* obj);										//deselect an object
-	void selectObject(Ogre::MovableObject* obj);										//select an object
-	bool isObjectSelected(Ogre::MovableObject* obj);
+	//void performSelection(const Ogre::Vector2& first, const Ogre::Vector2& second);
+	//void deselectObjects();																//deselect all objects
+	//void deselectObject(Ogre::MovableObject* obj);										//deselect an object
+	//void selectObject(Ogre::MovableObject* obj);										//select an object
+	//bool isObjectSelected(Ogre::MovableObject* obj);
  
 	static void swap(float& x, float& y);
  

@@ -18,12 +18,20 @@
 class AttackState : public TankState
 {
 public:
+    AttackState(Ogre::Vector3 target) :
+        mAttackLoc(target)
+    {
+    }
+
     TankState* Update(TankStateMachine& tankState, const float& deltaTime) override;
 
     Type GetType() const override
     {
         return Type::ATTACK;
     }
+
+private:
+    Ogre::Vector3 mAttackLoc;
 };
 
 #endif // __ATTACK_STATE_HPP__

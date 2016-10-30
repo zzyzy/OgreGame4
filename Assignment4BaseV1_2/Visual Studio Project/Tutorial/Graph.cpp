@@ -73,6 +73,8 @@ int Graph::getNode(Ogre::Vector3 position)
 
 	int nodeNumber = column + row*GRID_DIMENSION;
 
+    if (nodeNumber >= TOTAL_NODES || nodeNumber < 0)
+        return -1;
 	if(mGrid[nodeNumber] == 1)
 		return -1;
 	else

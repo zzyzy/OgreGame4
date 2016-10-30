@@ -13,6 +13,7 @@ TankState* SpawnState::Update(TankStateMachine& tankState, const float& deltaTim
         mMoveLocation = Ogre::Vector3(xDis(mRNG), 0, zDis(mRNG));
 
         // Move to location
+        tank->UpdateHealthBar();
         tank->MoveTo(mMoveLocation);
     }
 

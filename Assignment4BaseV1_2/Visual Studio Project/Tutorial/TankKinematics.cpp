@@ -9,6 +9,8 @@
 
 TankKinematics::TankKinematics() :
     mTank(nullptr),
+    mWorld(nullptr),
+    mPhysics(nullptr),
     mPathVisualizer(nullptr),
     mCollider(nullptr),
     mPathVizColour(0, 1, 0, 1),
@@ -20,10 +22,26 @@ TankKinematics::TankKinematics() :
 {
 }
 
+TankKinematics::~TankKinematics()
+{
+    if (mPathVisualizer)
+    {
+        mPathVisualizer->getParentSceneNode()->detachObject(mPathVisualizer);
+        mWorld->destroyManualObject(mPathVisualizer);
+    }
+
+    if (mCollider)
+        mPhysics->DestroyGhostObject(mCollider);
+}
+
 TankKinematics::TankKinematics(Tank* tank,
+                               Ogre::SceneManager* world,
+                               PhysicsEngine* physics,
                                Ogre::ManualObject* pathViz,
                                btPairCachingGhostObject* collider) :
     mTank(tank),
+    mWorld(world),
+    mPhysics(physics),
     mPathVisualizer(pathViz),
     mCollider(collider),
     mPathVizColour(0, 1, 0, 1),
@@ -37,6 +55,8 @@ TankKinematics::TankKinematics(Tank* tank,
 
 TankKinematics::TankKinematics(const TankKinematics& other) :
     mTank(other.mTank),
+    mWorld(other.mWorld),
+    mPhysics(other.mPhysics),
     mPathVisualizer(other.mPathVisualizer),
     mCollider(other.mCollider),
     mPathVizColour(other.mPathVizColour),
@@ -50,6 +70,8 @@ TankKinematics::TankKinematics(const TankKinematics& other) :
 
 TankKinematics::TankKinematics(TankKinematics&& other) :
     mTank(other.mTank),
+    mWorld(other.mWorld),
+    mPhysics(other.mPhysics),
     mPathVisualizer(other.mPathVisualizer),
     mCollider(other.mCollider),
     mPathVizColour(other.mPathVizColour),
@@ -59,6 +81,8 @@ TankKinematics::TankKinematics(TankKinematics&& other) :
     mSeekTarget(other.mSeekTarget),
     mShowPathViz(other.mShowPathViz)
 {
+    other.mPathVisualizer = nullptr;
+    other.mCollider = nullptr;
 }
 
 TankKinematics& TankKinematics::operator=(const TankKinematics& other)
@@ -70,7 +94,18 @@ TankKinematics& TankKinematics::operator=(const TankKinematics& other)
 
 TankKinematics& TankKinematics::operator=(TankKinematics&& other)
 {
+    if (mPathVisualizer)
+    {
+        mPathVisualizer->getParentSceneNode()->detachObject(mPathVisualizer);
+        mWorld->destroyManualObject(mPathVisualizer);
+    }
+
+    if (mCollider)
+        mPhysics->DestroyGhostObject(mCollider);
+
     mTank = other.mTank;
+    mWorld = other.mWorld;
+    mPhysics = other.mPhysics;
     mPathVisualizer = other.mPathVisualizer;
     mCollider = other.mCollider;
     mPathVizColour = other.mPathVizColour;
@@ -79,11 +114,17 @@ TankKinematics& TankKinematics::operator=(TankKinematics&& other)
     mDestination = other.mDestination;
     mSeekTarget = other.mSeekTarget;
     mShowPathViz = other.mShowPathViz;
+
+    other.mPathVisualizer = nullptr;
+    other.mCollider = nullptr;
+
     return *this;
 }
 
-void TankKinematics::MoveTo(const Ogre::Vector3& target, Graph* graph, PathFinding& pathFinder)
+bool TankKinematics::MoveTo(const Ogre::Vector3& target, Graph* graph, PathFinding& pathFinder)
 {
+    bool hasPath = false;
+
     if (HasSeekTarget())
     {
         SetSeekTarget(nullptr);
@@ -99,9 +140,9 @@ void TankKinematics::MoveTo(const Ogre::Vector3& target, Graph* graph, PathFindi
     {
         // try to find path from start to goal node
         std::deque<int> path;
-
+        hasPath = pathFinder.AStar(startNode, goalNode, *graph, path);
         // if path exists
-        if (pathFinder.AStar(startNode, goalNode, *graph, path))
+        if (hasPath)
         {
             path.pop_front();
 
@@ -115,6 +156,8 @@ void TankKinematics::MoveTo(const Ogre::Vector3& target, Graph* graph, PathFindi
             BuildPathVisualizer();
         }
     }
+
+    return hasPath;
 }
 
 Ogre::Vector3 TankKinematics::Seek(const Ogre::Vector3& from, const Ogre::Vector3& target, const float& speed, const Ogre::Vector3& currentVelocity)

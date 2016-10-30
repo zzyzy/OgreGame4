@@ -22,8 +22,9 @@ Tank::Tank(Ogre::SceneManager* world,
     mDamage(50.0f),
     mAttackSpeed(1.0f),
     mTurnRate(5.0f),
-    mScanRange(1.0f), 
-    mScore(0),
+    mScanRange(1.0f),
+    mScore(0), 
+    mIsDisposed(false),
     mTurret(),
     mKinematic(),
     mPowerUpPool(5)
@@ -80,97 +81,12 @@ void Tank::setupKinematicController(Ogre::ManualObject* pathViz, btPairCachingGh
 {
     assert(mGraph != nullptr);
     assert(mPathFinder != nullptr);
-    mKinematic = TankKinematics(this, pathViz, collider);
+    mKinematic = TankKinematics(this, mWorld, mPhysics, pathViz, collider);
 }
 
 void Tank::setupStateMachine()
 {
     mState = TankStateMachine(new SpawnState(), this);
-}
-
-Tank::Tank(const Tank& tank) :
-    SceneNode(tank.mWorld),
-    mWorld(tank.mWorld),
-    mPhysics(tank.mPhysics),
-    mGraph(tank.mGraph),
-    mPathFinder(tank.mPathFinder),
-    mTurretNode(tank.mTurretNode),
-    mBarrelNode(tank.mBarrelNode),
-    mNozzleNode(tank.mNozzleNode),
-    mHealthBarNode(tank.mHealthBarNode),
-    mSelectionNode(tank.mSelectionNode),
-    mType(tank.mType),
-    mMaxHitPoints(tank.mMaxHitPoints),
-    mHitPoints(tank.mHitPoints),
-    mMoveSpeed(tank.mMoveSpeed),
-    mDamage(tank.mDamage),
-    mAttackSpeed(tank.mAttackSpeed),
-    mTurnRate(tank.mTurnRate),
-    mScanRange(tank.mScanRange), 
-    mScore(tank.mScore),
-    mTurret(tank.mTurret),
-    mKinematic(tank.mKinematic),
-    mPowerUpPool(tank.mPowerUpPool)
-{
-}
-
-Tank::Tank(Tank&& tank) :
-    SceneNode(tank.mWorld),
-    mWorld(tank.mWorld),
-    mPhysics(tank.mPhysics),
-    mGraph(tank.mGraph),
-    mPathFinder(tank.mPathFinder),
-    mTurretNode(tank.mTurretNode),
-    mBarrelNode(tank.mBarrelNode),
-    mNozzleNode(tank.mNozzleNode),
-    mHealthBarNode(tank.mHealthBarNode),
-    mSelectionNode(tank.mSelectionNode),
-    mType(tank.mType),
-    mMaxHitPoints(tank.mMaxHitPoints),
-    mHitPoints(tank.mHitPoints),
-    mMoveSpeed(tank.mMoveSpeed),
-    mDamage(tank.mDamage),
-    mAttackSpeed(tank.mAttackSpeed),
-    mTurnRate(tank.mTurnRate),
-    mScanRange(tank.mScanRange),
-    mScore(tank.mScore),
-    mTurret(std::move(tank.mTurret)),
-    mKinematic(std::move(tank.mKinematic)),
-    mPowerUpPool(std::move(tank.mPowerUpPool))
-{
-}
-
-Tank& Tank::operator=(const Tank& tank)
-{
-    Tank tmp(tank);
-    *this = std::move(tmp);
-    return *this;
-}
-
-Tank& Tank::operator=(Tank&& tank)
-{
-    mWorld = tank.mWorld;
-    mPhysics = tank.mPhysics;
-    mGraph = tank.mGraph;
-    mPathFinder = tank.mPathFinder;
-    mTurretNode = tank.mTurretNode;
-    mBarrelNode = tank.mBarrelNode;
-    mNozzleNode = tank.mNozzleNode;
-    mHealthBarNode = tank.mHealthBarNode;
-    mSelectionNode = tank.mSelectionNode;
-    mType = tank.mType;
-    mMaxHitPoints = tank.mMaxHitPoints;
-    mHitPoints = tank.mHitPoints;
-    mMoveSpeed = tank.mMoveSpeed;
-    mDamage = tank.mDamage;
-    mAttackSpeed = tank.mAttackSpeed;
-    mTurnRate = tank.mTurnRate;
-    mScanRange = tank.mScanRange;
-    mScore = tank.mScore;
-    mTurret = std::move(tank.mTurret);
-    mKinematic = std::move(tank.mKinematic);
-    mPowerUpPool = std::move(tank.mPowerUpPool);
-    return *this;
 }
 
 //void Tank::moveTank(float time)
@@ -240,16 +156,15 @@ void Tank::UpdateHealthBar() const
 
 void Tank::Update(const float& deltaTime)
 {
-    UpdateHealthBar();
     mTurret.Update(deltaTime);
     mKinematic.Update(2.0f, deltaTime);
     mState.Update(deltaTime);
     mPowerUpPool.Update(deltaTime);
 }
 
-void Tank::MoveTo(const Ogre::Vector3& target)
+bool Tank::MoveTo(const Ogre::Vector3& target)
 {
-    mKinematic.MoveTo(target, mGraph, *mPathFinder);
+    return mKinematic.MoveTo(target, mGraph, *mPathFinder);
 }
 
 void Tank::FireAt(const Ogre::Vector3& target)
@@ -265,11 +180,12 @@ void Tank::ApplyDamage(const float& damage)
     if (mHitPoints <= mMaxHitPoints && mHitPoints > 0) 
     {
         mHitPoints -= damage;
+        UpdateHealthBar();
 	} 
 	
 	if(mHitPoints <= 0) {
 		// Die/ Destroy
-			AudioEngine::sharedInstance()->play2D("./media/audio/explosion.wav");
+			//AudioEngine::sharedInstance()->play2D("./media/audio/explosion.wav");
 	}
 }
 
@@ -308,4 +224,12 @@ Ogre::SceneNode* Tank::GetNearestObject() const
     mWorld->destroyQuery(sphereQuery);
 
     return closestObject;
+}
+
+void Tank::Dispose()
+{
+
+    removeAndDestroyAllChildren();
+
+    mIsDisposed = true;
 }

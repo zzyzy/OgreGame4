@@ -24,7 +24,11 @@ class TankKinematics
 public:
     TankKinematics();
 
+    ~TankKinematics();
+
     TankKinematics(Tank* tank,
+                   Ogre::SceneManager* world,
+                   PhysicsEngine* physics,
                    Ogre::ManualObject* pathViz,
                    btPairCachingGhostObject* collider);
 
@@ -37,7 +41,7 @@ public:
     TankKinematics& operator=(TankKinematics&& other);
 
     // Pathfinding
-    void MoveTo(const Ogre::Vector3& target, Graph* graph, PathFinding& pathFinder);
+    bool MoveTo(const Ogre::Vector3& target, Graph* graph, PathFinding& pathFinder);
 
     void SetPath(const std::deque<Ogre::Vector3>& path)
     {
@@ -103,6 +107,8 @@ public:
 private:
     bool nextLocation();
 
+    Ogre::SceneManager* mWorld;
+    PhysicsEngine* mPhysics;
     Tank* mTank; // Reference to tank
     Ogre::ManualObject* mPathVisualizer; // Path visualizer
     btPairCachingGhostObject* mCollider; // Collider

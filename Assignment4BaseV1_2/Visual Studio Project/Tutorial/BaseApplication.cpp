@@ -74,181 +74,181 @@ BaseApplication::~BaseApplication(void)
 
 	delete mRoot;
 }
-
-void BaseApplication::performSelection( const Ogre::Vector2& first, const Ogre::Vector2& second)
-{
-  float left = first.x, right = second.x;
-  float top = first.y, bottom = second.y;
-  mVolQuery->setQueryMask(static_cast<Ogre::uint32>(QueryTypes::TANK));
-
-  if (left > right)
-    swap(left, right);
- 
-  if (top > bottom)
-    swap(top, bottom);
- 
-  if ((right - left) * (bottom - top) < 0.0001)
-    return;
- 
-  Ogre::Ray topLeft = mCamera->getCameraToViewportRay(left, top);
-  Ogre::Ray topRight = mCamera->getCameraToViewportRay(right, top);
-  Ogre::Ray bottomLeft = mCamera->getCameraToViewportRay(left, bottom);
-  Ogre::Ray bottomRight = mCamera->getCameraToViewportRay(right, bottom);
- 
-  Ogre::Plane frontPlane, topPlane, leftPlane, bottomPlane, rightPlane;
- 
-  frontPlane = Ogre::Plane(
-    topLeft.getOrigin(),
-    topRight.getOrigin(),
-    bottomRight.getOrigin());
- 
-  topPlane = Ogre::Plane(
-    topLeft.getOrigin(),
-    topLeft.getPoint(10),
-    topRight.getPoint(10));
- 
-  leftPlane = Ogre::Plane(
-    topLeft.getOrigin(),
-    bottomLeft.getPoint(10),
-    topLeft.getPoint(10));
- 
-  bottomPlane = Ogre::Plane(
-    bottomLeft.getOrigin(),
-    bottomRight.getPoint(10),
-    bottomLeft.getPoint(10));
- 
-  rightPlane = Ogre::Plane(
-    topRight.getOrigin(),
-    topRight.getPoint(10),
-    bottomRight.getPoint(10));
- 
-  Ogre::PlaneBoundedVolume vol;
- 
-  vol.planes.push_back(frontPlane);
-  vol.planes.push_back(topPlane);
-  vol.planes.push_back(leftPlane);
-  vol.planes.push_back(bottomPlane);
-  vol.planes.push_back(rightPlane);
- 
-  Ogre::PlaneBoundedVolumeList volList;
-  volList.push_back(vol);
- 
-  mVolQuery->setVolumes(volList);
-  Ogre::SceneQueryResult result = mVolQuery->execute();
- 
-  deselectObjects();
- 
-  Ogre::SceneQueryResultMovableList::iterator it;
-  for (it = result.movables.begin(); it != result.movables.end(); ++it)
-  {
-    std::cout << (*it)->getParentSceneNode()->getPosition() << std::endl;;
-    selectObject(*it);
-  }
-}
+//
+//void BaseApplication::performSelection( const Ogre::Vector2& first, const Ogre::Vector2& second)
+//{
+//  float left = first.x, right = second.x;
+//  float top = first.y, bottom = second.y;
+//  mVolQuery->setQueryMask(static_cast<Ogre::uint32>(QueryTypes::TANK));
+//
+//  if (left > right)
+//    swap(left, right);
+// 
+//  if (top > bottom)
+//    swap(top, bottom);
+// 
+//  if ((right - left) * (bottom - top) < 0.0001)
+//    return;
+// 
+//  Ogre::Ray topLeft = mCamera->getCameraToViewportRay(left, top);
+//  Ogre::Ray topRight = mCamera->getCameraToViewportRay(right, top);
+//  Ogre::Ray bottomLeft = mCamera->getCameraToViewportRay(left, bottom);
+//  Ogre::Ray bottomRight = mCamera->getCameraToViewportRay(right, bottom);
+// 
+//  Ogre::Plane frontPlane, topPlane, leftPlane, bottomPlane, rightPlane;
+// 
+//  frontPlane = Ogre::Plane(
+//    topLeft.getOrigin(),
+//    topRight.getOrigin(),
+//    bottomRight.getOrigin());
+// 
+//  topPlane = Ogre::Plane(
+//    topLeft.getOrigin(),
+//    topLeft.getPoint(10),
+//    topRight.getPoint(10));
+// 
+//  leftPlane = Ogre::Plane(
+//    topLeft.getOrigin(),
+//    bottomLeft.getPoint(10),
+//    topLeft.getPoint(10));
+// 
+//  bottomPlane = Ogre::Plane(
+//    bottomLeft.getOrigin(),
+//    bottomRight.getPoint(10),
+//    bottomLeft.getPoint(10));
+// 
+//  rightPlane = Ogre::Plane(
+//    topRight.getOrigin(),
+//    topRight.getPoint(10),
+//    bottomRight.getPoint(10));
+// 
+//  Ogre::PlaneBoundedVolume vol;
+// 
+//  vol.planes.push_back(frontPlane);
+//  vol.planes.push_back(topPlane);
+//  vol.planes.push_back(leftPlane);
+//  vol.planes.push_back(bottomPlane);
+//  vol.planes.push_back(rightPlane);
+// 
+//  Ogre::PlaneBoundedVolumeList volList;
+//  volList.push_back(vol);
+// 
+//  mVolQuery->setVolumes(volList);
+//  Ogre::SceneQueryResult result = mVolQuery->execute();
+// 
+//  deselectObjects();
+// 
+//  Ogre::SceneQueryResultMovableList::iterator it;
+//  for (it = result.movables.begin(); it != result.movables.end(); ++it)
+//  {
+//    std::cout << (*it)->getParentSceneNode()->getPosition() << std::endl;;
+//    selectObject(*it);
+//  }
+//}
  
 //deselect all objects from scene
-void BaseApplication::deselectObjects()
-{
-	std::list<Ogre::MovableObject*>::iterator it;
-
-	for (it = mSelected.begin(); it != mSelected.end(); ++it)
-	{
-		auto tankIt = tanks.begin();
-
-		while(tankIt != tanks.end())
-		{
-
-			if(((*it) == (*tankIt)->getTankBaseNode()->getAttachedObject(0)) 
-				|| ((*it) == (*tankIt)->getTankBarrelNode()->getAttachedObject(0))
-				|| ((*it) == (*tankIt)->getTankTurretNode()->getAttachedObject(0)))
-			{
-                (*tankIt)->setBillboardsVisible(false);
-			}
-
-		tankIt++;
-
-		}
-	}
-
-	//remove all selected objects
-	mSelected.clear();
-    
-}
-//deselect a single object passed into the function
-void BaseApplication::deselectObject(Ogre::MovableObject* obj)
-{
-	auto tankIt = tanks.begin();
-
-	Ogre::MovableObject* deselected;
-
-	while(tankIt != tanks.end())
-	{
-
-		if((obj == (*tankIt)->getTankBaseNode()->getAttachedObject(0)) 
-			|| (obj == (*tankIt)->getTankBarrelNode()->getAttachedObject(0)) 
-			|| (obj == (*tankIt)->getTankTurretNode()->getAttachedObject(0)))
-		{
-			(*tankIt)->setBillboardsVisible(false);
-			deselected = static_cast<Ogre::MovableObject*>((*tankIt)->getTankBaseNode()->getAttachedObject(0));
-
-		}
-
-		tankIt++;
-	}
-
-	//remove deselected object from the selected object list
-	mSelected.remove(deselected);
-
-}
-
-//select a single object passed into the function
-void BaseApplication::selectObject(Ogre::MovableObject* obj)
-{
-	auto tankIt = tanks.begin();
-
-	Ogre::MovableObject* selected;
-
-	while(tankIt != tanks.end())
-	{
-		if((obj == (*tankIt)->getTankBaseNode()->getAttachedObject(0)) 
-			|| (obj == (*tankIt)->getTankBarrelNode()->getAttachedObject(0)) 
-			|| (obj == (*tankIt)->getTankTurretNode()->getAttachedObject(0)))
-		{
-			(*tankIt)->setBillboardsVisible(true);
-			selected = static_cast<Ogre::MovableObject*>((*tankIt)->getTankBaseNode()->getAttachedObject(0));
-
-		}
-
-		tankIt++;
-	}
-
-
-	//insert object on the selected object list
-	mSelected.push_back(selected);
-		
-}
-
-//if object already selected, return true, otherwise return false
-bool BaseApplication::isObjectSelected(Ogre::MovableObject* obj)
-{
-
-	auto tankIt = tanks.begin();
-
-	while(tankIt != tanks.end())
-	{
-		if((obj == (*tankIt)->getTankBaseNode()->getAttachedObject(0)) 
-			|| (obj == (*tankIt)->getTankBarrelNode()->getAttachedObject(0)) 
-			|| (obj == (*tankIt)->getTankTurretNode()->getAttachedObject(0)))
-		{
-			if((*tankIt)->isTankSelected())
-				return true;
-		}
-			
-		tankIt++;
-	}
-
-	return false;
-}
+//void BaseApplication::deselectObjects()
+//{
+//	std::list<Ogre::MovableObject*>::iterator it;
+//
+//	for (it = mSelected.begin(); it != mSelected.end(); ++it)
+//	{
+//		auto tankIt = tanks.begin();
+//
+//		while(tankIt != tanks.end())
+//		{
+//
+//			if(((*it) == (*tankIt)->getTankBaseNode()->getAttachedObject(0)) 
+//				|| ((*it) == (*tankIt)->getTankBarrelNode()->getAttachedObject(0))
+//				|| ((*it) == (*tankIt)->getTankTurretNode()->getAttachedObject(0)))
+//			{
+//                (*tankIt)->setBillboardsVisible(false);
+//			}
+//
+//		tankIt++;
+//
+//		}
+//	}
+//
+//	//remove all selected objects
+//	mSelected.clear();
+//    
+//}
+////deselect a single object passed into the function
+//void BaseApplication::deselectObject(Ogre::MovableObject* obj)
+//{
+//	auto tankIt = tanks.begin();
+//
+//	Ogre::MovableObject* deselected;
+//
+//	while(tankIt != tanks.end())
+//	{
+//
+//		if((obj == (*tankIt)->getTankBaseNode()->getAttachedObject(0)) 
+//			|| (obj == (*tankIt)->getTankBarrelNode()->getAttachedObject(0)) 
+//			|| (obj == (*tankIt)->getTankTurretNode()->getAttachedObject(0)))
+//		{
+//			(*tankIt)->setBillboardsVisible(false);
+//			deselected = static_cast<Ogre::MovableObject*>((*tankIt)->getTankBaseNode()->getAttachedObject(0));
+//
+//		}
+//
+//		tankIt++;
+//	}
+//
+//	//remove deselected object from the selected object list
+//	mSelected.remove(deselected);
+//
+//}
+//
+////select a single object passed into the function
+//void BaseApplication::selectObject(Ogre::MovableObject* obj)
+//{
+//	auto tankIt = tanks.begin();
+//
+//	Ogre::MovableObject* selected;
+//
+//	while(tankIt != tanks.end())
+//	{
+//		if((obj == (*tankIt)->getTankBaseNode()->getAttachedObject(0)) 
+//			|| (obj == (*tankIt)->getTankBarrelNode()->getAttachedObject(0)) 
+//			|| (obj == (*tankIt)->getTankTurretNode()->getAttachedObject(0)))
+//		{
+//			(*tankIt)->setBillboardsVisible(true);
+//			selected = static_cast<Ogre::MovableObject*>((*tankIt)->getTankBaseNode()->getAttachedObject(0));
+//
+//		}
+//
+//		tankIt++;
+//	}
+//
+//
+//	//insert object on the selected object list
+//	mSelected.push_back(selected);
+//		
+//}
+//
+////if object already selected, return true, otherwise return false
+//bool BaseApplication::isObjectSelected(Ogre::MovableObject* obj)
+//{
+//
+//	auto tankIt = tanks.begin();
+//
+//	while(tankIt != tanks.end())
+//	{
+//		if((obj == (*tankIt)->getTankBaseNode()->getAttachedObject(0)) 
+//			|| (obj == (*tankIt)->getTankBarrelNode()->getAttachedObject(0)) 
+//			|| (obj == (*tankIt)->getTankTurretNode()->getAttachedObject(0)))
+//		{
+//			if((*tankIt)->isTankSelected())
+//				return true;
+//		}
+//			
+//		tankIt++;
+//	}
+//
+//	return false;
+//}
 
 //swap elements function
 void BaseApplication::swap(float& x, float& y)

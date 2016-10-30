@@ -69,7 +69,7 @@ Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position,
     auto healthBar = mWorld->createBillboardSet();
     healthBar->setCastShadows(false);
     healthBar->setQueryFlags(0);
-    healthBar->setDefaultDimensions(50, 2.0f);
+    healthBar->setDefaultDimensions(50, 5.0f);
     healthBar->setMaterialName("myMaterial/HealthBar");
 
     // Create a billboard for the health bar BillboardSet
@@ -212,7 +212,7 @@ Tank* TankFactory::MakeLeopardTank(const Ogre::Vector3& position,
     auto healthBar = mWorld->createBillboardSet();
     healthBar->setCastShadows(false);
     healthBar->setQueryFlags(0);
-    healthBar->setDefaultDimensions(50, 2.0f);
+    healthBar->setDefaultDimensions(50, 5.0f);
     healthBar->setMaterialName("myMaterial/HealthBar");
 
     // Create a billboard for the health bar BillboardSet

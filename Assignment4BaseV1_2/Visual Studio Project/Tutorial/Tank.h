@@ -18,7 +18,8 @@
 #include "PowerUpEffect.hpp"
 
 class Tank : public Ogre::SceneNode,
-             public IDamageableObject
+             public IDamageableObject,
+             public IPoolObject
 {
 public:
     friend class TankFactory;
@@ -29,14 +30,6 @@ public:
         LEOPARD
     };
 
-    Tank(const Tank& tank);
-
-    Tank(Tank&& tank);
-
-    Tank& operator=(const Tank& tank);
-
-    Tank& operator=(Tank&& tank);
-
     //helper function for selection
     bool isTankSelected();
 
@@ -45,9 +38,11 @@ public:
     //tank updates
     void UpdateHealthBar() const;
 
-    void Update(const float& deltaTime);
+    void Update(const float& deltaTime) override;
 
-    void MoveTo(const Ogre::Vector3& target);
+    bool MoveTo(const Ogre::Vector3& target);
+
+    void Stop() { mKinematic.ClearPaths(); }
 
     void FireAt(const Ogre::Vector3& target);
 
@@ -112,6 +107,22 @@ public:
     float* GetDamagePtr() { return &mDamage; }
     float* GetASPtr() { return &mAttackSpeed; }
 
+    // Is this object disposable?
+    bool IsDisposable() const override
+    {
+        return mHitPoints < 0;
+    }
+
+    // Is this object disposed?
+    bool IsDisposed() const override
+    {
+        return mIsDisposed;
+    }
+
+    // Dispose this object, basically cleaning up
+    // and release any unused memory/dangling pointers
+    void Dispose() override;
+
 private:
     // Only allow instantialisation via TankFactory
     Tank(Ogre::SceneManager* world,
@@ -154,6 +165,7 @@ private:
     float mTurnRate;
     float mScanRange;
     float mScore;
+    bool mIsDisposed;
 
     // Controllers
     Turret mTurret;

@@ -6,16 +6,7 @@ TankState* AttackState::Update(TankStateMachine& tankState, const float& deltaTi
 {
     Tank* tank = tankState.GetTank();
 
-    auto object = tank->GetNearestObject();
-    auto enemyTank = dynamic_cast<Tank*>(object);
-    if (enemyTank && enemyTank->GetType() != tank->GetType())
-    {
-        tank->FireAt(enemyTank->getPosition());
-    }
-    else
-    {
-        return new WanderState();
-    }
+    tank->FireAt(mAttackLoc);
 
-    return nullptr;
+    return new WanderState();
 }

@@ -94,6 +94,30 @@ public:
         TankState* state = mState->Update(*this, deltaTime);
         if (state != nullptr)
         {
+            switch (state->GetType())
+            {
+            case TankState::Type::POWERUP:
+                std::cout << "Powerup" << std::endl;
+                break;
+            case TankState::Type::DESTROYED:
+                std::cout << "Destroyed" << std::endl;
+                break;
+            case TankState::Type::ATTACK:
+                std::cout << "Attack" << std::endl;
+                break;
+            case TankState::Type::SPAWN:
+                std::cout << "Spawn" << std::endl;
+                break;
+            case TankState::Type::TROPHY:
+                std::cout << "Trophy" << std::endl;
+                break;
+            case TankState::Type::WANDER:
+                std::cout << "Wander" << std::endl;
+                break;
+            default:
+                break;
+            }
+
             delete mState;
             mState = state;
         }

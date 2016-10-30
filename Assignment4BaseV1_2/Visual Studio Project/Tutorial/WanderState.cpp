@@ -20,29 +20,34 @@ TankState* WanderState::Update(TankStateMachine& tankState, const float& deltaTi
         tank->MoveTo(mMoveLocation);
     }
 
-    if (tank->getPosition().positionEquals(mMoveLocation, 10.0f))
-    {
-        mMoveLocation = Ogre::Vector3::ZERO;
-    }
-
     auto object = tank->GetNearestObject();
     auto trophy = dynamic_cast<Trophy*>(object);
     auto enemyTank = dynamic_cast<Tank*>(object);
     auto powerup = dynamic_cast<PowerUp*>(object);
 
-    if (trophy)
+    if (enemyTank && 
+        enemyTank->GetType() != tank->GetType() &&
+        !enemyTank->getPosition().positionEquals(tank->getPosition(), 10.0f))
     {
-        return new FindTrophyState(trophy);
+        tank->Stop();
+        return new AttackState(enemyTank->getPosition());
     }
 
-    if (enemyTank && enemyTank->GetType() != tank->GetType())
+    if (trophy)
     {
-        return new AttackState();
+        tank->Stop();
+        return new FindTrophyState(trophy);
     }
 
     if (powerup)
     {
+        tank->Stop();
         return new FindPowerupState(powerup);
+    }
+
+    if (tank->getPosition().positionEquals(mMoveLocation, 10.0f))
+    {
+        mMoveLocation = Ogre::Vector3::ZERO;
     }
 
     return nullptr;

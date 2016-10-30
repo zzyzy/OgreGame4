@@ -31,7 +31,8 @@ DemoApp::DemoApp():
     mDirectionCam(Ogre::Vector3::ZERO),
     mDirection(Ogre::Vector3::ZERO),
     mWalkSpeed(10.0f),
-    shouldAnimate(false)
+    shouldAnimate(false),
+    mTankPool(20)
 
 {
     objects = new std::vector<GameObject*>();
@@ -43,6 +44,7 @@ DemoApp::~DemoApp(void)
 	// If the physics system exists, delete it
 	if(mPhysicsEngine)
 		delete mPhysicsEngine;
+
 }
  
 bool DemoApp::setup(void)
@@ -116,20 +118,45 @@ bool DemoApp::processUnbufferedInput(const Ogre::FrameEvent& evt)
 
 
 void DemoApp::createPowerUps() {
+    ObjectFactory objectFactory(mSceneMgr, mPhysicsEngine);
+    std::uniform_int_distribution<int> ptype(1, 4);
+    
+    if (mPowerUpPool.CurrentSize() < mPowerUpPool.MaxSize())
+	{
+        PowerUp* powerup;
 
-	// Create Powerup
-	PowerUp *firePowerUp = createPowerUp(PowerUpTypeFirePower, "FirePower1");
-	firePowerUp->node->setPosition(randomSpawnLocation());
+	    switch (ptype(mRNG))
+	    {
+	    case 1:
+            powerup = objectFactory.MakePowerUp(randomSpawnLocation(), PowerUp::Type::SpeedBoost);
+            break;
+        case 2:
+            powerup = objectFactory.MakePowerUp(randomSpawnLocation(), PowerUp::Type::AttackSpeedBoost);
+            break;
+        case 3:
+            powerup = objectFactory.MakePowerUp(randomSpawnLocation(), PowerUp::Type::DamageBoost);
+            break;
+        case 4:
+            powerup = objectFactory.MakePowerUp(randomSpawnLocation(), PowerUp::Type::HealthBoost);
+            break;
+        default:
+            powerup = objectFactory.MakePowerUp(randomSpawnLocation(), PowerUp::Type::SpeedBoost);
+            break;
+	    }
 
-	PowerUp *healthPowerUp = createPowerUp(PowerUpTypeHealth, "HealthPowerUp1");
-	healthPowerUp->node->setPosition(randomSpawnLocation());
+        mPowerUpPool.Add(powerup);
+	}
+}
 
-	PowerUp *speedPowerUp = createPowerUp(PowerUpTypeSpeed, "SpeedPowerUp1");
-	speedPowerUp->node->setPosition(randomSpawnLocation());
+void DemoApp::createTrophies()
+{
+    ObjectFactory objectFactory(mSceneMgr, mPhysicsEngine);
 
-	PowerUp *ratePowerUp = createPowerUp(PowerUpTypeRateOfFire, "RatePowerUp1");
-	ratePowerUp->node->setPosition(randomSpawnLocation());
-
+    if (mTrophyPool.CurrentSize() < mTrophyPool.MaxSize())
+    {
+        Trophy* trophy = objectFactory.MakeTrophy(randomSpawnLocation(), &mLPTeamScore, &mCHTeamScore);
+        mTrophyPool.Add(trophy);
+    }
 }
 
 
@@ -312,9 +339,6 @@ void DemoApp::createScene(void)
 	//
 	// Create Power Ups
 	//
-    ObjectFactory objectFactory(mSceneMgr, mPhysicsEngine);
-    auto powerup = objectFactory.MakePowerUp(Ogre::Vector3(-4, 2, -4), PowerUp::Type::SpeedBoost);
-    mTrophyPool.Add(powerup);
 	//createPowerUps();
 
 
@@ -349,7 +373,7 @@ void DemoApp::createScene(void)
             Tank* tank = tankFactory.MakeChallengerTank(position, &pathFindingGraph, &mPathFinder);
 			//Tank tank(tankName, Tank::Type::CHALLENGER, position, mSceneMgr);
 
-			tanks.push_back(tank);
+            mTankPool.Add(tank);
 		}
 		if(contents == 3)
 		{
@@ -365,12 +389,12 @@ void DemoApp::createScene(void)
             Tank* tank = tankFactory.MakeLeopardTank(position, &pathFindingGraph, &mPathFinder);
 			//Tank tank(tankName, Tank::Type::LEOPARD, position, mSceneMgr);
 
-			tanks.push_back(tank);
+            mTankPool.Add(tank);
 		}
 	}
 
-    Trophy* trophy = objectFactory.MakeTrophy(Ogre::Vector3(4, 2, 4), &mLPTeamScore, &mCHTeamScore);
-    mTrophyPool.Add(trophy);
+    //Trophy* trophy = mObjectFactory->MakeTrophy(Ogre::Vector3(4, 2, 4), &mLPTeamScore, &mCHTeamScore);
+    //mTrophyPool.Add(trophy);
 
 	//update health bar example
 	//tanks[0].updateHealthBar(0.5);
@@ -460,17 +484,16 @@ bool DemoApp::frameRenderingQueued(const Ogre::FrameEvent& evt)
 		GameObject *currentObject = *it;
 		currentObject->frameRenderingQueued(evt);
 	}
-    for (Tank* tank : tanks)
-    {
-        tank->Update(evt.timeSinceLastFrame);
-    }
 
+    createPowerUps();
+    createTrophies();
+    mTankPool.Update(evt.timeSinceLastFrame);
     mTrophyPool.Update(evt.timeSinceLastFrame);
     mPowerUpPool.Update(evt.timeSinceLastFrame);
     mPhysicsEngine->update(evt.timeSinceLastFrame);
 
-    std::cout << "CH Score: " << mCHTeamScore << std::endl;
-    std::cout << "LP Score: " << mLPTeamScore << std::endl;
+    //std::cout << "CH Score: " << mCHTeamScore << std::endl;
+    //std::cout << "LP Score: " << mLPTeamScore << std::endl;
 
 	/*****************************************************************/
 	/***********************	WALK	******************************/
@@ -818,19 +841,6 @@ bool DemoApp::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 
 	switch (id)
 	{
-		case OIS::MB_Left:
-			{
-				clickSelectObject();
-				if(multipleSelection)
-				{
-					performSelection(mStart, mStop);
-					mSelecting = false;
-					mSelectionBox->setVisible(false);
-					multipleSelection = false;
-				}
-				
-			}
-			break;
 		case OIS::MB_Right:
 			{
 				isOrbiting = false;
@@ -866,99 +876,99 @@ void DemoApp::createPath(Ogre::ManualObject* line, float height, std::vector<int
 	// Finished defining line
 	line->end();
 }
-//function for single click selection
-void DemoApp::clickSelectObject()
-{
-				/*SINGLE CLICK SELECTION*/
-				// Get the mouse ray, i.e. ray from the mouse cursor 'into' the screen 
-				Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(
-					static_cast<float>(mMouse->getMouseState().X.abs)/mMouse->getMouseState().width, 
-					static_cast<float>(mMouse->getMouseState().Y.abs)/mMouse->getMouseState().height);
-
-				Ogre::RaySceneQuery * mRaySceneQuery = mSceneMgr->createRayQuery(mouseRay);
-				// Set type of objects to query				
-				mRaySceneQuery->setQueryTypeMask(Ogre::SceneManager::ENTITY_TYPE_MASK);
-				mRaySceneQuery->setSortByDistance(true);
-
-				// Ray-cast and get first hit
-				Ogre::RaySceneQueryResult &result = mRaySceneQuery->execute();
-				Ogre::RaySceneQueryResult::iterator itr = result.begin();
-
-				// If hit an entity
-				if(itr != result.end())
-				{
-					//if robot hit
-					if(itr->movable->getQueryFlags() == static_cast<Ogre::uint32>(QueryTypes::TANK))
-					{
-						Ogre::MovableObject *hitObject = static_cast<Ogre::MovableObject*>(itr->movable);
-
-						//if user not editing selection (shift not held down)
-						if(!editSelection)
-						{
-							//if there is multiple selected objects
-							if(mSelected.size() > 1)
-							{
-									deselectObjects();				//deselect all objects
-									selectObject(hitObject);		//select hit object
-							}
-							//if there is only one object selected
-							else
-							{
-								//if object already selected
-								if(isObjectSelected(hitObject))
-									deselectObject(hitObject);		//deselect hit object 
-								//if object not selected
-								else
-								{
-									deselectObjects();				//deselect all objects
-									selectObject(hitObject);		//select hit object
-								}
-							}
-							
-							
-						}
-						//if user editing selection (shift held down)
-						else{
-
-							//if object already selected
-							if(isObjectSelected(hitObject))
-								deselectObject(hitObject);		//deselect hit object 
-							//if object not selected
-							else
-								selectObject(hitObject);		//select hit object
-						}
-					}
-					//if ground hit
-					else if(itr->movable->getQueryFlags() == static_cast<Ogre::uint32>(QueryTypes::GROUND))
-					{
-						//if user not selecting with selection box and not editing selection
-						/*if(!multipleSelection && !editSelection)
-						{
-							//get coordinates where ray intersects the plane
-							std::pair <bool, Ogre::Real> intersection = mouseRay.intersects(plane);
-							
-							//if there is an intersection
-							if(intersection.first && !mSelected.empty()) 
-							{
-								// get the point where the intersection is
-								Ogre::Vector3 point = mouseRay.getPoint(intersection.second);
-								//put coordinates on walk list
-								mWalkList.push_back(point);
-							}
-						}
-						//otherwise, deselect all objects
-						else*/
-							deselectObjects();
-
-					}
-				}
-				//if no entity hit (outside ground), deselect objects
-				else{
-
-					deselectObjects();
-				}
-				
-}
+////function for single click selection
+//void DemoApp::clickSelectObject()
+//{
+//				/*SINGLE CLICK SELECTION*/
+//				// Get the mouse ray, i.e. ray from the mouse cursor 'into' the screen 
+//				Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(
+//					static_cast<float>(mMouse->getMouseState().X.abs)/mMouse->getMouseState().width, 
+//					static_cast<float>(mMouse->getMouseState().Y.abs)/mMouse->getMouseState().height);
+//
+//				Ogre::RaySceneQuery * mRaySceneQuery = mSceneMgr->createRayQuery(mouseRay);
+//				// Set type of objects to query				
+//				mRaySceneQuery->setQueryTypeMask(Ogre::SceneManager::ENTITY_TYPE_MASK);
+//				mRaySceneQuery->setSortByDistance(true);
+//
+//				// Ray-cast and get first hit
+//				Ogre::RaySceneQueryResult &result = mRaySceneQuery->execute();
+//				Ogre::RaySceneQueryResult::iterator itr = result.begin();
+//
+//				// If hit an entity
+//				if(itr != result.end())
+//				{
+//					//if robot hit
+//					if(itr->movable->getQueryFlags() == static_cast<Ogre::uint32>(QueryTypes::TANK))
+//					{
+//						Ogre::MovableObject *hitObject = static_cast<Ogre::MovableObject*>(itr->movable);
+//
+//						//if user not editing selection (shift not held down)
+//						if(!editSelection)
+//						{
+//							//if there is multiple selected objects
+//							if(mSelected.size() > 1)
+//							{
+//									deselectObjects();				//deselect all objects
+//									selectObject(hitObject);		//select hit object
+//							}
+//							//if there is only one object selected
+//							else
+//							{
+//								//if object already selected
+//								if(isObjectSelected(hitObject))
+//									deselectObject(hitObject);		//deselect hit object 
+//								//if object not selected
+//								else
+//								{
+//									deselectObjects();				//deselect all objects
+//									selectObject(hitObject);		//select hit object
+//								}
+//							}
+//							
+//							
+//						}
+//						//if user editing selection (shift held down)
+//						else{
+//
+//							//if object already selected
+//							if(isObjectSelected(hitObject))
+//								deselectObject(hitObject);		//deselect hit object 
+//							//if object not selected
+//							else
+//								selectObject(hitObject);		//select hit object
+//						}
+//					}
+//					//if ground hit
+//					else if(itr->movable->getQueryFlags() == static_cast<Ogre::uint32>(QueryTypes::GROUND))
+//					{
+//						//if user not selecting with selection box and not editing selection
+//						/*if(!multipleSelection && !editSelection)
+//						{
+//							//get coordinates where ray intersects the plane
+//							std::pair <bool, Ogre::Real> intersection = mouseRay.intersects(plane);
+//							
+//							//if there is an intersection
+//							if(intersection.first && !mSelected.empty()) 
+//							{
+//								// get the point where the intersection is
+//								Ogre::Vector3 point = mouseRay.getPoint(intersection.second);
+//								//put coordinates on walk list
+//								mWalkList.push_back(point);
+//							}
+//						}
+//						//otherwise, deselect all objects
+//						else*/
+//							deselectObjects();
+//
+//					}
+//				}
+//				//if no entity hit (outside ground), deselect objects
+//				else{
+//
+//					deselectObjects();
+//				}
+//				
+//}
 
 /*************************		WALKING		************************/
 void DemoApp::createFrameListener(void){

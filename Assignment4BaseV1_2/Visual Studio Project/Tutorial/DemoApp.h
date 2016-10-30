@@ -23,6 +23,7 @@ Filename:   DemoApp.h
 #include "PowerUp.h"
 #include "Tank.h"
 #include "Trophy.hpp"
+#include "ObjectFactory.hpp"
 
 class DemoApp : public BaseApplication
 {
@@ -53,6 +54,7 @@ protected:
 
 	// Simple test function that creates one of each power up and adds to scene
 	void createPowerUps();
+    void createTrophies();
 	   
 
 	Ogre::SceneNode *node;			//scene node
@@ -108,7 +110,7 @@ private:
 	void createPath(Ogre::ManualObject* line, float height, std::vector<int>& path, Ogre::ColourValue& colour);
 	Ogre::Vector3 randomSpawnLocation();
 	//SELECTION
-	void clickSelectObject();		//single click handling
+	//void clickSelectObject();		//single click handling
 	bool multipleSelection;
 
 	// Converts a 3D world position to a 2D relative screen coordinate (i.e. between 0 and 1 for x and y respectively)
@@ -118,6 +120,7 @@ private:
 
     PoolManager mTrophyPool;
     PoolManager mPowerUpPool;
+    PoolManager mTankPool;
 
     float mLPTeamScore;
     float mCHTeamScore;

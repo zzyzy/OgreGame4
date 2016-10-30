@@ -17,7 +17,7 @@ public:
 
     PowerUp(Ogre::SceneManager* creator, PhysicsEngine* physics, Type type) :
         SceneNode(creator),
-        mRBody(nullptr),
+        mCollider(nullptr),
         mPhysics(physics),
         mType(type),
         mIsDisposable(false),
@@ -27,13 +27,13 @@ public:
         assert(physics != nullptr);
     }
 
-    void SetRBody(btRigidBody* rbody) { mRBody = rbody; }
-    btRigidBody* GetRBody() const { return mRBody; }
+    void SetCollider(btPairCachingGhostObject* collider) { mCollider = collider; }
+    btPairCachingGhostObject* GetCollider() const { return mCollider; }
 
     // Allow the pool manager to update the pool object
     void Update(const float& deltaTime) override
     {
-        auto co = mPhysics->GetCollidedObject(mRBody);
+        auto co = mPhysics->GetCollidedObject(mCollider);
 
         if (co)
         {
@@ -103,12 +103,12 @@ public:
     // and release any unused memory/dangling pointers
     void Dispose() override
     {
-        mPhysics->destroyRigidBody(mRBody);
+        mPhysics->DestroyGhostObject(mCollider);
         mIsDisposed = true;
     }
 
 private:
-    btRigidBody* mRBody;
+    btPairCachingGhostObject* mCollider;
     PhysicsEngine* mPhysics;
     Type mType;
     bool mIsDisposable;

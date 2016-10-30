@@ -9,7 +9,7 @@ class Trophy : public Ogre::SceneNode, public IPoolObject
 public:
     Trophy(Ogre::SceneManager* creator, PhysicsEngine* physics, float* lpScore, float* chScore) :
         SceneNode(creator),
-        mRBody(nullptr),
+        mCollider(nullptr),
         mPhysics(physics),
         mIsDisposable(false),
         mIsDisposed(false),
@@ -18,15 +18,15 @@ public:
     {
     }
 
-    void SetRBody(btRigidBody* rbody) { mRBody = rbody; }
-    btRigidBody* GetRBody() const { return mRBody; }
+    void SetCollider(btPairCachingGhostObject* collider) { mCollider = collider; }
+    btPairCachingGhostObject* GetCollider() const { return mCollider; }
 
     static const int mScoreValue = 10;
 
     // Allow the pool manager to update the pool object
     void Update(const float& deltaTime) override
     {
-        auto co = mPhysics->GetCollidedObject(mRBody);
+        auto co = mPhysics->GetCollidedObject(mCollider);
 
         if (co)
         {
@@ -65,12 +65,12 @@ public:
     // and release any unused memory/dangling pointers
     void Dispose() override
     {
-        mPhysics->destroyRigidBody(mRBody);
+        mPhysics->DestroyGhostObject(mCollider);
         mIsDisposed = true;
     }
 
 private:
-    btRigidBody* mRBody;
+    btPairCachingGhostObject* mCollider;
     PhysicsEngine* mPhysics;
     bool mIsDisposable;
     bool mIsDisposed;
