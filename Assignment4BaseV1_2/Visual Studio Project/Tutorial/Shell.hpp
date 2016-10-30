@@ -19,6 +19,7 @@
 #include "CollisionMasks.hpp"
 #include "IDamageableObject.hpp"
 #include "Tank.h"
+#include "TankCollider.hpp"
 
 class Shell : public Projectile, public IPoolObject
 {
@@ -105,7 +106,7 @@ public:
             for (auto it = collidedObjects.begin(); it != collidedObjects.end(); ++it)
             {
                 auto rbody = dynamic_cast<btRigidBody*>(*it);
-                auto ghostObj = dynamic_cast<btPairCachingGhostObject*>(*it);
+                auto tankCol = dynamic_cast<TankCollider*>(*it);
 
                 if (rbody)
                 {
@@ -119,19 +120,17 @@ public:
                     mPhysics->ShootRay(rayFromWorld, rayToWorld, impulse);
                 }
 
-                if (ghostObj)
+                if (tankCol)
                 {
-                    //auto node = static_cast<MyMotionState*>(rbody->getMotionState())->getNode();
-                    //// Probably should cast to GameObject instead
-                    //auto tank = static_cast<Tank*>(node);
-                    //auto damageableObject = static_cast<IDamageableObject*>(tank);
+                    auto tank = tankCol->GetTank();
 
-                    //if (damageableObject)
-                    //{
-                    //    auto damage = (rayToWorld - rayFromWorld).length() * 1.0f;
-                    //    damageableObject->ApplyDamage(damage);
-                    //    assert(damageableObject->TotalDamageReceived() == damage);
-                    //}
+                    if (tank)
+                    {
+                        auto rayFromWorld = mBlastCollider->getWorldTransform().getOrigin();
+                        auto rayToWorld = tankCol->getWorldTransform().getOrigin();
+                        auto damage = (rayToWorld - rayFromWorld).length() * 0.1f;
+                        tank->ApplyDamage(damage);
+                    }
                 }
             }
 

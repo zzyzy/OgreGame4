@@ -159,6 +159,9 @@
     <ClInclude Include="FindPowerupState.hpp">
       <Filter>Header Files\Tank\States</Filter>
     </ClInclude>
+    <ClInclude Include="TankCollider.hpp">
+      <Filter>Header Files\Tank</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseApplication.cpp">

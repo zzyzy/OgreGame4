@@ -184,6 +184,18 @@ btRigidBody* PhysicsEngine::CreateRigidBody(const float& mass, const btTransform
     return rigidBody;
 }
 
+void PhysicsEngine::AddGhostObject(btPairCachingGhostObject* go,
+    const btTransform& startTrans,
+    btCollisionShape* collisionShape,
+    short filterGroup,
+    short filterMask)
+{
+    mCollisionShapes.push_back(collisionShape);
+    go->setWorldTransform(startTrans);
+    go->setCollisionShape(collisionShape);
+    mDynamicsWorld->addCollisionObject(go, filterGroup, filterMask);
+}
+
 btPairCachingGhostObject* PhysicsEngine::CreateGhostObject(const btTransform& startTrans,
     btCollisionShape* collisionShape,
     short filterGroup,

@@ -25,6 +25,11 @@ public:
                                  short mask);
 
     // GhostObject
+    void AddGhostObject(btPairCachingGhostObject* go,
+                        const btTransform& startTrans,
+                        btCollisionShape* collisionShape,
+                        short filterGroup,
+                        short filterMask);
     btPairCachingGhostObject* CreateGhostObject(const btTransform& startTrans,
                                                 btCollisionShape* collisionShape,
                                                 short filterGroup = btBroadphaseProxy::DefaultFilter,

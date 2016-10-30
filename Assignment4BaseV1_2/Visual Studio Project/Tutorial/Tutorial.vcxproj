@@ -80,6 +80,7 @@
     <ClInclude Include="DestroyedState.hpp" />
     <ClInclude Include="FindPowerupState.hpp" />
     <ClInclude Include="FindTrophyState.hpp" />
+    <ClInclude Include="TankCollider.hpp" />
     <ClInclude Include="TankState.hpp" />
     <ClInclude Include="QueryMasks.hpp" />
     <ClInclude Include="SpawnState.hpp" />

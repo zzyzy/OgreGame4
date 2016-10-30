@@ -7,6 +7,7 @@
 #include "QueryMasks.hpp"
 #include "CollisionMasks.hpp"
 #include "SpawnState.hpp"
+#include "TankCollider.hpp"
 
 Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position,
                                       Graph* graph,
@@ -119,10 +120,12 @@ Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position,
         CollisionTypes::EXPLOSION |
         CollisionTypes::PROJECTILE;
     auto shape = new btBoxShape(btVector3(0.1f * 50, 0.1f * 50, 0.1f * 50));
-    auto collider = mPhysics->CreateGhostObject(startTrans,
-                                                shape,
-                                                group,
-                                                mask);
+    auto collider = new TankCollider(tank);
+    mPhysics->AddGhostObject(collider,
+                             startTrans,
+                             shape,
+                             group,
+                             mask);
     collider->setCollisionFlags(collider->getCollisionFlags() |
         btCollisionObject::CF_KINEMATIC_OBJECT);
 
@@ -259,10 +262,12 @@ Tank* TankFactory::MakeLeopardTank(const Ogre::Vector3& position,
         CollisionTypes::EXPLOSION |
         CollisionTypes::PROJECTILE;
     auto shape = new btBoxShape(btVector3(0.1f * 50, 0.1f * 50, 0.1f * 50));
-    auto collider = mPhysics->CreateGhostObject(startTrans,
-                                                shape,
-                                                group,
-                                                mask);
+    auto collider = new TankCollider(tank);
+    mPhysics->AddGhostObject(collider,
+                             startTrans,
+                             shape,
+                             group,
+                             mask);
     collider->setCollisionFlags(collider->getCollisionFlags() |
         btCollisionObject::CF_KINEMATIC_OBJECT);
 
