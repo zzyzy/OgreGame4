@@ -25,9 +25,13 @@ public:
         assert(physics != nullptr);
     }
 
-    Tank* MakeChallengerTank(const Ogre::Vector3& position) const;
+    Tank* MakeChallengerTank(const Ogre::Vector3& position,
+                             Graph* graph,
+                             PathFinding* pathFinder) const;
 
-    Tank* MakeLeopardTank(const Ogre::Vector3& position) const;
+    Tank* MakeLeopardTank(const Ogre::Vector3& position,
+                          Graph* graph,
+                          PathFinding* pathFinder) const;
 
 private:
     Ogre::SceneManager* mWorld;

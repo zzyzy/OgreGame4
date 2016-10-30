@@ -318,7 +318,7 @@ void DemoApp::createScene(void)
 			Ogre::Vector3 position = pathFindingGraph.getPosition(tankId);
 			position.y = 0.5;
 			//create tank
-            Tank* tank = tankFactory.MakeChallengerTank(position);
+            Tank* tank = tankFactory.MakeChallengerTank(position, &pathFindingGraph, &mPathFinder);
 			//Tank tank(tankName, Tank::Type::CHALLENGER, position, mSceneMgr);
 
 			tanks.push_back(tank);
@@ -334,15 +334,12 @@ void DemoApp::createScene(void)
 			Ogre::Vector3 position = pathFindingGraph.getPosition(tankId);
 			position.y = 0.5;
 			//create tank
-            Tank* tank = tankFactory.MakeLeopardTank(position);
+            Tank* tank = tankFactory.MakeLeopardTank(position, &pathFindingGraph, &mPathFinder);
 			//Tank tank(tankName, Tank::Type::LEOPARD, position, mSceneMgr);
 
 			tanks.push_back(tank);
 		}
 	}
-
-    tanks[0]->MoveTo(Ogre::Vector3(50, 0, 50), &pathFindingGraph, mPathFinder);
-    tanks[1]->MoveTo(Ogre::Vector3(-50, 0, -50), &pathFindingGraph, mPathFinder);
 
 	//update health bar example
 	//tanks[0].updateHealthBar(0.5);
@@ -428,11 +425,8 @@ bool DemoApp::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	}
     for (Tank* tank : tanks)
     {
-        //tank->FireAt(Ogre::Vector3(0, 0, 0));
         tank->Update(evt.timeSinceLastFrame);
     }
-
-    tanks[0]->FireAt(tanks[1]->getPosition());
 
     mPhysicsEngine->update(evt.timeSinceLastFrame);
 

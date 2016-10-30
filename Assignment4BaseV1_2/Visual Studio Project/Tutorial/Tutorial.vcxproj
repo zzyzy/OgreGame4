@@ -76,8 +76,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ITankState.hpp" />
+    <ClInclude Include="AttackState.hpp" />
+    <ClInclude Include="DestroyedState.hpp" />
+    <ClInclude Include="FindPowerupState.hpp" />
+    <ClInclude Include="FindTrophyState.hpp" />
+    <ClInclude Include="TankState.hpp" />
     <ClInclude Include="QueryMasks.hpp" />
+    <ClInclude Include="SpawnState.hpp" />
     <ClInclude Include="TankFactory.hpp" />
     <ClInclude Include="TankKinematics.hpp" />
     <ClInclude Include="TankStateMachine.hpp" />
@@ -105,9 +110,15 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tank.h" />
     <ClInclude Include="Utilities.h" />
+    <ClInclude Include="WanderState.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AttackState.cpp" />
+    <ClCompile Include="DestroyedState.cpp" />
+    <ClCompile Include="FindPowerupState.cpp" />
+    <ClCompile Include="FindTrophyState.cpp" />
     <ClCompile Include="Program.cpp" />
+    <ClCompile Include="SpawnState.cpp" />
     <ClCompile Include="TankFactory.cpp" />
     <ClCompile Include="TankKinematics.cpp" />
     <ClCompile Include="Turret.cpp" />
@@ -128,6 +139,7 @@
     </ClCompile>
     <ClCompile Include="Tank.cpp" />
     <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="WanderState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="media\myMaterial.material" />

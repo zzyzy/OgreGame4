@@ -1,4 +1,6 @@
 #include "Tank.h"
+#include "SpawnState.hpp"
+#include "QueryMasks.hpp"
 
 Tank::Tank(Ogre::SceneManager* world,
            PhysicsEngine* physics,
@@ -6,6 +8,8 @@ Tank::Tank(Ogre::SceneManager* world,
     SceneNode(world),
     mWorld(world),
     mPhysics(physics),
+    mGraph(nullptr),
+    mPathFinder(nullptr),
     mTurretNode(nullptr),
     mBarrelNode(nullptr),
     mNozzleNode(nullptr),
@@ -18,6 +22,7 @@ Tank::Tank(Ogre::SceneManager* world,
     mDamage(50.0f),
     mAttackSpeed(1.0f),
     mTurnRate(5.0f),
+    mScanRange(1.0f),
     mTurret(),
     mKinematic()
 {
@@ -55,6 +60,14 @@ void Tank::setSelectionDecal(Ogre::SceneNode* selectionDecal)
     assert(mSelectionNode != nullptr);
 }
 
+void Tank::setPathFinding(Graph* graph, PathFinding* pathFinder)
+{
+    assert(graph != nullptr);
+    assert(pathFinder != nullptr);
+    mGraph = graph;
+    mPathFinder = pathFinder;
+}
+
 void Tank::setupTurretController(const CollisionTypes& targetType)
 {
     mTurret = Turret(mTurretNode, mBarrelNode, mNozzleNode, mWorld, mPhysics, 5, targetType,
@@ -63,13 +76,22 @@ void Tank::setupTurretController(const CollisionTypes& targetType)
 
 void Tank::setupKinematicController(Ogre::ManualObject* pathViz, btPairCachingGhostObject* collider)
 {
+    assert(mGraph != nullptr);
+    assert(mPathFinder != nullptr);
     mKinematic = TankKinematics(this, pathViz, collider);
+}
+
+void Tank::setupStateMachine()
+{
+    mState = TankStateMachine(new SpawnState(), this);
 }
 
 Tank::Tank(const Tank& tank) :
     SceneNode(tank.mWorld),
     mWorld(tank.mWorld),
     mPhysics(tank.mPhysics),
+    mGraph(tank.mGraph),
+    mPathFinder(tank.mPathFinder),
     mTurretNode(tank.mTurretNode),
     mBarrelNode(tank.mBarrelNode),
     mNozzleNode(tank.mNozzleNode),
@@ -82,6 +104,7 @@ Tank::Tank(const Tank& tank) :
     mDamage(tank.mDamage),
     mAttackSpeed(tank.mAttackSpeed),
     mTurnRate(tank.mTurnRate),
+    mScanRange(tank.mScanRange),
     mTurret(tank.mTurret),
     mKinematic(tank.mKinematic)
 {
@@ -91,6 +114,8 @@ Tank::Tank(Tank&& tank) :
     SceneNode(tank.mWorld),
     mWorld(tank.mWorld),
     mPhysics(tank.mPhysics),
+    mGraph(tank.mGraph),
+    mPathFinder(tank.mPathFinder),
     mTurretNode(tank.mTurretNode),
     mBarrelNode(tank.mBarrelNode),
     mNozzleNode(tank.mNozzleNode),
@@ -103,6 +128,7 @@ Tank::Tank(Tank&& tank) :
     mDamage(tank.mDamage),
     mAttackSpeed(tank.mAttackSpeed),
     mTurnRate(tank.mTurnRate),
+    mScanRange(tank.mScanRange),
     mTurret(std::move(tank.mTurret)),
     mKinematic(std::move(tank.mKinematic))
 {
@@ -119,6 +145,8 @@ Tank& Tank::operator=(Tank&& tank)
 {
     mWorld = tank.mWorld;
     mPhysics = tank.mPhysics;
+    mGraph = tank.mGraph;
+    mPathFinder = tank.mPathFinder;
     mTurretNode = tank.mTurretNode;
     mBarrelNode = tank.mBarrelNode;
     mNozzleNode = tank.mNozzleNode;
@@ -131,6 +159,7 @@ Tank& Tank::operator=(Tank&& tank)
     mDamage = tank.mDamage;
     mAttackSpeed = tank.mAttackSpeed;
     mTurnRate = tank.mTurnRate;
+    mScanRange = tank.mScanRange;
     mTurret = std::move(tank.mTurret);
     mKinematic = std::move(tank.mKinematic);
     return *this;
@@ -205,11 +234,12 @@ void Tank::Update(const float& deltaTime)
 {
     mTurret.Update(deltaTime);
     mKinematic.Update(2.0f, deltaTime);
+    mState.Update(deltaTime);
 }
 
-void Tank::MoveTo(const Ogre::Vector3& target, Graph* graph, PathFinding& pathFinder)
+void Tank::MoveTo(const Ogre::Vector3& target)
 {
-    mKinematic.MoveTo(target, graph, pathFinder);
+    mKinematic.MoveTo(target, mGraph, *mPathFinder);
 }
 
 void Tank::FireAt(const Ogre::Vector3& target)
@@ -225,4 +255,36 @@ void Tank::ApplyDamage(const float& damage)
 float Tank::TotalDamageReceived()
 {
     return mMaxHitPoints - mHitPoints;
+}
+
+Ogre::SceneNode* Tank::GetNearestObject() const
+{
+    auto sphere = Ogre::Sphere(getPosition(), Ogre::Real(mScanRange));
+    auto sphereQuery = mWorld->createSphereQuery(sphere);
+    sphereQuery->setQueryMask(QueryTypes::TANK |
+        QueryTypes::POWERUP |
+        QueryTypes::TROPHY);
+
+    auto result = sphereQuery->execute();
+    auto it = result.movables.begin();
+    Ogre::Real shortestDistance = Ogre::Real(INT_MAX);
+    Ogre::SceneNode* closestObject = nullptr;
+
+    for (it; it != result.movables.end(); ++it)
+    {
+        auto node = (*it)->getParentSceneNode()->getParentSceneNode();
+        if (node && node != this)
+        {
+            auto distance = (getPosition() - node->getPosition()).length();
+            if (distance < shortestDistance)
+            {
+                shortestDistance = distance;
+                closestObject = node;
+            }
+        }
+    }
+
+    mWorld->destroyQuery(sphereQuery);
+
+    return closestObject;
 }

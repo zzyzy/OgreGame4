@@ -6,8 +6,11 @@
 #include "TankFactory.hpp"
 #include "QueryMasks.hpp"
 #include "CollisionMasks.hpp"
+#include "SpawnState.hpp"
 
-Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position) const
+Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position,
+                                      Graph* graph,
+                                      PathFinding* pathFinder) const
 {
     auto bodyEntity = mWorld->createEntity("chbody.mesh");
     auto turretEntity = mWorld->createEntity("chturret.mesh");
@@ -137,13 +140,17 @@ Tank* TankFactory::MakeChallengerTank(const Ogre::Vector3& position) const
     tank->setNozzle(nozzleNode);
     tank->setHealthDecal(healthBarNode);
     tank->setSelectionDecal(selectionNode);
+    tank->setPathFinding(graph, pathFinder);
     tank->setupTurretController(CollisionTypes::LP_TANK);
     tank->setupKinematicController(pathViz, collider);
+    tank->setupStateMachine();
 
     return tank;
 }
 
-Tank* TankFactory::MakeLeopardTank(const Ogre::Vector3& position) const
+Tank* TankFactory::MakeLeopardTank(const Ogre::Vector3& position,
+                                   Graph* graph,
+                                   PathFinding* pathFinder) const
 {
     auto bodyEntity = mWorld->createEntity("lpbody.mesh");
     auto turretEntity = mWorld->createEntity("lpturret.mesh");
@@ -273,8 +280,10 @@ Tank* TankFactory::MakeLeopardTank(const Ogre::Vector3& position) const
     tank->setNozzle(nozzleNode);
     tank->setHealthDecal(healthBarNode);
     tank->setSelectionDecal(selectionNode);
+    tank->setPathFinding(graph, pathFinder);
     tank->setupTurretController(CollisionTypes::CH_TANK);
     tank->setupKinematicController(pathViz, collider);
+    tank->setupStateMachine();
 
     return tank;
 }
