@@ -265,7 +265,7 @@ void TankKinematics::Update(const float& minDistance, const float& deltaTime)
                                                           mTank->getOrientation(),
                                                           lookAt,
                                                           true));
-            if (mTank->getOrientation().equals(lookAt, Ogre::Degree(5)))
+            if (mTank->getOrientation().equals(lookAt, Ogre::Degree(2.5f)))
             {
                 mTank->translate(Ogre::Vector3(0, 0, deltaTime * mTank->GetMoveSpeed()), Ogre::Node::TS_LOCAL);
                 btTransform transform = mCollider->getWorldTransform();

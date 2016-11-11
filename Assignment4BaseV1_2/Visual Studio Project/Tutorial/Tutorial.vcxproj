@@ -61,7 +61,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>C:\EngineSDK\Ogre\include\OGRE;C:\EngineSDK\Ogre\include\OGRE\Overlay;C:\EngineSDK\Ogre\include\OIS;C:\EngineSDK\Ogre\boost;%(AdditionalIncludeDirectories);C:\EngineSDK\irrKlang\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\EngineSDK\Ogre\include\OGRE;C:\EngineSDK\Ogre\include\OGRE\Overlay;C:\EngineSDK\Ogre\include\OIS;C:\EngineSDK\Ogre\boost;%(AdditionalIncludeDirectories);C:\EngineSDK\Bullet\src;C:\EngineSDK\irrKlang\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <AdditionalOptions>-Zm300 %(AdditionalOptions)</AdditionalOptions>
@@ -70,8 +70,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\EngineSDK\Ogre\lib\$(Configuration);C:\EngineSDK\Ogre\boost\lib;%(AdditionalLibraryDirectories);C:\EngineSDK\irrKlang\lib\Win32-visualStudio</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OgreMain.lib;OIS.lib;OgreOverlay.lib;%(AdditionalDependencies);irrKlang.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\ws\study\CSCI356 Game Engine Essentials\EngineSDK\Bullet\lib\Release;C:\EngineSDK\Ogre\lib\$(Configuration);C:\EngineSDK\Ogre\boost\lib;%(AdditionalLibraryDirectories);C:\EngineSDK\irrKlang\lib\Win32-visualStudio</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreMain.lib;OIS.lib;OgreOverlay.lib;%(AdditionalDependencies);irrKlang.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
