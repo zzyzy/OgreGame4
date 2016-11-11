@@ -22,9 +22,6 @@
     <Filter Include="Source Files\Pathfinding">
       <UniqueIdentifier>{d5edaa55-76d3-429e-a3d5-545889e5e667}</UniqueIdentifier>
     </Filter>
-    <Filter Include="media">
-      <UniqueIdentifier>{14f3a675-3cd1-4bc6-aa15-82d44d1fa085}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Common">
       <UniqueIdentifier>{0d570d72-3dc2-4f66-8f9d-1435ca005ca5}</UniqueIdentifier>
     </Filter>
@@ -268,30 +265,5 @@
     <None Include="resources_d.cfg">
       <Filter>Configuration Files</Filter>
     </None>
-    <None Include="media\PowerUp.mesh">
-      <Filter>media</Filter>
-    </None>
-    <None Include="media\PowerUp.material">
-      <Filter>media</Filter>
-    </None>
-    <None Include="media\myMaterial.material">
-      <Filter>media</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="media\circulo.png">
-      <Filter>media</Filter>
-    </Image>
-    <Image Include="media\healthbar.png">
-      <Filter>media</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="media\audio\explosion.wav">
-      <Filter>media</Filter>
-    </Media>
-    <Media Include="media\audio\firing.wav">
-      <Filter>media</Filter>
-    </Media>
   </ItemGroup>
 </Project>

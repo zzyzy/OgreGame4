@@ -243,9 +243,11 @@ ModelManifest.xml
 .fake/
 *.suo
 
-# VisualStudioCode
+# Visual Studio Code
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
+
+# Ogre
 Ogre.log
